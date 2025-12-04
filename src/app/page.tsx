@@ -65,10 +65,10 @@ const MaSoVaArchitectureDiagram = () => {
   const [selectedNode, setSelectedNode] = useState<ArchNode | null>(null);
 
   const clientNodes: ArchNode[] = [
-    { id: 'react', x: 30, y: 90, width: 100, height: 50, title: 'React 18', subtitle: 'RTK Query', gradient: 'clientGrad', details: 'Modern React SPA with Redux Toolkit Query for efficient data fetching, caching, and state management.' },
-    { id: 'kitchen', x: 150, y: 90, width: 100, height: 50, title: 'Kitchen Display', subtitle: 'Real-time', gradient: 'clientGrad', details: 'Real-time kitchen display system for order management with WebSocket updates for instant notifications.' },
-    { id: 'driver', x: 270, y: 90, width: 100, height: 50, title: 'Driver App', subtitle: 'GPS Tracking', gradient: 'clientGrad', details: 'Mobile-first driver application with real-time GPS tracking, route optimization, and delivery status updates.' },
-    { id: 'customer', x: 390, y: 90, width: 100, height: 50, title: 'Customer App', subtitle: 'Order Tracking', gradient: 'clientGrad', details: 'Customer-facing app with live order tracking, push notifications, and delivery ETA updates.' },
+    { id: 'react', x: 160, y: 90, width: 110, height: 50, title: 'React 18', subtitle: 'RTK Query', gradient: 'clientGrad', details: 'Modern React SPA with Redux Toolkit Query for efficient data fetching, caching, and state management.' },
+    { id: 'kitchen', x: 290, y: 90, width: 110, height: 50, title: 'Kitchen Display', subtitle: 'Real-time', gradient: 'clientGrad', details: 'Real-time kitchen display system for order management with WebSocket updates for instant notifications.' },
+    { id: 'driver', x: 420, y: 90, width: 110, height: 50, title: 'Driver App', subtitle: 'GPS Tracking', gradient: 'clientGrad', details: 'Mobile-first driver application with real-time GPS tracking, route optimization, and delivery status updates.' },
+    { id: 'customer', x: 550, y: 90, width: 110, height: 50, title: 'Customer App', subtitle: 'Order Tracking', gradient: 'clientGrad', details: 'Customer-facing app with live order tracking, push notifications, and delivery ETA updates.' },
   ];
 
   const serviceNodes: ArchNode[] = [
@@ -133,16 +133,16 @@ const MaSoVaArchitectureDiagram = () => {
         <text x="450" y="35" textAnchor="middle" className="fill-white text-lg font-bold" style={{fontSize: '18px'}}>MaSoVa Restaurant Platform - Microservices Architecture</text>
         <text x="450" y="55" textAnchor="middle" className="fill-violet-300/70" style={{fontSize: '11px'}}>Click on any component to see details</text>
 
-        <text x="80" y="75" className="fill-slate-400 text-xs font-semibold" style={{fontSize: '11px'}}>CLIENT LAYER</text>
+        <text x="410" y="75" textAnchor="middle" className="fill-slate-400 text-xs font-semibold" style={{fontSize: '11px'}}>CLIENT LAYER</text>
 
         {clientNodes.map(node => (
           <InteractiveNode key={node.id} node={node} hoveredNode={hoveredNode} setHoveredNode={setHoveredNode} setSelectedNode={setSelectedNode} />
         ))}
 
-        <line x1="80" y1="140" x2="80" y2="175" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
-        <line x1="200" y1="140" x2="200" y2="175" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
-        <line x1="320" y1="140" x2="320" y2="175" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
-        <line x1="440" y1="140" x2="440" y2="175" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+        <line x1="215" y1="140" x2="215" y2="185" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+        <line x1="345" y1="140" x2="345" y2="185" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+        <line x1="475" y1="140" x2="475" y2="185" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+        <line x1="605" y1="140" x2="605" y2="185" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
 
         <text x="450" y="175" textAnchor="middle" className="fill-slate-400 text-xs font-semibold" style={{fontSize: '11px'}}>API GATEWAY</text>
 
@@ -1041,7 +1041,7 @@ def process_bus_data(stops_df: pd.DataFrame,
     return stops_df.merge(census_df, on='lsoa_code')`,
 };
 
-const sectionIds = ['top', 'projects', 'architecture', 'craft', 'contact'] as const;
+const sectionIds = ['top', 'projects', 'architecture', 'craft', 'education', 'contact'] as const;
 
 export default function PortfolioPage() {
   const [activeSection, setActiveSection] = useState<string>('top');
@@ -1235,6 +1235,7 @@ export default function PortfolioPage() {
                   ['#projects', 'Projects', 'projects'],
                   ['#architecture', 'Architecture', 'architecture'],
                   ['#craft', 'Code', 'craft'],
+                  ['#education', 'Education', 'education'],
                   ['#contact', 'Contact', 'contact'],
                 ].map(([href, label, id]) => (
                   <a
@@ -1287,6 +1288,7 @@ export default function PortfolioPage() {
                   ['#projects', 'Projects', 'projects'],
                   ['#architecture', 'Architecture', 'architecture'],
                   ['#craft', 'Code', 'craft'],
+                  ['#education', 'Education', 'education'],
                   ['#contact', 'Contact', 'contact'],
                 ].map(([href, label, id]) => (
                   <a
@@ -1830,34 +1832,56 @@ export default function PortfolioPage() {
               <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl">
                 <h3 className="mb-4 text-xl font-bold">Tech Stack</h3>
                 <div className="space-y-4">
-                  {/* Azure Cloud */}
+                  {/* Programming Languages */}
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-blue-400 mb-2">Microsoft Azure</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-violet-400 mb-2">Languages</p>
                     <div className="flex flex-wrap gap-2">
-                      {['Data Factory', 'Synapse Analytics', 'Databricks', 'Data Lake Gen2', 'Blob Storage', 'SQL Database', 'KeyVault'].map((tech) => (
+                      {['Python', 'SQL', 'Java', 'TypeScript', 'C/C++'].map((tech) => (
+                        <span key={tech} className="rounded-lg bg-gradient-to-r from-violet-600 to-purple-500 px-3 py-1.5 text-xs font-semibold text-white">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  {/* ML & Data Science */}
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-fuchsia-400 mb-2">ML & Data Science</p>
+                    <div className="flex flex-wrap gap-2">
+                      {['TensorFlow', 'PyTorch', 'Scikit-learn', 'Pandas', 'NumPy', 'LangChain', 'HDBSCAN', 'PyOD'].map((tech) => (
+                        <span key={tech} className="rounded-lg bg-gradient-to-r from-fuchsia-600 to-pink-500 px-3 py-1.5 text-xs font-semibold text-white">
+                          {tech}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                  {/* Big Data & Cloud */}
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-blue-400 mb-2">Big Data & Cloud</p>
+                    <div className="flex flex-wrap gap-2">
+                      {['Apache Spark', 'PySpark', 'Databricks', 'Azure Data Factory', 'Synapse Analytics', 'Data Lake Gen2', 'MongoDB', 'Redis'].map((tech) => (
                         <span key={tech} className="rounded-lg bg-gradient-to-r from-blue-600 to-cyan-500 px-3 py-1.5 text-xs font-semibold text-white">
                           {tech}
                         </span>
                       ))}
                     </div>
                   </div>
-                  {/* Programming */}
+                  {/* Visualization */}
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-2">Programming & Data</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-emerald-400 mb-2">Visualization</p>
                     <div className="flex flex-wrap gap-2">
-                      {['Python', 'PySpark', 'SQL', 'Spark SQL', 'Pandas', 'NumPy', 'Java', 'TypeScript'].map((tech) => (
-                        <span key={tech} className="rounded-lg bg-gradient-to-r from-emerald-600 to-green-500 px-3 py-1.5 text-xs font-semibold text-white">
+                      {['Power BI', 'Tableau', 'Streamlit', 'Plotly', 'Matplotlib'].map((tech) => (
+                        <span key={tech} className="rounded-lg bg-gradient-to-r from-emerald-600 to-teal-500 px-3 py-1.5 text-xs font-semibold text-white">
                           {tech}
                         </span>
                       ))}
                     </div>
                   </div>
-                  {/* Visualization & Tools */}
+                  {/* Backend & Web */}
                   <div>
-                    <p className="text-xs font-semibold uppercase tracking-wider text-fuchsia-400 mb-2">Visualization & Tools</p>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-orange-400 mb-2">Backend & Web</p>
                     <div className="flex flex-wrap gap-2">
-                      {['Power BI', 'Tableau', 'Streamlit', 'Plotly', 'Apache Spark', 'Git', 'Next.js', 'React'].map((tech) => (
-                        <span key={tech} className="rounded-lg bg-gradient-to-r from-fuchsia-600 to-pink-500 px-3 py-1.5 text-xs font-semibold text-white">
+                      {['Spring Boot', 'Next.js', 'React', 'FastAPI', 'REST APIs', 'WebSocket', 'Git'].map((tech) => (
+                        <span key={tech} className="rounded-lg bg-gradient-to-r from-orange-600 to-amber-500 px-3 py-1.5 text-xs font-semibold text-white">
                           {tech}
                         </span>
                       ))}
@@ -1879,6 +1903,161 @@ export default function PortfolioPage() {
                     <p className="text-xs text-slate-400">Microsoft Certified (DP-203) • March 2025</p>
                   </div>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* EDUCATION SECTION */}
+        <section id="education" className="mb-20 scroll-mt-32">
+          <div className="mb-12 space-y-4">
+            <div className="inline-block rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-cyan-300">
+              Academic Background
+            </div>
+            <h2 className="text-4xl font-bold tracking-tight lg:text-5xl">
+              Research-Driven Education
+            </h2>
+            <p className="max-w-2xl text-lg text-slate-400">
+              Approached my MSc as a research-intensive experience — each module was an opportunity for experimental design, reproducible results, and professional presentation.
+            </p>
+          </div>
+
+          {/* MSc Card */}
+          <div className="mb-8 overflow-hidden rounded-2xl border border-white/10 bg-black/40 backdrop-blur-2xl">
+            <div className="border-b border-white/10 bg-gradient-to-r from-cyan-600/20 to-blue-600/20 p-6">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <div className="mb-2 inline-block rounded-lg bg-cyan-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cyan-300">
+                    Master's Degree
+                  </div>
+                  <h3 className="text-2xl font-bold text-white">MSc Data Science</h3>
+                  <p className="text-lg text-cyan-300">University of Greenwich, London, UK</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-lg font-semibold text-white">2021 – 2022</p>
+                  <p className="text-sm text-emerald-400">Graduated with Merit</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6">
+              <p className="mb-6 text-slate-300">
+                Treated the MSc program as a <span className="font-semibold text-cyan-300">research-intensive experience</span> rather than standard coursework. Each major module was approached as an opportunity to conduct mini-research studies requiring experimental design, reproducible results, and professional presentation formats.
+              </p>
+
+              {/* Research Projects Grid */}
+              <div className="space-y-6">
+                {/* ML Systems */}
+                <div className="rounded-xl border border-white/10 bg-black/30 p-5">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500">
+                      <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">Machine Learning Systems (COMP1804)</h4>
+                      <p className="text-sm text-violet-300">Facial Attribute Recognition Pipeline</p>
+                    </div>
+                  </div>
+                  <p className="mb-3 text-sm text-slate-400">
+                    Developed complete ML pipeline for facial attribute recognition on unlabelled images — manual annotation, TensorFlow implementation, and rigorous evaluation.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {['TensorFlow', 'Manual Annotation', 'IEEE Format Report', 'Reproducibility Scripts', 'Demo Video'].map(tag => (
+                      <span key={tag} className="rounded-full bg-violet-500/20 px-2.5 py-1 text-xs text-violet-300">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Data Visualization */}
+                <div className="rounded-xl border border-white/10 bg-black/30 p-5">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-emerald-500 to-teal-500">
+                      <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">Data Visualisation & Exploratory Analytics (COMP1800)</h4>
+                      <p className="text-sm text-emerald-300">Retail Dataset Investigation</p>
+                    </div>
+                  </div>
+                  <p className="mb-3 text-sm text-slate-400">
+                    Systematic exploration of large, messy retail datasets — 8 distinct visualizations with narrative analysis, translating quantitative findings into actionable business insights.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {['Interactive Jupyter', '8 Visualizations', 'Business Insights', 'Stakeholder Reports'].map(tag => (
+                      <span key={tag} className="rounded-full bg-emerald-500/20 px-2.5 py-1 text-xs text-emerald-300">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Big Data Systems */}
+                <div className="rounded-xl border border-white/10 bg-black/30 p-5">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-blue-500 to-cyan-500">
+                      <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">Big Data Systems & Architectures (COMP1702)</h4>
+                      <p className="text-sm text-blue-300">AgrBIG — Precision Agriculture Platform</p>
+                    </div>
+                  </div>
+                  <p className="mb-3 text-sm text-slate-400">
+                    End-to-end architecture design for agricultural data management — IoT sensors, satellite imagery, drone surveillance, real-time streaming, and petabyte-scale storage.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {['IoT Integration', 'MapReduce', 'Real-time Streaming', 'Petabyte Scale', 'Architecture Design'].map(tag => (
+                      <span key={tag} className="rounded-full bg-blue-500/20 px-2.5 py-1 text-xs text-blue-300">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* B.Tech Card */}
+          <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 backdrop-blur-2xl">
+            <div className="border-b border-white/10 bg-gradient-to-r from-orange-600/20 to-amber-600/20 p-6">
+              <div className="flex flex-wrap items-start justify-between gap-4">
+                <div>
+                  <div className="mb-2 inline-block rounded-lg bg-orange-500/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-300">
+                    Bachelor's Degree
+                  </div>
+                  <h3 className="text-2xl font-bold text-white">B.Tech Electronics & Communication Engineering</h3>
+                  <p className="text-lg text-orange-300">GITAM Institute of Science and Technology, Visakhapatnam, India</p>
+                </div>
+                <div className="text-right">
+                  <p className="text-lg font-semibold text-white">2016 – 2020</p>
+                  <p className="text-sm text-emerald-400">8.3 CGPA</p>
+                </div>
+              </div>
+            </div>
+
+            <div className="p-6">
+              <div className="mb-4 rounded-xl border border-white/10 bg-black/30 p-5">
+                <div className="mb-3 flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-red-500">
+                    <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-white">Dissertation: Hyperspectral Image Analysis</h4>
+                    <p className="text-sm text-orange-300">Research in Remote Sensing & Image Processing</p>
+                  </div>
+                </div>
+                <p className="text-sm text-slate-400">
+                  Applied signal processing and machine learning techniques to hyperspectral imagery — foundation for later work in computer vision and data-intensive research.
+                </p>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {['C/C++', 'Data Structures', 'Computer Networks', 'Digital Signal Processing', 'Digital Logic Design'].map(tag => (
+                  <span key={tag} className="rounded-full bg-orange-500/20 px-2.5 py-1 text-xs text-orange-300">{tag}</span>
+                ))}
               </div>
             </div>
           </div>
