@@ -1577,45 +1577,45 @@ export default function PortfolioPage() {
                     <span className="text-sm text-slate-400">Engineering Philosophy</span>
                   </div>
 
-                  <div className="space-y-6">
-                    <div className="space-y-6">
-                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-blue-500/30 hover:bg-white/10">
-                        <div className="mb-2 flex items-center gap-3">
-                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-sm font-bold text-blue-400">01</span>
-                          <h4 className="text-lg font-semibold text-white">Research-Driven Innovation</h4>
+                  <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4">
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:border-blue-500/30 hover:bg-white/10">
+                        <div className="mb-1.5 flex items-center gap-2">
+                          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-500/20 text-xs font-bold text-blue-400">01</span>
+                          <h4 className="text-sm font-semibold text-white">Research-Driven Innovation</h4>
                         </div>
-                        <p className="text-sm leading-relaxed text-slate-400">
-                          Every project starts with literature review and state-of-the-art analysis. From hyperspectral imaging to transport analytics — solutions are grounded in peer-reviewed methodologies.
+                        <p className="text-xs leading-relaxed text-slate-400">
+                          Literature review and SOTA analysis. Solutions grounded in peer-reviewed methodologies.
                         </p>
                       </div>
 
-                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-cyan-500/30 hover:bg-white/10">
-                        <div className="mb-2 flex items-center gap-3">
-                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/20 text-sm font-bold text-cyan-400">02</span>
-                          <h4 className="text-lg font-semibold text-white">Reproducible Science</h4>
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:border-cyan-500/30 hover:bg-white/10">
+                        <div className="mb-1.5 flex items-center gap-2">
+                          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-xs font-bold text-cyan-400">02</span>
+                          <h4 className="text-sm font-semibold text-white">Reproducible Science</h4>
                         </div>
-                        <p className="text-sm leading-relaxed text-slate-400">
-                          Rigorous experimental design, version-controlled experiments, and documented methodologies. Every model is validated with proper train/test splits and cross-validation.
+                        <p className="text-xs leading-relaxed text-slate-400">
+                          Version-controlled experiments with proper train/test splits and cross-validation.
                         </p>
                       </div>
 
-                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-emerald-500/30 hover:bg-white/10">
-                        <div className="mb-2 flex items-center gap-3">
-                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/20 text-sm font-bold text-emerald-400">03</span>
-                          <h4 className="text-lg font-semibold text-white">End-to-End Ownership</h4>
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:border-emerald-500/30 hover:bg-white/10">
+                        <div className="mb-1.5 flex items-center gap-2">
+                          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-xs font-bold text-emerald-400">03</span>
+                          <h4 className="text-sm font-semibold text-white">End-to-End Ownership</h4>
                         </div>
-                        <p className="text-sm leading-relaxed text-slate-400">
-                          From data ingestion to visualization — I own the entire pipeline. Azure Data Factory orchestrates, Databricks transforms, and Power BI delivers insights.
+                        <p className="text-xs leading-relaxed text-slate-400">
+                          Azure Data Factory orchestrates, Databricks transforms, Power BI delivers insights.
                         </p>
                       </div>
 
-                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-purple-500/30 hover:bg-white/10">
-                        <div className="mb-2 flex items-center gap-3">
-                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/20 text-sm font-bold text-purple-400">04</span>
-                          <h4 className="text-lg font-semibold text-white">Cloud-Native by Default</h4>
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:border-purple-500/30 hover:bg-white/10">
+                        <div className="mb-1.5 flex items-center gap-2">
+                          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/20 text-xs font-bold text-purple-400">04</span>
+                          <h4 className="text-sm font-semibold text-white">Cloud-Native by Default</h4>
                         </div>
-                        <p className="text-sm leading-relaxed text-slate-400">
-                          Every solution leverages Azure&apos;s managed services — Data Lake Gen2 for storage, Synapse for analytics, Databricks for compute. No unnecessary infrastructure overhead.
+                        <p className="text-xs leading-relaxed text-slate-400">
+                          Data Lake Gen2 for storage, Synapse for analytics, Databricks for compute.
                         </p>
                       </div>
                     </div>
