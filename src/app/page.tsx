@@ -2289,19 +2289,7 @@ export default function PortfolioPage() {
 
         {/* CONTACT SECTION */}
         <section id="contact" className="scroll-mt-32">
-          <div className="mb-12 space-y-4">
-            <div className="inline-block rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-emerald-300">
-              Get in Touch
-            </div>
-            <h2 className="text-4xl font-bold tracking-tight lg:text-5xl">
-              Let's Build Something Great
-            </h2>
-            <p className="max-w-2xl text-lg text-slate-400">
-              Open to collaborations in transport analytics, ML research, digital twins, and production ML systems.
-            </p>
-          </div>
-
-          <div className="max-w-3xl mx-auto">
+          <div className="grid gap-6 lg:grid-cols-2">
             {/* Contact Info */}
             <div className="space-y-6">
               <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl">
@@ -2378,7 +2366,10 @@ export default function PortfolioPage() {
                   ))}
                 </div>
               </div>
+            </div>
 
+            {/* References */}
+            <div>
               <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl">
                 <h3 className="mb-4 text-xl font-bold">References Available</h3>
                 <ul className="space-y-3 text-sm text-slate-400">
