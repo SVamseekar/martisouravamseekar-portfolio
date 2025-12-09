@@ -1574,62 +1574,50 @@ export default function PortfolioPage() {
                       <div className="h-3 w-3 rounded-full bg-blue-500"></div>
                       <div className="h-3 w-3 rounded-full bg-cyan-500"></div>
                     </div>
-                    <span className="text-sm text-slate-400">Research Impact</span>
+                    <span className="text-sm text-slate-400">Engineering Philosophy</span>
                   </div>
 
                   <div className="space-y-6">
-                    <div>
-                      <div className="mb-2 flex items-center justify-between">
-                        <span className="text-sm text-slate-400">Primary Focus</span>
-                        <span className="rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 px-3 py-1 text-xs font-semibold text-white">
-                          PhD Applications
-                        </span>
-                      </div>
-                      <h3 className="mb-2 text-xl font-bold">ML for Social Good</h3>
-                      <p className="text-sm text-slate-400">
-                        Applying machine learning to transport policy, remote sensing, and financial inclusion - research that makes a real-world impact.
-                      </p>
-                    </div>
-
-                    <div className="space-y-3">
-                      <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                        <div className="mb-1 text-xs text-slate-400">UK Bus Analytics</div>
-                        <div className="text-sm font-medium">779,262 bus stops analyzed</div>
-                        <div className="mt-2 flex items-center gap-2">
-                          <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
-                            <div className="h-full w-full bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-                          </div>
-                          <span className="text-xs text-slate-400">Production</span>
+                    <div className="space-y-6">
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-blue-500/30 hover:bg-white/10">
+                        <div className="mb-2 flex items-center gap-3">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-500/20 text-sm font-bold text-blue-400">01</span>
+                          <h4 className="text-lg font-semibold text-white">Research-Driven Innovation</h4>
                         </div>
+                        <p className="text-sm leading-relaxed text-slate-400">
+                          Every project starts with literature review and state-of-the-art analysis. From hyperspectral imaging to transport analytics — solutions are grounded in peer-reviewed methodologies.
+                        </p>
                       </div>
 
-                      <div className="grid grid-cols-2 gap-3">
-                        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                          <div className="mb-1 text-xs text-slate-400">HSI Research</div>
-                          <div className="flex items-center gap-2 text-sm font-medium">
-                            <span className="text-2xl font-bold text-cyan-400">6</span>
-                            <span className="text-slate-300">Datasets</span>
-                          </div>
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-cyan-500/30 hover:bg-white/10">
+                        <div className="mb-2 flex items-center gap-3">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-cyan-500/20 text-sm font-bold text-cyan-400">02</span>
+                          <h4 className="text-lg font-semibold text-white">Reproducible Science</h4>
                         </div>
-                        <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                          <div className="mb-1 text-xs text-slate-400">Uncertainty</div>
-                          <div className="flex items-center gap-2 text-sm font-medium">
-                            <span className="text-2xl font-bold text-blue-400">0.45</span>
-                            <span className="text-slate-300">ρ-error</span>
-                          </div>
-                        </div>
+                        <p className="text-sm leading-relaxed text-slate-400">
+                          Rigorous experimental design, version-controlled experiments, and documented methodologies. Every model is validated with proper train/test splits and cross-validation.
+                        </p>
                       </div>
-                    </div>
 
-                    <div className="flex flex-wrap gap-2">
-                      {['Bayesian ML', 'Geospatial', 'FinTech', 'Real-time Systems', 'Policy Impact'].map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-lg border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300"
-                        >
-                          {tag}
-                        </span>
-                      ))}
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-emerald-500/30 hover:bg-white/10">
+                        <div className="mb-2 flex items-center gap-3">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/20 text-sm font-bold text-emerald-400">03</span>
+                          <h4 className="text-lg font-semibold text-white">End-to-End Ownership</h4>
+                        </div>
+                        <p className="text-sm leading-relaxed text-slate-400">
+                          From data ingestion to visualization — I own the entire pipeline. Azure Data Factory orchestrates, Databricks transforms, and Power BI delivers insights.
+                        </p>
+                      </div>
+
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-purple-500/30 hover:bg-white/10">
+                        <div className="mb-2 flex items-center gap-3">
+                          <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-500/20 text-sm font-bold text-purple-400">04</span>
+                          <h4 className="text-lg font-semibold text-white">Cloud-Native by Default</h4>
+                        </div>
+                        <p className="text-sm leading-relaxed text-slate-400">
+                          Every solution leverages Azure&apos;s managed services — Data Lake Gen2 for storage, Synapse for analytics, Databricks for compute. No unnecessary infrastructure overhead.
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
