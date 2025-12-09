@@ -2301,7 +2301,7 @@ export default function PortfolioPage() {
             </p>
           </div>
 
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="max-w-3xl mx-auto">
             {/* Contact Info */}
             <div className="space-y-6">
               <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl">
@@ -2388,7 +2388,7 @@ export default function PortfolioPage() {
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-emerald-400 to-green-400"></span>
-                    <span><strong className="text-white">UK company contact</strong> – Live trading backend and production engineering quality</span>
+                    <span><strong className="text-white">Innosolv Private Limited, London, UK</strong> – Live trading backend and production engineering quality</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400"></span>
@@ -2396,79 +2396,6 @@ export default function PortfolioPage() {
                   </li>
                 </ul>
               </div>
-            </div>
-
-            {/* Contact Form */}
-            <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl">
-              <h3 className="mb-6 text-xl font-bold">Send a Message</h3>
-              <form
-                className="space-y-4"
-                onSubmit={(e) => {
-                  e.preventDefault();
-                  const form = e.currentTarget;
-                  const formData = new FormData(form);
-                  const data = {
-                    name: formData.get('name'),
-                    email: formData.get('email'),
-                    message: formData.get('message'),
-                  };
-
-                  alert(
-                    `Thank you for reaching out! This is a demo form.\n\nIn production, I'd integrate with EmailJS or a backend API.\n\nYour message:\nName: ${data.name}\nEmail: ${data.email}\nMessage: ${data.message}\n\nFor now, please email me directly at martisoura@gmail.com`
-                  );
-                  form.reset();
-                }}
-              >
-                <div>
-                  <label htmlFor="name" className="mb-2 block text-sm text-slate-400">
-                    Name
-                  </label>
-                  <input
-                    id="name"
-                    name="name"
-                    required
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
-                    placeholder="Your name"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="mb-2 block text-sm text-slate-400">
-                    Email
-                  </label>
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
-                    placeholder="you@example.com"
-                  />
-                </div>
-                <div>
-                  <label htmlFor="message" className="mb-2 block text-sm text-slate-400">
-                    How can we collaborate?
-                  </label>
-                  <textarea
-                    id="message"
-                    name="message"
-                    rows={5}
-                    required
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
-                    placeholder="Tell me about your project, research opportunity, or collaboration idea..."
-                  />
-                </div>
-                <button
-                  type="submit"
-                  className="group w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/50 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/50"
-                >
-                  <span className="flex items-center justify-center gap-2">
-                    Send Message
-                    <svg className="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                    </svg>
-                  </span>
-                </button>
-              </form>
             </div>
           </div>
 
