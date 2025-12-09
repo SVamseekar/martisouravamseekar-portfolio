@@ -1577,44 +1577,44 @@ export default function PortfolioPage() {
                     <span className="text-sm text-slate-400">Engineering Philosophy</span>
                   </div>
 
-                  <div className="space-y-4">
-                    <div className="grid grid-cols-1 gap-4">
-                      <div className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:border-blue-500/30 hover:bg-white/10">
-                        <div className="mb-1.5 flex items-center gap-2">
-                          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-blue-500/20 text-xs font-bold text-blue-400">01</span>
-                          <h4 className="text-sm font-semibold text-white">Research-Driven Innovation</h4>
+                  <div className="space-y-5">
+                    <div className="grid grid-cols-1 gap-5">
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-blue-500/30 hover:bg-white/10">
+                        <div className="mb-2 flex items-center gap-3">
+                          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-blue-500/20 text-sm font-bold text-blue-400">01</span>
+                          <h4 className="text-base font-semibold text-white">Research-Driven Innovation</h4>
                         </div>
-                        <p className="text-xs leading-relaxed text-slate-400">
+                        <p className="text-sm leading-relaxed text-slate-400">
                           Literature review and SOTA analysis. Solutions grounded in peer-reviewed methodologies.
                         </p>
                       </div>
 
-                      <div className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:border-cyan-500/30 hover:bg-white/10">
-                        <div className="mb-1.5 flex items-center gap-2">
-                          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-cyan-500/20 text-xs font-bold text-cyan-400">02</span>
-                          <h4 className="text-sm font-semibold text-white">Reproducible Science</h4>
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-cyan-500/30 hover:bg-white/10">
+                        <div className="mb-2 flex items-center gap-3">
+                          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-cyan-500/20 text-sm font-bold text-cyan-400">02</span>
+                          <h4 className="text-base font-semibold text-white">Reproducible Science</h4>
                         </div>
-                        <p className="text-xs leading-relaxed text-slate-400">
+                        <p className="text-sm leading-relaxed text-slate-400">
                           Version-controlled experiments with proper train/test splits and cross-validation.
                         </p>
                       </div>
 
-                      <div className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:border-emerald-500/30 hover:bg-white/10">
-                        <div className="mb-1.5 flex items-center gap-2">
-                          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-emerald-500/20 text-xs font-bold text-emerald-400">03</span>
-                          <h4 className="text-sm font-semibold text-white">End-to-End Ownership</h4>
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-emerald-500/30 hover:bg-white/10">
+                        <div className="mb-2 flex items-center gap-3">
+                          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-500/20 text-sm font-bold text-emerald-400">03</span>
+                          <h4 className="text-base font-semibold text-white">End-to-End Ownership</h4>
                         </div>
-                        <p className="text-xs leading-relaxed text-slate-400">
+                        <p className="text-sm leading-relaxed text-slate-400">
                           Azure Data Factory orchestrates, Databricks transforms, Power BI delivers insights.
                         </p>
                       </div>
 
-                      <div className="group rounded-xl border border-white/10 bg-white/5 p-4 transition-all hover:border-purple-500/30 hover:bg-white/10">
-                        <div className="mb-1.5 flex items-center gap-2">
-                          <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-purple-500/20 text-xs font-bold text-purple-400">04</span>
-                          <h4 className="text-sm font-semibold text-white">Cloud-Native by Default</h4>
+                      <div className="group rounded-xl border border-white/10 bg-white/5 p-5 transition-all hover:border-purple-500/30 hover:bg-white/10">
+                        <div className="mb-2 flex items-center gap-3">
+                          <span className="flex h-7 w-7 items-center justify-center rounded-lg bg-purple-500/20 text-sm font-bold text-purple-400">04</span>
+                          <h4 className="text-base font-semibold text-white">Cloud-Native by Default</h4>
                         </div>
-                        <p className="text-xs leading-relaxed text-slate-400">
+                        <p className="text-sm leading-relaxed text-slate-400">
                           Data Lake Gen2 for storage, Synapse for analytics, Databricks for compute.
                         </p>
                       </div>
@@ -2370,20 +2370,29 @@ export default function PortfolioPage() {
 
             {/* References */}
             <div className="h-full">
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl h-full">
-                <h3 className="mb-4 text-xl font-bold">References Available</h3>
-                <ul className="space-y-3 text-sm text-slate-400">
+              <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl h-full flex flex-col">
+                <h3 className="mb-6 text-xl font-bold">References Available</h3>
+                <ul className="space-y-6 text-sm text-slate-400 flex-1">
                   <li className="flex gap-3">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400"></span>
-                    <span><strong className="text-white">Stef Garasto</strong> – Senior Lecturer in Data Science at University of Greenwich. MSc thesis supervisor for UK bus analytics research and ML platform development</span>
+                    <div>
+                      <p className="mb-1"><strong className="text-white text-base">Stef Garasto</strong></p>
+                      <p className="text-sm text-slate-400">Senior Lecturer in Data Science at University of Greenwich. MSc thesis supervisor for UK bus analytics research and ML platform development.</p>
+                    </div>
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-emerald-400 to-green-400"></span>
-                    <span><strong className="text-white">Innosolv Private Limited, London, UK</strong> – Live trading backend and production engineering quality</span>
+                    <div>
+                      <p className="mb-1"><strong className="text-white text-base">Innosolv Private Limited, London, UK</strong></p>
+                      <p className="text-sm text-slate-400">Industry reference for live trading backend systems and production engineering quality. Direct experience with high-frequency financial systems.</p>
+                    </div>
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400"></span>
-                    <span><strong className="text-white">Dr. Ladi Sandeep Kumar</strong> – Assistant Professor at Gandhi Institute of Technology & Management (GITAM) University, Visakhapatnam. B.Tech supervisor for hyperspectral imaging research and signal processing expertise</span>
+                    <div>
+                      <p className="mb-1"><strong className="text-white text-base">Dr. Ladi Sandeep Kumar</strong></p>
+                      <p className="text-sm text-slate-400">Assistant Professor at Gandhi Institute of Technology & Management (GITAM) University, Visakhapatnam. B.Tech supervisor for hyperspectral imaging research and signal processing expertise.</p>
+                    </div>
                   </li>
                 </ul>
               </div>
