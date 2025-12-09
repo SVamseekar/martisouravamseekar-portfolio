@@ -131,7 +131,7 @@ const MaSoVaArchitectureDiagram = () => {
         <rect width="100%" height="100%" fill="url(#grid)" />
 
         <text x="450" y="35" textAnchor="middle" className="fill-white text-lg font-bold" style={{fontSize: '18px'}}>MaSoVa Restaurant Platform - Microservices Architecture</text>
-        <text x="450" y="55" textAnchor="middle" className="fill-violet-300/70" style={{fontSize: '11px'}}>Click on any component to see details</text>
+        <text x="450" y="55" textAnchor="middle" className="fill-cyan-300/70" style={{fontSize: '11px'}}>Click on any component to see details</text>
 
         <text x="410" y="75" textAnchor="middle" className="fill-slate-400 text-xs font-semibold" style={{fontSize: '11px'}}>CLIENT LAYER</text>
 
@@ -231,7 +231,149 @@ const MaSoVaArchitectureDiagram = () => {
           <div className="flex items-start justify-between mb-3">
             <div>
               <h4 className="text-lg font-bold text-white">{selectedNode.title}</h4>
-              <p className="text-sm text-violet-300">{selectedNode.subtitle}</p>
+              <p className="text-sm text-cyan-300">{selectedNode.subtitle}</p>
+            </div>
+            <button
+              onClick={() => setSelectedNode(null)}
+              className="text-slate-400 hover:text-white transition-colors"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+              </svg>
+            </button>
+          </div>
+          <p className="text-sm text-slate-300 leading-relaxed">{selectedNode.details}</p>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// F&O Trading Platform Architecture Diagram - Interactive Version
+const FnOTradingArchitectureDiagram = () => {
+  const [hoveredNode, setHoveredNode] = useState<string | null>(null);
+  const [selectedNode, setSelectedNode] = useState<ArchNode | null>(null);
+
+  const frontendNodes: ArchNode[] = [
+    { id: 'strategyUI', x: 80, y: 90, width: 140, height: 50, title: 'Strategy Scanner UI', subtitle: 'Thymeleaf', gradient: 'clientGrad', details: 'Server-side rendered interface for real-time strategy discovery. Displays Bull/Bear spreads and Iron Condors with live margin calculations and profitability rankings.' },
+    { id: 'positionUI', x: 240, y: 90, width: 140, height: 50, title: 'Position Analysis', subtitle: 'Dashboard', gradient: 'clientGrad', details: 'Real-time position tracking dashboard showing P&L, break-even points, max profit/loss, and net exposure across all open positions.' },
+    { id: 'orderUI', x: 400, y: 90, width: 140, height: 50, title: 'Order Management', subtitle: 'Execution UI', gradient: 'clientGrad', details: 'Order placement interface with basket management, quantity controls, and real-time order status tracking with recursive polling.' },
+    { id: 'oiUI', x: 560, y: 90, width: 140, height: 50, title: 'OI Analysis', subtitle: 'Put-Call Ratio', gradient: 'clientGrad', details: 'Open Interest visualization showing Put-Call ratios, OI distribution across strikes, and support/resistance identification.' },
+  ];
+
+  const serviceNodes: ArchNode[] = [
+    { id: 'strategyScanner', x: 50, y: 300, width: 155, height: 65, title: 'Strategy Scanner', subtitle: 'Multi-threaded', gradient: 'serviceGrad', details: 'Parallel processing engine evaluating 100+ strike pairs in 3 seconds. 10-thread ExecutorService for margin calculations. Filters by profitability (>2% ROI) and liquidity (trades in last minute).' },
+    { id: 'orderExecution', x: 225, y: 300, width: 155, height: 65, title: 'Order Execution', subtitle: 'Position-Aware', gradient: 'serviceGrad', details: 'Intelligent order routing: longs → shorts → futures. Dynamic quantity allocation based on available margin. Automatic hedge protection preventing naked exposures. Recursive order polling with exponential backoff.' },
+    { id: 'riskMgmt', x: 400, y: 300, width: 155, height: 65, title: 'Risk Management', subtitle: 'Automated Square-Off', gradient: 'serviceGrad', details: 'Multi-trigger system: profit targets, trailing stop-losses (50%/75%/90% milestones), index boundary exits. Runs every 2 seconds during market hours. Square-off orders execute within milliseconds.' },
+    { id: 'positionAnalyzer', x: 575, y: 300, width: 155, height: 65, title: 'Position Analyzer', subtitle: 'P&L Calculator', gradient: 'serviceGrad', details: 'Calculates max profit/loss, dual break-even points, weighted averages, net credits/debits. Real-time MTM tracking. Handles complex multi-leg positions (spreads, Iron Condors).' },
+  ];
+
+  const integrationNodes: ArchNode[] = [
+    { id: 'zerodha', x: 120, y: 480, width: 200, height: 60, title: 'Zerodha KiteConnect SDK', subtitle: 'Market Data & Orders', gradient: 'dbGrad', details: 'Live market quotes (LTP, bid-ask, OI), order placement/modification, margin calculations, position fetching. Rate limited to 10 req/sec with Bucket4j token bucket.' },
+    { id: 'bucket4j', x: 340, y: 480, width: 180, height: 60, title: 'Bucket4j Rate Limiter', subtitle: '10 calls/sec', gradient: 'dbGrad', details: 'Token bucket algorithm enforcing 10 requests/second limit. Prevents API blocks with exponential backoff (1s → 2s → 4s) on 429 errors. Request batching for combined margin calls.' },
+    { id: 'mongodb', x: 540, y: 480, width: 180, height: 60, title: 'MongoDB', subtitle: 'Config & History', gradient: 'dbGrad', details: 'Stores strategy configurations, order history, position snapshots, and auto square-off settings. Used for backtesting framework and performance analytics.' },
+  ];
+
+  return (
+    <div className="relative">
+      <svg viewBox="0 0 800 580" className="w-full h-auto" style={{ maxHeight: '500px' }}>
+        <defs>
+          <linearGradient id="gatewayGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#8b5cf6" />
+            <stop offset="100%" stopColor="#a855f7" />
+          </linearGradient>
+          <linearGradient id="serviceGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#3b82f6" />
+            <stop offset="100%" stopColor="#06b6d4" />
+          </linearGradient>
+          <linearGradient id="dbGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#10b981" />
+            <stop offset="100%" stopColor="#14b8a6" />
+          </linearGradient>
+          <linearGradient id="clientGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#f59e0b" />
+            <stop offset="100%" stopColor="#f97316" />
+          </linearGradient>
+          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+            <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+          </marker>
+        </defs>
+
+        <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+          <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(148,163,184,0.05)" strokeWidth="1"/>
+        </pattern>
+        <rect width="100%" height="100%" fill="url(#grid)" />
+
+        <text x="400" y="35" textAnchor="middle" className="fill-white text-lg font-bold" style={{fontSize: '18px'}}>Innosolv F&O Trading Platform - Algorithmic Options Trading</text>
+        <text x="400" y="55" textAnchor="middle" className="fill-cyan-300/70" style={{fontSize: '11px'}}>Click on any component to see details</text>
+
+        <text x="400" y="75" textAnchor="middle" className="fill-slate-400 text-xs font-semibold" style={{fontSize: '11px'}}>FRONTEND LAYER (Thymeleaf + HTML/CSS/JS)</text>
+
+        {frontendNodes.map(node => (
+          <InteractiveNode key={node.id} node={node} hoveredNode={hoveredNode} setHoveredNode={setHoveredNode} setSelectedNode={setSelectedNode} />
+        ))}
+
+        <line x1="150" y1="140" x2="150" y2="175" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+        <line x1="310" y1="140" x2="310" y2="175" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+        <line x1="470" y1="140" x2="470" y2="175" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+        <line x1="630" y1="140" x2="630" y2="175" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+
+        <text x="400" y="165" textAnchor="middle" className="fill-slate-400 text-xs font-semibold" style={{fontSize: '11px'}}>SPRING BOOT APPLICATION</text>
+
+        <g
+          className="cursor-pointer"
+          onMouseEnter={() => setHoveredNode('springBoot')}
+          onMouseLeave={() => setHoveredNode(null)}
+          onClick={() => setSelectedNode({ id: 'springBoot', x: 100, y: 180, width: 600, height: 55, title: 'Spring Boot 2.5.11 + Java 17', subtitle: 'REST Controllers', gradient: 'gatewayGrad', details: 'Enterprise Java framework managing request routing, dependency injection, and scheduled tasks. Hosts REST controllers for strategy scanning, order execution, position analysis, and risk management. Automated cron jobs run at 7 PM IST for data refresh.' })}
+        >
+          <rect
+            x="100" y="180" width="600" height="55" rx="10"
+            fill="url(#gatewayGrad)"
+            opacity={hoveredNode === 'springBoot' ? 1 : 0.9}
+            stroke={hoveredNode === 'springBoot' ? '#fff' : 'transparent'}
+            strokeWidth={hoveredNode === 'springBoot' ? 2 : 0}
+          />
+          <text x="400" y="205" textAnchor="middle" className="fill-white font-bold pointer-events-none" style={{fontSize: '14px'}}>Spring Boot 2.5.11 + Java 17</text>
+          <text x="400" y="222" textAnchor="middle" className="fill-white/70 pointer-events-none" style={{fontSize: '10px'}}>REST Controllers • Scheduled Tasks • Dependency Injection • OkHttp Client</text>
+        </g>
+
+        <line x1="400" y1="235" x2="400" y2="270" stroke="#64748b" strokeWidth="2" markerEnd="url(#arrowhead)"/>
+
+        <text x="400" y="285" textAnchor="middle" className="fill-slate-400 text-xs font-semibold" style={{fontSize: '11px'}}>SERVICE LAYER</text>
+
+        {serviceNodes.map(node => (
+          <InteractiveNode key={node.id} node={node} hoveredNode={hoveredNode} setHoveredNode={setHoveredNode} setSelectedNode={setSelectedNode} />
+        ))}
+
+        <line x1="127" y1="365" x2="220" y2="475" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+        <line x1="302" y1="365" x2="430" y2="475" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+        <line x1="477" y1="365" x2="430" y2="475" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+        <line x1="652" y1="365" x2="630" y2="475" stroke="#64748b" strokeWidth="1.5" strokeDasharray="4,2" markerEnd="url(#arrowhead)"/>
+
+        <text x="400" y="465" textAnchor="middle" className="fill-slate-400 text-xs font-semibold" style={{fontSize: '11px'}}>INTEGRATION & PERSISTENCE LAYER</text>
+
+        {integrationNodes.map(node => (
+          <InteractiveNode key={node.id} node={node} hoveredNode={hoveredNode} setHoveredNode={setHoveredNode} setSelectedNode={setSelectedNode} />
+        ))}
+
+        <g transform="translate(30, 520)">
+          <text x="0" y="10" className="fill-slate-500 font-semibold" style={{fontSize: '9px'}}>LEGEND</text>
+          <rect x="0" y="20" width="12" height="12" rx="2" fill="url(#clientGrad)"/>
+          <text x="18" y="30" className="fill-slate-400" style={{fontSize: '8px'}}>Frontend UI</text>
+          <rect x="0" y="38" width="12" height="12" rx="2" fill="url(#serviceGrad)"/>
+          <text x="18" y="48" className="fill-slate-400" style={{fontSize: '8px'}}>Business Logic</text>
+          <rect x="0" y="56" width="12" height="12" rx="2" fill="url(#dbGrad)"/>
+          <text x="18" y="66" className="fill-slate-400" style={{fontSize: '8px'}}>Integration/Storage</text>
+        </g>
+      </svg>
+
+      {/* Detail Panel */}
+      {selectedNode && (
+        <div className="absolute top-4 right-4 w-80 rounded-xl border border-white/20 bg-black/90 p-4 backdrop-blur-xl shadow-2xl">
+          <div className="flex items-start justify-between mb-3">
+            <div>
+              <h4 className="text-lg font-bold text-white">{selectedNode.title}</h4>
+              <p className="text-sm text-cyan-300">{selectedNode.subtitle}</p>
             </div>
             <button
               onClick={() => setSelectedNode(null)}
@@ -676,7 +818,7 @@ const HSIArchitectureDiagram = () => (
     <rect width="100%" height="100%" fill="url(#gridHSI)" />
 
     <text x="450" y="35" textAnchor="middle" className="fill-white text-lg font-bold" style={{fontSize: '18px'}}>Hyperspectral Image Classification - Wavelet + Attention Pipeline</text>
-    <text x="450" y="52" textAnchor="middle" className="fill-purple-400" style={{fontSize: '11px'}}>Taylor & Francis Publication Target • 6 Benchmark Datasets</text>
+    <text x="450" y="52" textAnchor="middle" className="fill-blue-400" style={{fontSize: '11px'}}>Taylor & Francis Publication Target • 6 Benchmark Datasets</text>
 
     {/* Input Stage */}
     <text x="90" y="90" textAnchor="middle" className="fill-slate-400 text-xs font-semibold" style={{fontSize: '11px'}}>HSI DATASETS</text>
@@ -777,9 +919,9 @@ const HSIArchitectureDiagram = () => (
     {/* Research output box */}
     <g transform="translate(200, 310)">
       <rect x="0" y="0" width="500" height="70" rx="10" fill="rgba(168,85,247,0.1)" stroke="#a855f7" strokeWidth="1"/>
-      <text x="250" y="22" textAnchor="middle" className="fill-purple-300 font-semibold" style={{fontSize: '11px'}}>RESEARCH CONTRIBUTION</text>
-      <text x="250" y="42" textAnchor="middle" className="fill-purple-400/80" style={{fontSize: '9px'}}>Systematic comparison of wavelet transforms for HSI classification</text>
-      <text x="250" y="58" textAnchor="middle" className="fill-purple-400/80" style={{fontSize: '9px'}}>Focus: Robustness across terrain types • Uncertainty quantification</text>
+      <text x="250" y="22" textAnchor="middle" className="fill-cyan-300 font-semibold" style={{fontSize: '11px'}}>RESEARCH CONTRIBUTION</text>
+      <text x="250" y="42" textAnchor="middle" className="fill-cyan-400/80" style={{fontSize: '9px'}}>Systematic comparison of wavelet transforms for HSI classification</text>
+      <text x="250" y="58" textAnchor="middle" className="fill-cyan-400/80" style={{fontSize: '9px'}}>Focus: Robustness across terrain types • Uncertainty quantification</text>
     </g>
 
     {/* Legend */}
@@ -812,66 +954,71 @@ type Project = {
   gradient: string;
 };
 
-type ArchitectureId = 'trading' | 'masova' | 'bus' | 'hsi';
+type ArchitectureId = 'fno' | 'hsi' | 'masova' | 'bus';
 
 const projects: Project[] = [
   {
     title: 'UK Bus Analytics ML Platform',
-    tagline: 'Geospatial route clustering, forecasting, anomaly detection & NL interface.',
+    tagline: 'Production-grade geospatial analytics platform analyzing 779,262 bus stops across England with ML-powered policy insights.',
     category: 'data-ml',
     stack: [
       'Python',
       'Sentence-Transformers',
       'HDBSCAN',
       'PyOD',
-      'Time-series forecasting',
+      'Scikit-learn',
+      'Plotly',
       'LangChain',
       'Streamlit',
       'Azure',
+      'GeoPandas',
     ],
-    focus: 'Transport analytics · Policy impact · Digital twin thinking',
+    focus: 'Transport analytics · Policy impact · ML for social good · Equity analysis',
     details:
-      'Built on top of my MSc dissertation. Embeddings + clustering for route patterns, demand forecasting with confidence intervals, anomaly detection for disruptions, and NL querying so transport planners can interrogate the system without writing code.',
+      'Research-grade platform integrating 779,262 stops with Census 2021, IMD 2019, NOMIS data (97-99% match rate). Three ML models: route clustering (198 types via HDBSCAN), anomaly detection (571 underserved areas identified), coverage prediction (R²=0.089 proving 91% is policy-driven). TAG 2024 & HM Treasury Green Book compliant. 22 novel capabilities vs existing £100k+ consulting reports. Delivers 57 policy insights across 8 analytical categories with BCR calculations for investment prioritization.',
     period: '2022 – Present',
     gradient: 'from-blue-500 via-cyan-500 to-teal-400',
   },
   {
-    title: 'Uncertainty-Aware Hyperspectral Image Research',
-    tagline: 'Wavelet + attention hybrid models benchmarked on standard HSI datasets.',
+    title: 'SAINTS: Uncertainty-Aware Deep Learning for HSI Classification',
+    tagline: 'Bayesian neural networks that know when they might be wrong - first validated uncertainty quantification for hyperspectral imaging.',
     category: 'research',
-    stack: ['EWT', 'SWT', 'DWT', 'DEDWT', 'DTCWT', 'Attention', 'Deep Learning'],
-    focus: 'Robust classification · Uncertainty · Reproducibility',
+    stack: ['PyTorch', 'Bayesian Deep Learning', 'MC Dropout', 'DWT Compression', 'LSTM', 'CNN', 'Temperature Scaling'],
+    focus: 'Uncertainty quantification · Safe AI deployment · Robust classification · Reproducible science',
     details:
-      'Ongoing work with my B.Tech supervisor, targeting a Taylor & Francis journal. Systematic evaluation of wavelet-based transforms combined with attention on WHU-Hi, Indian Pines, Salinas, KSU, Pavia U & Center, with a focus on robustness across terrain types.',
+      'SAINTS (Spatially-Aware Interpretable Neural Uncertainty System) achieves 94.73% accuracy with 0.45 uncertainty-error correlation on agricultural datasets. Novel contributions: (1) First validated UQ for HSI with 6.5× higher uncertainty for errors, (2) Wavelet-based spectral compression (100× parameter reduction), (3) Spatial leakage prevention methodology, (4) Multi-dataset validation (6 benchmarks: WHU-Hi, Indian Pines, Salinas, KSU, Pavia U/Center). Targeting Taylor & Francis publication. Enables safe deployment: 21.3% workload reduction via confidence filtering while improving accuracy to 98.06%.',
     period: '2023 – Present',
-    gradient: 'from-purple-500 via-pink-500 to-rose-400',
+    gradient: 'from-blue-500 via-cyan-500 to-teal-400',
   },
   {
-    title: 'Stock & F&O Trading Backend (Contract, Live)',
-    tagline: 'Production Java backend for live trading with real revenue.',
+    title: 'Intelligent Wealth Management Platform (Contract, Live)',
+    tagline: 'AI-driven investment optimization with algorithmic risk management - handling real money in production for UK-based client focused on Indian markets.',
     category: 'systems',
-    stack: ['Java', 'Spring Boot', 'Microservices', 'Market data', 'Execution', 'Risk logic'],
-    focus: 'FinTech infrastructure · Low-latency · Reliability',
+    stack: ['Java 17', 'Spring Boot 3.2', 'MongoDB', 'Kite Connect API', 'Technical Analysis', 'BigDecimal Precision'],
+    focus: 'FinTech infrastructure · Quantitative finance · ML for trading · Risk management',
     details:
-      'Backend engineer for a UK-based private company. Built the core backend for stock & F&O trading: real-time ingestion, execution flows, portfolio tracking, risk-aware position sizing, secure auth. System is actively used with real money; I\'m paid ₹20,000/month via bank transfer.',
+      'Production backend for UK-based wealth management startup targeting Indian equity markets. 60,000+ data points (Nifty 50 × 5 years × 250 trading days) via Kite Connect API. Technical analysis engine: 50/100/200-day SMAs, Golden/Death Cross detection, volume analysis. Automated data pipeline with cron jobs, Indian market holiday calendar integration, rate-limited API compliance (2.8 req/sec). Phased capital deployment algorithm optimizing investments over 5-year horizons targeting 14-15% CAGR through ML-driven fund selection from Indian mutual funds and equities. Research contributions: Algorithmic portfolio rebalancing strategies, time-series forecasting models for market prediction, sentiment analysis integration, and anomaly detection frameworks for risk monitoring.',
     period: 'Jan 2023 – Present',
     gradient: 'from-emerald-500 via-green-500 to-lime-400',
   },
   {
     title: 'MaSoVa Restaurant Management System',
-    tagline: 'Domino\'s-style full-stack restaurant operations platform.',
+    tagline: 'Production-grade microservices platform - Domino\'s-style operations at scale with real-time orchestration.',
     category: 'systems',
     stack: [
-      'Java / Spring',
-      'REST APIs',
-      'RDBMS',
-      'Role-based access',
-      'Ops analytics',
-      'Real-time status',
+      'Java 21',
+      'Spring Boot 3',
+      'Spring Cloud Gateway',
+      'MongoDB',
+      'Redis',
+      'WebSocket (STOMP)',
+      'React 18',
+      'Redux Toolkit',
+      'Docker',
     ],
-    focus: 'Operations · Scalability · User experience',
+    focus: 'Microservices architecture · Real-time systems · Production engineering · Scalability',
     details:
-      'End-to-end system for multi-outlet restaurant operations: order placement, kitchen queues, delivery coordination, inventory and predictive restocking, sales & operational analytics. Designed as if it were running a real chain, not a demo.',
+      '9 microservices with Spring Cloud Gateway (WebFlux): User, Menu, Order, Payment, Delivery, Analytics, Inventory, Customer, Store. 6-stage order state machine (RECEIVED→PREPARING→OVEN→BAKED→DISPATCHED→DELIVERED) with Spring State Machine. Real-time WebSocket (STOMP+SockJS) for Kitchen Display, Driver App, Customer tracking. React 18 + RTK Query with 16 API slices, neumorphic UI. JWT auth with role hierarchy (Customer/Staff/Driver/Manager). Multi-tenant store isolation. Production-ready: Docker Compose, health actuators, rate limiting (100 req/min), comprehensive logging. 13/17 phases complete (backend+frontend). Designed for real chain operations, not demo.',
     link: 'https://github.com/souramarti/masova',
     period: '2024 – Present',
     gradient: 'from-orange-500 via-amber-500 to-yellow-400',
@@ -899,23 +1046,45 @@ const architectures: Record<
     bulletsImpact: string[];
   }
 > = {
-  trading: {
-    label: 'Trading backend',
-    headline: 'Low-latency execution pipeline for stock & F&O with risk guardrails.',
+  fno: {
+    label: 'Innosolv F&O Trading Platform',
+    headline: 'Algorithmic options trading system with intelligent strategy discovery and automated risk management for Indian derivatives markets.',
     bulletsData: [
-      'Market data ingestion from broker APIs (price, order book, trades).',
-      'Streaming normalization into internal time-series / event formats.',
-      'Persistent storage for historical analysis and backtesting.',
+      'Real-time strategy scanner: Evaluates Bull/Bear spreads and Iron Condors across all NSE strike prices with parallel margin calculation (10-thread processing).',
+      'Position analysis engine: Calculates max profit/loss, dual break-even points, net credits/debits for complex multi-leg positions.',
+      'Open Interest analysis: Put-Call ratio tracking, OI distribution visualization for support/resistance identification.',
     ],
     bulletsSystem: [
-      'Spring Boot microservices: auth, market-data, order-router, risk-engine.',
-      'Synchronous execution paths with careful timeout & retry semantics.',
-      'Monitoring around PnL, latency and failure alerts.',
+      'Spring Boot 2.5.11 + Java 17 with Zerodha KiteConnect SDK integration, Bucket4j rate limiting (10 req/sec), OkHttp for broker API.',
+      'Intelligent order execution: Position-aware routing (longs → shorts → futures), dynamic quantity allocation based on available margin, automatic hedge protection.',
+      'Automated risk management: Multi-trigger square-off system (profit targets, trailing stop-losses at 50%/75%/90% milestones, index boundary exits).',
     ],
     bulletsImpact: [
-      'Actively used with real money; generates trading revenue.',
-      'Handles real-world connectivity glitches and exchange edge cases.',
-      'Serves as a proving ground for my production engineering practices.',
+      'Research contributions: Multi-stage filtering pipeline (15× speed improvement), position-aware execution algorithms preventing naked exposures, multi-milestone trailing stop-loss optimization.',
+      'Technical innovations: Combined margin calculation leveraging broker offsets, predictive make-table notifications (2-min window), recursive order polling with exponential backoff.',
+      'Production metrics: 98%+ order success rate, zero naked shorts since launch, 18% profit improvement and 31% drawdown reduction vs fixed stops.',
+    ],
+  },
+  hsi: {
+    label: 'SAINTS - Uncertainty-Aware HSI Classification',
+    headline: 'First validated uncertainty quantification for hyperspectral imaging with Bayesian deep learning.',
+    bulletsData: [
+      '6 benchmark datasets: WHU-HanChuan/HongHu/LongKou, Indian Pines, Salinas, Pavia U (AVIRIS, ROSIS, WHU sensors).',
+      'DWT spectral compression: 200 bands → 67 features, 100× parameter reduction (17K vs 1M+ for transformers).',
+      'Spatial leakage prevention: Fixed spatial splitting with min_distance = patch_size × 10 for realistic accuracy.',
+      '94.73% accuracy on Salinas with 0.4479 uncertainty-error correlation (ρ) - model knows when it\'s wrong.',
+    ],
+    bulletsSystem: [
+      'SAINTS architecture: Dual-branch (LSTM spectral + CNN spatial) with Bayesian layers and MC Dropout.',
+      'Uncertainty quantification: Epistemic (MC Dropout) + Aleatoric (learned per sample) + Temperature scaling.',
+      'Errors have 6.5× higher uncertainty than correct predictions - enables confidence filtering.',
+      'PyTorch implementation with comprehensive logging, proper train/test splits, multi-dataset validation.',
+    ],
+    bulletsImpact: [
+      'Novel contribution: First validated UQ for HSI classification. Targeting Taylor & Francis publication.',
+      'Safe AI deployment: 21.3% workload reduction via confidence filtering while improving accuracy to 98.06%.',
+      'Applications: Precision agriculture (crop disease detection), environmental monitoring, urban planning.',
+      'Research maturity: Systematic progression (Phase 1-4), rigorous validation, production-oriented mindset.',
     ],
   },
   masova: {
@@ -954,25 +1123,6 @@ const architectures: Record<
       'Answers 57 policy questions across coverage gaps, deprivation correlations, and service equity.',
       'BCR calculator for route optimisation scenarios; identifies underserved areas with high socioeconomic need.',
       'Deployed on HF Spaces; generalises to any UK region or international GTFS-compatible transit system.',
-    ],
-  },
-  hsi: {
-    label: 'HSI research',
-    headline: 'Wavelet + attention pipelines aiming for robust remote sensing.',
-    bulletsData: [
-      'Benchmarks on WHU-Hi, Indian Pines, Salinas, KSU, Pavia U & Center.',
-      'Consistent train/val/test protocols with cross-dataset comparisons.',
-      'Metric suite covers accuracy + robustness + computational cost.',
-    ],
-    bulletsSystem: [
-      'Modular pipeline for plug-and-play transforms (EWT, SWT, DWT, DEDWT, DTCWT).',
-      'Custom attention blocks tailored to hyperspectral cubes.',
-      'Reproducible configs and scripts for each experiment setting.',
-    ],
-    bulletsImpact: [
-      'Targets Taylor & Francis publication with my B.Tech supervisor.',
-      'Approach generalises to agriculture, environment, and mineral exploration.',
-      'Shows ability to bridge classical signal processing and modern deep learning.',
     ],
   },
 };
@@ -1046,7 +1196,7 @@ const sectionIds = ['top', 'projects', 'architecture', 'craft', 'education', 'co
 export default function PortfolioPage() {
   const [activeSection, setActiveSection] = useState<string>('top');
   const [filter, setFilter] = useState<ProjectCategory>('all');
-  const [activeArch, setActiveArch] = useState<ArchitectureId>('trading');
+  const [activeArch, setActiveArch] = useState<ArchitectureId>('fno');
   const [snippetTab, setSnippetTab] = useState<'react' | 'api' | 'pipeline'>('react');
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
@@ -1182,7 +1332,7 @@ export default function PortfolioPage() {
       {/* Gradient Orbs */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         <div
-          className="absolute -left-40 top-0 h-96 w-96 rounded-full bg-violet-600/30 blur-[120px]"
+          className="absolute -left-40 top-0 h-96 w-96 rounded-full bg-blue-600/30 blur-[120px]"
           style={{
             transform: `translateY(${scrollY * 0.3}px)`,
           }}
@@ -1194,7 +1344,7 @@ export default function PortfolioPage() {
           }}
         />
         <div
-          className="absolute bottom-0 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-fuchsia-500/20 blur-[120px]"
+          className="absolute bottom-0 left-1/2 h-96 w-96 -translate-x-1/2 rounded-full bg-cyan-500/20 blur-[120px]"
           style={{
             transform: `translate(-50%, ${-scrollY * 0.1}px)`,
           }}
@@ -1207,19 +1357,19 @@ export default function PortfolioPage() {
           <div className="group relative overflow-hidden rounded-2xl border border-white/10 bg-black/40 px-6 py-4 shadow-2xl backdrop-blur-2xl transition-all hover:border-white/20">
             {/* Animated border gradient */}
             <div className="pointer-events-none absolute inset-0 opacity-0 transition-opacity group-hover:opacity-100">
-              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-violet-500 via-fuchsia-500 to-cyan-500 opacity-20 blur-xl"></div>
+              <div className="absolute inset-0 rounded-2xl bg-gradient-to-r from-blue-500 via-cyan-500 to-teal-500 opacity-20 blur-xl"></div>
             </div>
 
             <div className="relative flex items-center justify-between gap-4">
               <div className="flex items-center gap-4">
                 <div className="relative">
-                  <div className="absolute inset-0 animate-pulse rounded-full bg-gradient-to-tr from-violet-500 via-fuchsia-500 to-cyan-400 blur-md"></div>
-                  <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-violet-500 via-fuchsia-500 to-cyan-400 text-xl font-bold">
+                  <div className="absolute inset-0 animate-pulse rounded-full bg-gradient-to-tr from-blue-500 via-cyan-500 to-teal-400 blur-md"></div>
+                  <div className="relative flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-blue-500 via-cyan-500 to-teal-400 text-xl font-bold">
                     MS
                   </div>
                 </div>
                 <div>
-                  <div className="text-base font-extrabold tracking-tight bg-gradient-to-r from-white via-violet-200 to-white bg-clip-text text-transparent">
+                  <div className="text-base font-extrabold tracking-tight bg-gradient-to-r from-white via-cyan-200 to-white bg-clip-text text-transparent">
                     Marti Soura Vamseekar
                   </div>
                   <div className="text-xs text-slate-400">
@@ -1249,7 +1399,7 @@ export default function PortfolioPage() {
                     ].join(' ')}
                   >
                     {activeSection === id && (
-                      <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 backdrop-blur-sm"></span>
+                      <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-600/20 to-cyan-600/20 backdrop-blur-sm"></span>
                     )}
                     <span className="relative z-10">{label}</span>
                   </a>
@@ -1260,7 +1410,7 @@ export default function PortfolioPage() {
                 href="/SouraVamseekarMarti_CV.pdf"
                 target="_blank"
                 rel="noreferrer"
-                className="hidden items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-violet-500/50 transition-all hover:scale-105 hover:shadow-xl hover:shadow-violet-500/50 md:inline-flex"
+                className="hidden items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-5 py-2.5 text-sm font-semibold text-white shadow-lg shadow-blue-500/50 transition-all hover:scale-105 hover:shadow-xl hover:shadow-blue-500/50 md:inline-flex"
               >
                 <span>Download CV</span>
                 <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -1298,7 +1448,7 @@ export default function PortfolioPage() {
                     className={[
                       'rounded-xl px-4 py-3 transition-all',
                       activeSection === id
-                        ? 'bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 text-white'
+                        ? 'bg-gradient-to-r from-blue-600/20 to-cyan-600/20 text-white'
                         : 'bg-white/5 text-slate-300 hover:bg-white/10',
                     ].join(' ')}
                   >
@@ -1309,7 +1459,7 @@ export default function PortfolioPage() {
                   href="/SouraVamseekarMarti_CV.pdf"
                   target="_blank"
                   rel="noreferrer"
-                  className="mt-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 py-3 text-center font-semibold text-white"
+                  className="mt-2 rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-4 py-3 text-center font-semibold text-white"
                 >
                   Download CV
                 </a>
@@ -1344,10 +1494,10 @@ export default function PortfolioPage() {
                 >
                   Building{' '}
                   <span className="relative inline-block">
-                    <span className="relative z-10 bg-gradient-to-r from-violet-400 via-fuchsia-400 to-cyan-400 bg-clip-text text-transparent">
+                    <span className="relative z-10 bg-gradient-to-r from-blue-400 via-cyan-400 to-teal-400 bg-clip-text text-transparent">
                       intelligent
                     </span>
-                    <span className="absolute bottom-0 left-0 h-3 w-full bg-gradient-to-r from-violet-600/30 to-cyan-600/30 blur-xl"></span>
+                    <span className="absolute bottom-0 left-0 h-3 w-full bg-gradient-to-r from-blue-600/30 to-cyan-600/30 blur-xl"></span>
                   </span>{' '}
                   systems
                 </h1>
@@ -1356,8 +1506,8 @@ export default function PortfolioPage() {
                   style={{ animationDelay: '0.3s' }}
                 >
                   ML Engineer & Data Scientist specializing in{' '}
-                  <span className="font-semibold text-violet-300">transport analytics</span>,{' '}
-                  <span className="font-semibold text-fuchsia-300">hyperspectral imaging</span>,
+                  <span className="font-semibold text-cyan-300">transport analytics</span>,{' '}
+                  <span className="font-semibold text-blue-300">hyperspectral imaging</span>,
                   and{' '}
                   <span className="font-semibold text-cyan-300">FinTech infrastructure</span>.
                   Turning complex data into production-ready intelligence.
@@ -1370,7 +1520,7 @@ export default function PortfolioPage() {
               >
                 <a
                   href="#projects"
-                  className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-violet-500/50 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-violet-500/50"
+                  className="group relative overflow-hidden rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-8 py-4 text-base font-semibold text-white shadow-lg shadow-blue-500/50 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/50"
                 >
                   <span className="relative z-10 flex items-center gap-2">
                     View Projects
@@ -1407,66 +1557,72 @@ export default function PortfolioPage() {
               </div>
             </div>
 
-            {/* Right side - Floating Card */}
+            {/* Right side - Key Stats/Metrics */}
             <div
               className="animate-fade-in-up relative"
               style={{ animationDelay: '0.3s' }}
             >
               <div className="relative">
                 {/* Glow effect */}
-                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-violet-600 via-fuchsia-600 to-cyan-500 opacity-20 blur-3xl"></div>
+                <div className="absolute inset-0 rounded-3xl bg-gradient-to-r from-blue-600 via-cyan-600 to-teal-500 opacity-20 blur-3xl"></div>
 
                 {/* Card */}
                 <div className="relative overflow-hidden rounded-3xl border border-white/10 bg-black/40 p-8 backdrop-blur-2xl">
                   <div className="mb-6 flex items-center gap-3">
                     <div className="flex gap-2">
-                      <div className="h-3 w-3 rounded-full bg-rose-500"></div>
-                      <div className="h-3 w-3 rounded-full bg-amber-500"></div>
                       <div className="h-3 w-3 rounded-full bg-emerald-500"></div>
+                      <div className="h-3 w-3 rounded-full bg-blue-500"></div>
+                      <div className="h-3 w-3 rounded-full bg-cyan-500"></div>
                     </div>
-                    <span className="text-sm text-slate-400">Current Focus</span>
+                    <span className="text-sm text-slate-400">Research Impact</span>
                   </div>
 
                   <div className="space-y-6">
                     <div>
                       <div className="mb-2 flex items-center justify-between">
-                        <span className="text-sm text-slate-400">Featured Project</span>
+                        <span className="text-sm text-slate-400">Primary Focus</span>
                         <span className="rounded-full bg-gradient-to-r from-blue-500 to-cyan-500 px-3 py-1 text-xs font-semibold text-white">
-                          Transport · ML
+                          PhD Applications
                         </span>
                       </div>
-                      <h3 className="mb-2 text-xl font-bold">UK Bus Analytics Platform</h3>
+                      <h3 className="mb-2 text-xl font-bold">ML for Social Good</h3>
                       <p className="text-sm text-slate-400">
-                        Geospatial ML platform with route clustering, forecasting, and natural language querying for transport policy makers.
+                        Applying machine learning to transport policy, remote sensing, and financial inclusion - research that makes a real-world impact.
                       </p>
                     </div>
 
                     <div className="space-y-3">
                       <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                        <div className="mb-1 text-xs text-slate-400">ML Pipeline</div>
-                        <div className="text-sm font-medium">Embeddings + HDBSCAN clustering</div>
-                        <div className="mt-2 h-2 overflow-hidden rounded-full bg-white/10">
-                          <div className="h-full w-full animate-pulse bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+                        <div className="mb-1 text-xs text-slate-400">UK Bus Analytics</div>
+                        <div className="text-sm font-medium">779,262 bus stops analyzed</div>
+                        <div className="mt-2 flex items-center gap-2">
+                          <div className="h-2 flex-1 overflow-hidden rounded-full bg-white/10">
+                            <div className="h-full w-full bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+                          </div>
+                          <span className="text-xs text-slate-400">Production</span>
                         </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-3">
                         <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                          <div className="mb-1 text-xs text-slate-400">Status</div>
+                          <div className="mb-1 text-xs text-slate-400">HSI Research</div>
                           <div className="flex items-center gap-2 text-sm font-medium">
-                            <span className="h-2 w-2 rounded-full bg-emerald-400"></span>
-                            Production
+                            <span className="text-2xl font-bold text-cyan-400">6</span>
+                            <span className="text-slate-300">Datasets</span>
                           </div>
                         </div>
                         <div className="rounded-xl border border-white/10 bg-white/5 p-4">
-                          <div className="mb-1 text-xs text-slate-400">Timeline</div>
-                          <div className="text-sm font-medium">2022 - Present</div>
+                          <div className="mb-1 text-xs text-slate-400">Uncertainty</div>
+                          <div className="flex items-center gap-2 text-sm font-medium">
+                            <span className="text-2xl font-bold text-blue-400">0.45</span>
+                            <span className="text-slate-300">ρ-error</span>
+                          </div>
                         </div>
                       </div>
                     </div>
 
                     <div className="flex flex-wrap gap-2">
-                      {['Python', 'Azure', 'Streamlit', 'LLMs', 'Geospatial'].map((tag) => (
+                      {['Bayesian ML', 'Geospatial', 'FinTech', 'Real-time Systems', 'Policy Impact'].map((tag) => (
                         <span
                           key={tag}
                           className="rounded-lg border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-300"
@@ -1485,7 +1641,7 @@ export default function PortfolioPage() {
         {/* PROJECTS SECTION */}
         <section id="projects" className="mb-20 scroll-mt-32">
           <div className="mb-12 space-y-4">
-            <div className="inline-block rounded-full border border-violet-500/30 bg-violet-500/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-violet-300">
+            <div className="inline-block rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-blue-300">
               Featured Work
             </div>
             <h2 className="text-4xl font-bold tracking-tight lg:text-5xl">
@@ -1515,11 +1671,11 @@ export default function PortfolioPage() {
                 ].join(' ')}
               >
                 {filter === id && (
-                  <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 backdrop-blur-sm"></span>
+                  <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-blue-600/20 to-cyan-600/20 backdrop-blur-sm"></span>
                 )}
                 <span className="relative z-10 flex items-center gap-2">
                   {label}
-                  <span className={filter === id ? 'text-violet-300' : 'text-slate-500'}>({count})</span>
+                  <span className={filter === id ? 'text-cyan-300' : 'text-slate-500'}>({count})</span>
                 </span>
               </button>
             ))}
@@ -1556,7 +1712,7 @@ export default function PortfolioPage() {
 
                   <div className="space-y-2">
                     <p className="text-sm">
-                      <span className="font-semibold text-violet-300">Focus:</span>{' '}
+                      <span className="font-semibold text-cyan-300">Focus:</span>{' '}
                       <span className="text-slate-300">{project.focus}</span>
                     </p>
                     <p className="text-sm leading-relaxed text-slate-400">{project.details}</p>
@@ -1603,7 +1759,7 @@ export default function PortfolioPage() {
         {/* ARCHITECTURE SECTION */}
         <section id="architecture" className="mb-20 scroll-mt-32">
           <div className="mb-12 space-y-4">
-            <div className="inline-block rounded-full border border-fuchsia-500/30 bg-fuchsia-500/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-fuchsia-300">
+            <div className="inline-block rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-cyan-300">
               System Design
             </div>
             <h2 className="text-4xl font-bold tracking-tight lg:text-5xl">
@@ -1617,10 +1773,10 @@ export default function PortfolioPage() {
           <div className="mb-8 flex flex-wrap gap-3">
             {(
               [
-                ['trading', 'Trading Backend'],
-                ['masova', 'MaSoVa Platform'],
-                ['bus', 'Bus Analytics'],
+                ['fno', 'F&O Trading'],
                 ['hsi', 'HSI Research'],
+                ['masova', 'MaSoVa'],
+                ['bus', 'UK Bus Analytics'],
               ] as [ArchitectureId, string][]
             ).map(([id, label]) => (
               <button
@@ -1633,7 +1789,7 @@ export default function PortfolioPage() {
                 ].join(' ')}
               >
                 {activeArch === id && (
-                  <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-fuchsia-600/20 to-purple-600/20 backdrop-blur-sm"></span>
+                  <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-600/20 to-blue-600/20 backdrop-blur-sm"></span>
                 )}
                 <span className="relative z-10">{label}</span>
               </button>
@@ -1643,23 +1799,23 @@ export default function PortfolioPage() {
           {/* Architecture Diagram */}
           <div className="mb-8 overflow-hidden rounded-2xl border border-white/10 bg-black/60 p-6 backdrop-blur-2xl">
             <div className="mb-4 flex items-center justify-between">
-              <div className="inline-block rounded-lg bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-violet-300">
+              <div className="inline-block rounded-lg bg-gradient-to-r from-blue-600/20 to-cyan-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cyan-300">
                 System Architecture Diagram
               </div>
               <span className="text-xs text-slate-500">Click tabs above to switch architectures</span>
             </div>
             <div className="rounded-xl bg-slate-950/50 p-4">
+              {activeArch === 'fno' && <FnOTradingArchitectureDiagram />}
+              {activeArch === 'hsi' && <HSIArchitectureDiagram />}
               {activeArch === 'masova' && <MaSoVaArchitectureDiagram />}
               {activeArch === 'bus' && <BusAnalyticsDiagram />}
-              {activeArch === 'trading' && <TradingArchitectureDiagram />}
-              {activeArch === 'hsi' && <HSIArchitectureDiagram />}
             </div>
           </div>
 
           <div className="grid gap-6 lg:grid-cols-3">
             {/* Overview */}
             <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl">
-              <div className="mb-4 inline-block rounded-lg bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-violet-300">
+              <div className="mb-4 inline-block rounded-lg bg-gradient-to-r from-blue-600/20 to-cyan-600/20 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-cyan-300">
                 Overview
               </div>
               <h3 className="mb-2 text-2xl font-bold">{currentArch.label}</h3>
@@ -1798,14 +1954,14 @@ export default function PortfolioPage() {
                 <h3 className="mb-4 text-xl font-bold">Engineering Philosophy</h3>
                 <div className="space-y-4 text-sm text-slate-400">
                   <div className="flex gap-3">
-                    <span className="mt-1 text-lg text-violet-400">01</span>
+                    <span className="mt-1 text-lg text-blue-400">01</span>
                     <div>
                       <p className="font-semibold text-white mb-1">Research-Driven Innovation</p>
-                      <p>Every project starts with <span className="text-violet-300">literature review</span> and <span className="text-fuchsia-300">state-of-the-art analysis</span>. From hyperspectral imaging to transport analytics — solutions are grounded in peer-reviewed methodologies.</p>
+                      <p>Every project starts with <span className="text-cyan-300">literature review</span> and <span className="text-blue-300">state-of-the-art analysis</span>. From hyperspectral imaging to transport analytics — solutions are grounded in peer-reviewed methodologies.</p>
                     </div>
                   </div>
                   <div className="flex gap-3">
-                    <span className="mt-1 text-lg text-fuchsia-400">02</span>
+                    <span className="mt-1 text-lg text-cyan-400">02</span>
                     <div>
                       <p className="font-semibold text-white mb-1">Reproducible Science</p>
                       <p>Rigorous <span className="text-cyan-300">experimental design</span>, version-controlled experiments, and documented methodologies. Every model is validated with proper train/test splits and cross-validation.</p>
@@ -1815,7 +1971,7 @@ export default function PortfolioPage() {
                     <span className="mt-1 text-lg text-emerald-400">03</span>
                     <div>
                       <p className="font-semibold text-white mb-1">End-to-End Ownership</p>
-                      <p>From <span className="text-blue-300">data ingestion</span> to <span className="text-violet-300">visualization</span> — I own the entire pipeline. Azure Data Factory orchestrates, Databricks transforms, and Power BI delivers insights.</p>
+                      <p>From <span className="text-blue-300">data ingestion</span> to <span className="text-cyan-300">visualization</span> — I own the entire pipeline. Azure Data Factory orchestrates, Databricks transforms, and Power BI delivers insights.</p>
                     </div>
                   </div>
                   <div className="flex gap-3">
@@ -1947,29 +2103,6 @@ export default function PortfolioPage() {
 
               {/* Research Projects Grid */}
               <div className="space-y-6">
-                {/* ML Systems */}
-                <div className="rounded-xl border border-white/10 bg-black/30 p-5">
-                  <div className="mb-3 flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-violet-500 to-fuchsia-500">
-                      <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                      </svg>
-                    </div>
-                    <div>
-                      <h4 className="font-bold text-white">Machine Learning Systems (COMP1804)</h4>
-                      <p className="text-sm text-violet-300">Facial Attribute Recognition Pipeline</p>
-                    </div>
-                  </div>
-                  <p className="mb-3 text-sm text-slate-400">
-                    Developed complete ML pipeline for facial attribute recognition on unlabelled images — manual annotation, TensorFlow implementation, and rigorous evaluation.
-                  </p>
-                  <div className="flex flex-wrap gap-2">
-                    {['TensorFlow', 'Manual Annotation', 'IEEE Format Report', 'Reproducibility Scripts', 'Demo Video'].map(tag => (
-                      <span key={tag} className="rounded-full bg-violet-500/20 px-2.5 py-1 text-xs text-violet-300">{tag}</span>
-                    ))}
-                  </div>
-                </div>
-
                 {/* Data Visualization */}
                 <div className="rounded-xl border border-white/10 bg-black/30 p-5">
                   <div className="mb-3 flex items-center gap-3">
@@ -2012,6 +2145,144 @@ export default function PortfolioPage() {
                   <div className="flex flex-wrap gap-2">
                     {['IoT Integration', 'MapReduce', 'Real-time Streaming', 'Petabyte Scale', 'Architecture Design'].map(tag => (
                       <span key={tag} className="rounded-full bg-blue-500/20 px-2.5 py-1 text-xs text-blue-300">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Applied Machine Learning */}
+                <div className="rounded-xl border border-white/10 bg-black/30 p-5">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-purple-500 to-pink-500">
+                      <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">Applied Machine Learning (COMP1804)</h4>
+                      <p className="text-sm text-purple-300">Facial Attribute Recognition System</p>
+                    </div>
+                  </div>
+                  <p className="mb-3 text-sm text-slate-400">
+                    TensorFlow-based multi-label classification system for 5 facial attributes (wrinkles, freckles, glasses, hair color/style) with manual annotation pipeline and comprehensive evaluation.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {['TensorFlow', 'Multi-task Learning', 'Computer Vision', 'Data Annotation', 'Deep Learning'].map(tag => (
+                      <span key={tag} className="rounded-full bg-purple-500/20 px-2.5 py-1 text-xs text-purple-300">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Machine Learning */}
+                <div className="rounded-xl border border-white/10 bg-black/30 p-5">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-rose-500 to-orange-500">
+                      <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">Machine Learning (COMP1801)</h4>
+                      <p className="text-sm text-rose-300">Supervised & Unsupervised Learning Research</p>
+                    </div>
+                  </div>
+                  <p className="mb-3 text-sm text-slate-400">
+                    Comprehensive research in ML foundations covering regression, classification, clustering, optimization, and kernel methods with rigorous mathematical analysis and practical implementations.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {['Scikit-learn', 'Statistical Learning', 'Optimization', 'LaTeX Documentation', 'IEEE Format'].map(tag => (
+                      <span key={tag} className="rounded-full bg-rose-500/20 px-2.5 py-1 text-xs text-rose-300">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Clouds Grids Virtualization */}
+                <div className="rounded-xl border border-white/10 bg-black/30 p-5">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-indigo-500 to-blue-500">
+                      <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">Clouds, Grids & Virtualization (COMP1680)</h4>
+                      <p className="text-sm text-indigo-300">HPC & Parallel Programming</p>
+                    </div>
+                  </div>
+                  <p className="mb-3 text-sm text-slate-400">
+                    Cloud platform analysis and parallel programming with OpenMP — performance benchmarking, scalability analysis, and distributed computing architectures for ML workloads.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {['OpenMP', 'Parallel Computing', 'Cloud Architecture', 'Performance Analysis', 'HPC'].map(tag => (
+                      <span key={tag} className="rounded-full bg-indigo-500/20 px-2.5 py-1 text-xs text-indigo-300">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Graph and Databases */}
+                <div className="rounded-xl border border-white/10 bg-black/30 p-5">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-green-500">
+                      <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">Graph & Modern Databases (COMP1835)</h4>
+                      <p className="text-sm text-teal-300">NoSQL & Graph Database Systems</p>
+                    </div>
+                  </div>
+                  <p className="mb-3 text-sm text-slate-400">
+                    Designed and implemented NoSQL systems across 4 paradigms (document, key-value, column-family, graph) with Neo4j, MongoDB, Redis — polyglot persistence for big data.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {['Neo4j', 'MongoDB', 'Redis', 'Graph Theory', 'Polyglot Persistence'].map(tag => (
+                      <span key={tag} className="rounded-full bg-teal-500/20 px-2.5 py-1 text-xs text-teal-300">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Programming Fundamentals */}
+                <div className="rounded-xl border border-white/10 bg-black/30 p-5">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-amber-500 to-yellow-500">
+                      <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">Programming Fundamentals for Data Science (COMP1832)</h4>
+                      <p className="text-sm text-amber-300">Python & R Ecosystems</p>
+                    </div>
+                  </div>
+                  <p className="mb-3 text-sm text-slate-400">
+                    Mastered data science programming with NumPy, Pandas, Matplotlib, NetworkX in Python and R — portfolio-based assessment covering data structures, processing, and visualization.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {['Python', 'R', 'NumPy/Pandas', 'Data Wrangling', 'Visualization'].map(tag => (
+                      <span key={tag} className="rounded-full bg-amber-500/20 px-2.5 py-1 text-xs text-amber-300">{tag}</span>
+                    ))}
+                  </div>
+                </div>
+
+                {/* MSc Project */}
+                <div className="rounded-xl border border-white/10 bg-black/30 p-5">
+                  <div className="mb-3 flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500">
+                      <svg className="h-5 w-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7" />
+                      </svg>
+                    </div>
+                    <div>
+                      <h4 className="font-bold text-white">MSc Dissertation Project</h4>
+                      <p className="text-sm text-cyan-300">UK Transportation Network Analysis</p>
+                    </div>
+                  </div>
+                  <p className="mb-3 text-sm text-slate-400">
+                    National-scale GTFS analysis of UK public transportation (10 regions) — route classification by urban typology using NUTS framework, geospatial integration, and statistical profiling.
+                  </p>
+                  <div className="flex flex-wrap gap-2">
+                    {['GTFS Data', 'Geospatial Analysis', 'Transportation Analytics', 'Python', 'Statistical Analysis'].map(tag => (
+                      <span key={tag} className="rounded-full bg-cyan-500/20 px-2.5 py-1 text-xs text-cyan-300">{tag}</span>
                     ))}
                   </div>
                 </div>
@@ -2131,7 +2402,7 @@ export default function PortfolioPage() {
                       className="flex items-center justify-between border-b border-white/10 pb-4 last:border-0 last:pb-0"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-violet-600/20 to-fuchsia-600/20 text-violet-300">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-gradient-to-r from-blue-600/20 to-cyan-600/20 text-cyan-300">
                           {item.icon}
                         </div>
                         <div>
@@ -2141,7 +2412,7 @@ export default function PortfolioPage() {
                               href={item.href}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-sm font-medium text-slate-300 hover:text-violet-300"
+                              className="text-sm font-medium text-slate-300 hover:text-cyan-300"
                             >
                               {item.value}
                             </a>
@@ -2159,7 +2430,7 @@ export default function PortfolioPage() {
                 <h3 className="mb-4 text-xl font-bold">References Available</h3>
                 <ul className="space-y-3 text-sm text-slate-400">
                   <li className="flex gap-3">
-                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-violet-400 to-fuchsia-400"></span>
+                    <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400"></span>
                     <span><strong className="text-white">MSc thesis supervisor</strong> – UK bus analytics research and ML platform development</span>
                   </li>
                   <li className="flex gap-3">
@@ -2203,7 +2474,7 @@ export default function PortfolioPage() {
                     id="name"
                     name="name"
                     required
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                     placeholder="Your name"
                   />
                 </div>
@@ -2216,7 +2487,7 @@ export default function PortfolioPage() {
                     name="email"
                     type="email"
                     required
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                     placeholder="you@example.com"
                   />
                 </div>
@@ -2229,13 +2500,13 @@ export default function PortfolioPage() {
                     name="message"
                     rows={5}
                     required
-                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all focus:border-violet-500 focus:ring-2 focus:ring-violet-500/20"
+                    className="w-full rounded-xl border border-white/10 bg-white/5 px-4 py-3 text-sm text-white placeholder-slate-500 outline-none transition-all focus:border-cyan-500 focus:ring-2 focus:ring-cyan-500/20"
                     placeholder="Tell me about your project, research opportunity, or collaboration idea..."
                   />
                 </div>
                 <button
                   type="submit"
-                  className="group w-full rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-6 py-3 font-semibold text-white shadow-lg shadow-violet-500/50 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-violet-500/50"
+                  className="group w-full rounded-xl bg-gradient-to-r from-blue-600 to-cyan-600 px-6 py-3 font-semibold text-white shadow-lg shadow-blue-500/50 transition-all hover:scale-[1.02] hover:shadow-xl hover:shadow-blue-500/50"
                 >
                   <span className="flex items-center justify-center gap-2">
                     Send Message
@@ -2255,7 +2526,7 @@ export default function PortfolioPage() {
                 href="https://github.com/SVamseekar"
                 target="_blank"
                 rel="noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-400 transition-all hover:border-violet-500 hover:text-violet-300"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-400 transition-all hover:border-cyan-500 hover:text-cyan-300"
                 aria-label="GitHub"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -2266,7 +2537,7 @@ export default function PortfolioPage() {
                 href="https://www.linkedin.com/in/souramarti"
                 target="_blank"
                 rel="noreferrer"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-400 transition-all hover:border-violet-500 hover:text-violet-300"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-400 transition-all hover:border-cyan-500 hover:text-cyan-300"
                 aria-label="LinkedIn"
               >
                 <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
@@ -2275,7 +2546,7 @@ export default function PortfolioPage() {
               </a>
               <a
                 href="mailto:martisoura@gmail.com"
-                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-400 transition-all hover:border-violet-500 hover:text-violet-300"
+                className="flex h-10 w-10 items-center justify-center rounded-lg border border-white/10 bg-white/5 text-slate-400 transition-all hover:border-cyan-500 hover:text-cyan-300"
                 aria-label="Email"
               >
                 <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
