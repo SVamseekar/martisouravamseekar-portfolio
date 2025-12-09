@@ -2289,10 +2289,10 @@ export default function PortfolioPage() {
 
         {/* CONTACT SECTION */}
         <section id="contact" className="scroll-mt-32">
-          <div className="grid gap-6 lg:grid-cols-2">
+          <div className="grid gap-6 lg:grid-cols-2 lg:items-start">
             {/* Contact Info */}
-            <div className="space-y-6">
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl">
+            <div className="h-full">
+              <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl h-full">
                 <h3 className="mb-4 text-xl font-bold">Contact Information</h3>
                 <div className="space-y-4">
                   {[
@@ -2369,8 +2369,8 @@ export default function PortfolioPage() {
             </div>
 
             {/* References */}
-            <div>
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl">
+            <div className="h-full">
+              <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl h-full">
                 <h3 className="mb-4 text-xl font-bold">References Available</h3>
                 <ul className="space-y-3 text-sm text-slate-400">
                   <li className="flex gap-3">
@@ -2427,9 +2427,6 @@ export default function PortfolioPage() {
             </div>
             <p className="text-sm text-slate-500">
               © {new Date().getFullYear()} Marti Soura Vamseekar. Built with Next.js, TypeScript & Tailwind CSS.
-            </p>
-            <p className="mt-2 text-xs text-slate-600">
-              Designed to showcase both ML engineering and full-stack development capabilities.
             </p>
           </footer>
         </section>
