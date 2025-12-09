@@ -2384,7 +2384,7 @@ export default function PortfolioPage() {
                 <ul className="space-y-3 text-sm text-slate-400">
                   <li className="flex gap-3">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400"></span>
-                    <span><strong className="text-white">MSc thesis supervisor</strong> – UK bus analytics research and ML platform development</span>
+                    <span><strong className="text-white">Stef Garasto</strong> – Senior Lecturer in Data Science at University of Greenwich. MSc thesis supervisor for UK bus analytics research and ML platform development</span>
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-emerald-400 to-green-400"></span>
@@ -2392,7 +2392,7 @@ export default function PortfolioPage() {
                   </li>
                   <li className="flex gap-3">
                     <span className="mt-1.5 h-1.5 w-1.5 shrink-0 rounded-full bg-gradient-to-r from-blue-400 to-cyan-400"></span>
-                    <span><strong className="text-white">B.Tech supervisor</strong> – Hyperspectral imaging research and signal processing expertise</span>
+                    <span><strong className="text-white">Dr. Ladi Sandeep Kumar</strong> – Assistant Professor at Gandhi Institute of Technology & Management (GITAM) University, Visakhapatnam. B.Tech supervisor for hyperspectral imaging research and signal processing expertise</span>
                   </li>
                 </ul>
               </div>
