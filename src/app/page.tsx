@@ -1937,41 +1937,6 @@ export default function PortfolioPage() {
 
             {/* Philosophy & Skills */}
             <div className="space-y-6">
-              {/* Engineering Philosophy - More Elaborate */}
-              <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl">
-                <h3 className="mb-4 text-xl font-bold">Engineering Philosophy</h3>
-                <div className="space-y-4 text-sm text-slate-400">
-                  <div className="flex gap-3">
-                    <span className="mt-1 text-lg text-blue-400">01</span>
-                    <div>
-                      <p className="font-semibold text-white mb-1">Research-Driven Innovation</p>
-                      <p>Every project starts with <span className="text-cyan-300">literature review</span> and <span className="text-blue-300">state-of-the-art analysis</span>. From hyperspectral imaging to transport analytics — solutions are grounded in peer-reviewed methodologies.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <span className="mt-1 text-lg text-cyan-400">02</span>
-                    <div>
-                      <p className="font-semibold text-white mb-1">Reproducible Science</p>
-                      <p>Rigorous <span className="text-cyan-300">experimental design</span>, version-controlled experiments, and documented methodologies. Every model is validated with proper train/test splits and cross-validation.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <span className="mt-1 text-lg text-emerald-400">03</span>
-                    <div>
-                      <p className="font-semibold text-white mb-1">End-to-End Ownership</p>
-                      <p>From <span className="text-blue-300">data ingestion</span> to <span className="text-cyan-300">visualization</span> — I own the entire pipeline. Azure Data Factory orchestrates, Databricks transforms, and Power BI delivers insights.</p>
-                    </div>
-                  </div>
-                  <div className="flex gap-3">
-                    <span className="mt-1 text-lg text-blue-400">04</span>
-                    <div>
-                      <p className="font-semibold text-white mb-1">Cloud-Native by Default</p>
-                      <p>Every solution leverages <span className="text-cyan-300">Azure's managed services</span> — Data Lake Gen2 for storage, Synapse for analytics, Databricks for compute. No unnecessary infrastructure overhead.</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-
               {/* Tech Stack - Organized by Category */}
               <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/40 p-6 backdrop-blur-2xl">
                 <h3 className="mb-4 text-xl font-bold">Tech Stack</h3>
