@@ -1,8 +1,11 @@
 @import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 :root {
-  --background: #0a0a0f;
-  --foreground: #f1f5f9;
+  --background: #ffffff;
+  --foreground: #171717;
 }
 
 @theme inline {
@@ -12,28 +15,25 @@
   --font-mono: var(--font-geist-mono);
 }
 
-html {
-  scroll-behavior: smooth;
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  font-family: Arial, Helvetica, sans-serif;
 }
 
-@keyframes fade-in-up {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+html,
+body {
+  @apply bg-slate-950 text-slate-100 antialiased;
 }
 
-.animate-fade-in-up {
-  animation: fade-in-up 0.6s ease-out;
-  animation-fill-mode: both;
+body {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "SF Pro Text",
+    "Segoe UI", sans-serif;
 }
