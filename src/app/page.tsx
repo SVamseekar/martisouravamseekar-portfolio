@@ -1191,13 +1191,432 @@ def process_bus_data(stops_df: pd.DataFrame,
     return stops_df.merge(census_df, on='lsoa_code')`,
 };
 
-const sectionIds = ['top', 'projects', 'architecture', 'craft', 'education', 'contact'] as const;
+// ============================================
+// INTERACTIVE CALCULATOR & PLANNER COMPONENTS
+// ============================================
+
+// Systematic Transfer Plan (STP) Calculator
+const STPCalculator = () => {
+  const [lumpSum, setLumpSum] = useState<number>(1000000); // 10 Lakhs default
+  const [years, setYears] = useState<number>(5);
+  const [monthlyTransfer, setMonthlyTransfer] = useState<number>(20000);
+  const [debtRate, setDebtRate] = useState<number>(6.5);
+  const [equityCagr, setEquityCagr] = useState<number>(14);
+
+  const totalMonths = years * 12;
+  const monthlyBreakdown: Array<{
+    month: number;
+    transfer: number;
+    debtBalance: number;
+    equityBalance: number;
+    totalValue: number;
+    gain: number;
+  }> = [];
+  
+  let debtBalance = lumpSum;
+  let equityBalance = 0;
+
+  const debtMonthlyRate = debtRate / 12 / 100;
+  const equityMonthlyRate = equityCagr / 12 / 100;
+
+  for (let month = 0; month <= totalMonths; month++) {
+    if (month === 0) {
+      monthlyBreakdown.push({
+        month,
+        transfer: 0,
+        debtBalance,
+        equityBalance,
+        totalValue: debtBalance + equityBalance,
+        gain: 0
+      });
+      continue;
+    }
+
+    const transferAmount = Math.min(monthlyTransfer, debtBalance);
+    
+    debtBalance -= transferAmount;
+    debtBalance = debtBalance * (1 + debtMonthlyRate);
+
+    equityBalance += transferAmount;
+    equityBalance = equityBalance * (1 + equityMonthlyRate);
+
+    const totalValue = debtBalance + equityBalance;
+    const gain = totalValue - lumpSum;
+
+    monthlyBreakdown.push({
+      month,
+      transfer: transferAmount,
+      debtBalance,
+      equityBalance,
+      totalValue,
+      gain
+    });
+  }
+
+  const finalResult = monthlyBreakdown[monthlyBreakdown.length - 1];
+  const absoluteGain = finalResult.totalValue - lumpSum;
+  const returnPct = (absoluteGain / lumpSum) * 100;
+
+  const svgWidth = 500;
+  const svgHeight = 200;
+  const padding = 20;
+
+  const getPoints = (key: 'debtBalance' | 'equityBalance' | 'totalValue') => {
+    return monthlyBreakdown
+      .filter((_, idx) => idx % Math.max(1, Math.floor(totalMonths / 20)) === 0 || idx === totalMonths)
+      .map((d, i, arr) => {
+        const x = padding + (i / (arr.length - 1)) * (svgWidth - padding * 2);
+        const maxVal = Math.max(lumpSum, finalResult.totalValue);
+        const y = svgHeight - padding - (d[key] / maxVal) * (svgHeight - padding * 2);
+        return `${x},${y}`;
+      })
+      .join(' ');
+  };
+
+  const debtPoints = getPoints('debtBalance');
+  const equityPoints = getPoints('equityBalance');
+  const totalPoints = getPoints('totalValue');
+
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="space-y-5 rounded-xl border border-white/10 bg-black/20 p-5 backdrop-blur-md">
+          <h4 className="text-base font-bold text-cyan-300">Parameters</h4>
+          
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-400">Lump Sum (INR)</span>
+              <span className="font-semibold text-white">₹{lumpSum.toLocaleString('en-IN')}</span>
+            </div>
+            <input
+              type="range" min="100000" max="10000000" step="50000"
+              value={lumpSum} onChange={(e) => setLumpSum(Number(e.target.value))}
+              className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-400">Duration (Years)</span>
+              <span className="font-semibold text-white">{years} Years</span>
+            </div>
+            <input
+              type="range" min="1" max="15" step="1"
+              value={years} onChange={(e) => setYears(Number(e.target.value))}
+              className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-400">Monthly Transfer (SIP)</span>
+              <span className="font-semibold text-white">₹{monthlyTransfer.toLocaleString('en-IN')}</span>
+            </div>
+            <input
+              type="range" min="5000" max="500000" step="5000"
+              value={monthlyTransfer} onChange={(e) => setMonthlyTransfer(Number(e.target.value))}
+              className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-cyan-500"
+            />
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs text-slate-400">Debt Yield (%)</label>
+              <input
+                type="number" step="0.1" min="1" max="15"
+                value={debtRate} onChange={(e) => setDebtRate(Number(e.target.value))}
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs text-slate-400">Equity CAGR (%)</label>
+              <input
+                type="number" step="0.5" min="1" max="30"
+                value={equityCagr} onChange={(e) => setEquityCagr(Number(e.target.value))}
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white focus:border-cyan-500 focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-between rounded-xl border border-white/10 bg-black/20 p-5 backdrop-blur-md">
+          <div className="space-y-4">
+            <h4 className="text-base font-bold text-cyan-300">Results</h4>
+            
+            <div className="grid grid-cols-3 gap-2 border-b border-white/5 pb-4">
+              <div>
+                <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Principal</span>
+                <span className="text-xs font-semibold text-white">₹{lumpSum.toLocaleString('en-IN')}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Total Value</span>
+                <span className="text-xs font-semibold text-emerald-400">₹{Math.round(finalResult.totalValue).toLocaleString('en-IN')}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Est. Returns</span>
+                <span className="text-xs font-semibold text-cyan-300">₹{Math.round(absoluteGain).toLocaleString('en-IN')} ({returnPct.toFixed(1)}%)</span>
+              </div>
+            </div>
+
+            <div className="h-44 rounded-lg bg-slate-950/40 p-2 border border-white/5 flex items-center justify-center">
+              <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full h-full">
+                <text x={padding} y="15" className="fill-slate-600" style={{fontSize: '9px'}}>Growth Projection Over Time</text>
+                <line x1={padding} y1={svgHeight - padding} x2={svgWidth - padding} y2={svgHeight - padding} stroke="rgba(255,255,255,0.05)" strokeWidth="1"/>
+                <line x1={padding} y1={svgHeight/2} x2={svgWidth - padding} y2={svgHeight/2} stroke="rgba(255,255,255,0.05)" strokeWidth="1"/>
+                <polyline fill="none" stroke="#64748b" strokeWidth="2" strokeDasharray="3,3" points={debtPoints} />
+                <polyline fill="none" stroke="#f59e0b" strokeWidth="2" points={equityPoints} />
+                <polyline fill="none" stroke="#06b6d4" strokeWidth="2.5" points={totalPoints} />
+                <g transform={`translate(${padding + 5}, ${svgHeight - 10})`}>
+                  <rect x="0" y="-7" width="8" height="8" rx="2" fill="#64748b" />
+                  <text x="12" y="0" className="fill-slate-500" style={{fontSize: '8px'}}>Debt Fund</text>
+                  <rect x="70" y="-7" width="8" height="8" rx="2" fill="#f59e0b" />
+                  <text x="82" y="0" className="fill-slate-500" style={{fontSize: '8px'}}>Equity Fund</text>
+                  <rect x="150" y="-7" width="8" height="8" rx="2" fill="#06b6d4" />
+                  <text x="162" y="0" className="fill-slate-500" style={{fontSize: '8px'}}>Total Value</text>
+                </g>
+              </svg>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto rounded-xl border border-white/10 bg-black/20 backdrop-blur-md">
+        <table className="w-full border-collapse text-left text-xs">
+          <thead>
+            <tr className="border-b border-white/10 bg-white/5 text-slate-400">
+              <th className="p-3">Period</th>
+              <th className="p-3">Transfer Amount</th>
+              <th className="p-3">Debt Balance (Redeeming)</th>
+              <th className="p-3">Equity Balance (Investing)</th>
+              <th className="p-3">Total Portfolio Valuation</th>
+              <th className="p-3">Cumulative Gain</th>
+            </tr>
+          </thead>
+          <tbody>
+            {monthlyBreakdown
+              .filter((_, idx) => idx % Math.max(1, Math.floor(totalMonths / 6)) === 0 || idx === totalMonths)
+              .map((row) => (
+                <tr key={row.month} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                  <td className="p-3 text-slate-300 font-semibold">{row.month === 0 ? 'Start' : `Month ${row.month}`}</td>
+                  <td className="p-3 text-slate-400">₹{Math.round(row.transfer).toLocaleString('en-IN')}</td>
+                  <td className="p-3 text-slate-400">₹{Math.round(row.debtBalance).toLocaleString('en-IN')}</td>
+                  <td className="p-3 text-slate-300">₹{Math.round(row.equityBalance).toLocaleString('en-IN')}</td>
+                  <td className="p-3 font-semibold text-emerald-400">₹{Math.round(row.totalValue).toLocaleString('en-IN')}</td>
+                  <td className="p-3 text-cyan-300">₹{Math.round(row.gain).toLocaleString('en-IN')}</td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+// Mutual Fund & Fixed Deposit Reinvestment Planner
+const MFFDPlanner = () => {
+  const [lumpSum, setLumpSum] = useState<number>(3000000); // 30 Lakhs default
+  const [years, setYears] = useState<number>(5);
+  const [fdLongRate, setFdLongRate] = useState<number>(6.5);
+  const [fdShortRate, setFdShortRate] = useState<number>(6.0);
+  const [mfCagr, setMfCagr] = useState<number>(14.5);
+
+  const monthlySip = (lumpSum / years) / 12;
+  const fdLongMonthly = fdLongRate / 100 / 12;
+  const fdShortMonthly = fdShortRate / 100 / 12;
+  const mfMonthly = mfCagr / 100 / 12;
+
+  let mfCorpus = 0;
+  let totalSipInvested = 0;
+  let totalInterestReinvested = 0;
+  const yearlyBreakdown: Array<{
+    year: number;
+    sipInvested: number;
+    interestReinvested: number;
+    totalInvested: number;
+    mfValue: number;
+  }> = [];
+
+  for (let year = 1; year <= years; year++) {
+    let yearSip = 0;
+    let yearInterest = 0;
+
+    for (let month = 1; month <= 12; month++) {
+      mfCorpus = (mfCorpus + monthlySip) * (1 + mfMonthly);
+      yearSip += monthlySip;
+      totalSipInvested += monthlySip;
+
+      let monthInterest = 0;
+
+      if (month >= 7) {
+        const shortInterest = monthlySip * fdShortMonthly;
+        monthInterest += shortInterest;
+      }
+
+      const numActiveLongFds = years - year;
+      const longInterest = (lumpSum / years) * fdLongMonthly * numActiveLongFds;
+      monthInterest += longInterest;
+
+      if (monthInterest > 0) {
+        mfCorpus = (mfCorpus + monthInterest) * (1 + mfMonthly);
+        yearInterest += monthInterest;
+        totalInterestReinvested += monthInterest;
+      }
+    }
+
+    yearlyBreakdown.push({
+      year,
+      sipInvested: yearSip,
+      interestReinvested: yearInterest,
+      totalInvested: yearSip + yearInterest,
+      mfValue: mfCorpus
+    });
+  }
+
+  const finalWealth = mfCorpus;
+  const absoluteGain = finalWealth - lumpSum;
+  const returnPct = (absoluteGain / lumpSum) * 100;
+
+  const cashBuffer = monthlySip * 6;
+  const shortFds = monthlySip * 6;
+  const longFds = lumpSum - (cashBuffer + shortFds);
+
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-6 md:grid-cols-2">
+        <div className="space-y-5 rounded-xl border border-white/10 bg-black/20 p-5 backdrop-blur-md">
+          <h4 className="text-base font-bold text-orange-400">Parameters</h4>
+          
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-400">Lump Sum (INR)</span>
+              <span className="font-semibold text-white">₹{lumpSum.toLocaleString('en-IN')}</span>
+            </div>
+            <input
+              type="range" min="100000" max="10000000" step="50000"
+              value={lumpSum} onChange={(e) => setLumpSum(Number(e.target.value))}
+              className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
+            />
+          </div>
+
+          <div className="space-y-2">
+            <div className="flex justify-between text-sm">
+              <span className="text-slate-400">Duration (Years)</span>
+              <span className="font-semibold text-white">{years} Years</span>
+            </div>
+            <input
+              type="range" min="1" max="10" step="1"
+              value={years} onChange={(e) => setYears(Number(e.target.value))}
+              className="w-full h-1 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-orange-500"
+            />
+          </div>
+
+          <div className="grid grid-cols-3 gap-2">
+            <div className="space-y-2">
+              <label className="text-xs text-slate-400">FD Long-Term (%)</label>
+              <input
+                type="number" step="0.1" min="1" max="15"
+                value={fdLongRate} onChange={(e) => setFdLongRate(Number(e.target.value))}
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white focus:border-orange-500 focus:outline-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs text-slate-400">FD Short-Term (%)</label>
+              <input
+                type="number" step="0.1" min="1" max="15"
+                value={fdShortRate} onChange={(e) => setFdShortRate(Number(e.target.value))}
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white focus:border-orange-500 focus:outline-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs text-slate-400">MF CAGR (%)</label>
+              <input
+                type="number" step="0.5" min="1" max="30"
+                value={mfCagr} onChange={(e) => setMfCagr(Number(e.target.value))}
+                className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white focus:border-orange-500 focus:outline-none"
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col justify-between rounded-xl border border-white/10 bg-black/20 p-5 backdrop-blur-md space-y-4">
+          <div>
+            <h4 className="text-base font-bold text-orange-400 mb-3">Portfolio Allocation & Results</h4>
+            
+            <div className="grid grid-cols-2 gap-4 border-b border-white/5 pb-4 mb-4">
+              <div>
+                <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Final MF Value</span>
+                <span className="text-xs font-bold text-emerald-400">₹{Math.round(finalWealth).toLocaleString('en-IN')}</span>
+              </div>
+              <div>
+                <span className="text-[10px] text-slate-500 uppercase tracking-wider block">Est. Returns</span>
+                <span className="text-xs font-bold text-orange-400">₹{Math.round(absoluteGain).toLocaleString('en-IN')} ({returnPct.toFixed(1)}%)</span>
+              </div>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-xs text-slate-500 font-semibold">Initial Asset Allocation Breakdown</p>
+              
+              <div className="h-4 rounded-full bg-slate-900 overflow-hidden flex">
+                <div style={{ width: `${(cashBuffer/lumpSum)*100}%` }} className="bg-amber-500" title="Cash/Liquid Fund"></div>
+                <div style={{ width: `${(shortFds/lumpSum)*100}%` }} className="bg-orange-500" title="6M FDs"></div>
+                <div style={{ width: `${(longFds/lumpSum)*100}%` }} className="bg-yellow-500" title="Long FDs"></div>
+              </div>
+
+              <div className="grid grid-cols-3 gap-2 text-[10px] text-slate-400">
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-amber-500"></span>
+                  <span>Cash: ₹{Math.round(cashBuffer).toLocaleString('en-IN')}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-orange-500"></span>
+                  <span>Short FDs: ₹{Math.round(shortFds).toLocaleString('en-IN')}</span>
+                </div>
+                <div className="flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-yellow-500"></span>
+                  <span>Long FDs: ₹{Math.round(longFds).toLocaleString('en-IN')}</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="overflow-x-auto rounded-xl border border-white/10 bg-black/20 backdrop-blur-md">
+        <table className="w-full border-collapse text-left text-xs">
+          <thead>
+            <tr className="border-b border-white/10 bg-white/5 text-slate-400">
+              <th className="p-3">Year</th>
+              <th className="p-3">SIP Invested</th>
+              <th className="p-3">FD Interest Reinvested</th>
+              <th className="p-3">Total Invested</th>
+              <th className="p-3">End-of-Year MF Value</th>
+            </tr>
+          </thead>
+          <tbody>
+            {yearlyBreakdown.map((row) => (
+              <tr key={row.year} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                <td className="p-3 text-slate-300 font-semibold">Year {row.year}</td>
+                <td className="p-3 text-slate-400">₹{Math.round(row.sipInvested).toLocaleString('en-IN')}</td>
+                <td className="p-3 text-cyan-300">₹{Math.round(row.interestReinvested).toLocaleString('en-IN')}</td>
+                <td className="p-3 text-slate-400">₹{Math.round(row.totalInvested).toLocaleString('en-IN')}</td>
+                <td className="p-3 font-semibold text-emerald-400">₹{Math.round(row.mfValue).toLocaleString('en-IN')}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+};
+
+const sectionIds = ['top', 'projects', 'simulators', 'architecture', 'craft', 'education', 'contact'] as const;
 
 export default function PortfolioPage() {
   const [activeSection, setActiveSection] = useState<string>('top');
   const [filter, setFilter] = useState<ProjectCategory>('all');
   const [activeArch, setActiveArch] = useState<ArchitectureId>('fno');
   const [snippetTab, setSnippetTab] = useState<'react' | 'api' | 'pipeline'>('react');
+  const [activeSim, setActiveSim] = useState<'stp' | 'mffd'>('stp');
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -1383,6 +1802,7 @@ export default function PortfolioPage() {
                 {[
                   ['#top', 'Home', 'top'],
                   ['#projects', 'Projects', 'projects'],
+                  ['#simulators', 'Calculators', 'simulators'],
                   ['#architecture', 'Architecture', 'architecture'],
                   ['#craft', 'Code', 'craft'],
                   ['#education', 'Education', 'education'],
@@ -1436,6 +1856,7 @@ export default function PortfolioPage() {
                 {[
                   ['#top', 'Home', 'top'],
                   ['#projects', 'Projects', 'projects'],
+                  ['#simulators', 'Calculators', 'simulators'],
                   ['#architecture', 'Architecture', 'architecture'],
                   ['#craft', 'Code', 'craft'],
                   ['#education', 'Education', 'education'],
@@ -1741,6 +2162,54 @@ export default function PortfolioPage() {
                 </div>
               </article>
             ))}
+          </div>
+        </section>
+
+        {/* LIVE CALCULATORS & SIMULATORS SECTION */}
+        <section id="simulators" className="mb-20 scroll-mt-32">
+          <div className="mb-12 space-y-4">
+            <div className="inline-block rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-sm font-semibold uppercase tracking-wider text-orange-300">
+              Interactive Planners
+            </div>
+            <h2 className="text-4xl font-bold tracking-tight lg:text-5xl">
+              Live Financial Simulators
+            </h2>
+            <p className="max-w-2xl text-lg text-slate-400">
+              Run live options and reinvestment calculations directly in your browser. These tools translate my Python algorithms into real-time React components.
+            </p>
+          </div>
+
+          <div className="mb-8 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={() => setActiveSim('stp')}
+              className={[
+                'group relative overflow-hidden rounded-xl px-6 py-3 text-sm font-semibold transition-all',
+                activeSim === 'stp' ? 'text-white' : 'text-slate-400 hover:text-white',
+              ].join(' ')}
+            >
+              {activeSim === 'stp' && (
+                <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-600/20 to-red-600/20 backdrop-blur-sm"></span>
+              )}
+              <span className="relative z-10">Systematic Transfer Plan (STP)</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveSim('mffd')}
+              className={[
+                'group relative overflow-hidden rounded-xl px-6 py-3 text-sm font-semibold transition-all',
+                activeSim === 'mffd' ? 'text-white' : 'text-slate-400 hover:text-white',
+              ].join(' ')}
+            >
+              {activeSim === 'mffd' && (
+                <span className="absolute inset-0 rounded-xl bg-gradient-to-r from-orange-600/20 to-red-600/20 backdrop-blur-sm"></span>
+              )}
+              <span className="relative z-10">MF & FD Reinvestment Planner</span>
+            </button>
+          </div>
+
+          <div className="overflow-hidden rounded-2xl border border-white/10 bg-black/60 p-6 backdrop-blur-2xl">
+            {activeSim === 'stp' ? <STPCalculator /> : <MFFDPlanner />}
           </div>
         </section>
 
