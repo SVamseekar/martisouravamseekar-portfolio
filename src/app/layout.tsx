@@ -1,32 +1,42 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { IBM_Plex_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const newsreader = Newsreader({
+  variable: "--font-display",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const ibmPlexSans = IBM_Plex_Sans({
+  variable: "--font-body",
   subsets: ["latin"],
+  weight: ["400", "500", "600"],
 });
 
 export const metadata: Metadata = {
-  title: "Soura Vamseekar Marti | ML Engineer & Data Scientist",
-  description: "Data Science & ML Systems Engineer specializing in transport analytics, hyperspectral imaging, and FinTech infrastructure. Building production-grade ML platforms and full-stack systems.",
-  keywords: ["Data Science", "Machine Learning", "ML Engineer", "Transport Analytics", "Hyperspectral Imaging", "FinTech", "Full Stack Developer"],
-  authors: [{ name: "Soura Vamseekar Marti" }],
+  title: "Marti Soura Vamseekar — AI & Infrastructure Engineer",
+  description:
+    "AI and infrastructure engineer building RAG pipelines, event-driven microservices, and EU compliance platforms: WorkforceGuard AI, EU AI Assurance OS, Aequitas. EU Blue Card eligible.",
+  keywords: [
+    "AI Engineer",
+    "Data Platform Engineer",
+    "EU Blue Card",
+    "EU AI Act",
+    "Pay Transparency Directive",
+    "RAG",
+    "Spring Boot",
+    "Vertex AI",
+    "dbt",
+  ],
+  authors: [{ name: "Marti Soura Vamseekar" }],
   openGraph: {
-    title: "Soura Vamseekar Marti | ML Engineer & Data Scientist",
-    description: "Data Science & ML Systems Engineer specializing in transport analytics, hyperspectral imaging, and FinTech infrastructure.",
+    title: "Marti Soura Vamseekar — AI & Infrastructure Engineer",
+    description:
+      "Production RAG, microservices, and EU compliance analytics. Live products at souravamseekar.com.",
     type: "website",
-    locale: "en_US",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "Soura Vamseekar Marti | ML Engineer & Data Scientist",
-    description: "Data Science & ML Systems Engineer specializing in transport analytics, hyperspectral imaging, and FinTech infrastructure.",
+    locale: "en_GB",
+    url: "https://souravamseekar.com",
   },
 };
 
@@ -37,9 +47,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${newsreader.variable} ${ibmPlexSans.variable}`}>
         {children}
       </body>
     </html>
