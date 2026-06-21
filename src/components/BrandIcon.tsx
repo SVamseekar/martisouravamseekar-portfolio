@@ -37,6 +37,7 @@ export function BrandIcon({ name, size = 20, className = "" }: BrandIconProps) {
       width={size}
       height={size}
       className={`brand-icon ${className}`.trim()}
+      data-icon={name}
       aria-hidden
     />
   );

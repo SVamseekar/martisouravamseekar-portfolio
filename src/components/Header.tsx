@@ -1,4 +1,5 @@
 import { profile } from "@/data/profile";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const nav = [
   { href: "#work", label: "Work" },
@@ -27,6 +28,7 @@ export function Header() {
         <a href={profile.cvPath} className="site-cv-link" download>
           CV
         </a>
+        <ThemeToggle />
       </div>
     </header>
   );

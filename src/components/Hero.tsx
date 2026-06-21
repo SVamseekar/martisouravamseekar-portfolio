@@ -1,4 +1,5 @@
 import { profile } from "@/data/profile";
+import { Highlight } from "@/lib/highlight";
 
 export function Hero() {
   return (
@@ -13,13 +14,9 @@ export function Hero() {
       </h1>
 
       <p className="hero-lead">
-        Delivery spans fintech AI research (Bharat Alpha), EU pay transparency
-        analytics (WorkforceGuard), government-scale geospatial intelligence
-        (Aequitas), and EU AI Act governance tooling — on Google Vertex AI, Java /
-        Spring Boot, Python, Azure Data Factory, Databricks, and GCP. M.Sc. Data
-        Science, University of Greenwich (Merit). Microsoft Azure Data Engineer
-        Associate (DP-203). Targeting {profile.targetRoles}. Based in{" "}
-        {profile.location}.
+        <Highlight
+          text={`Delivery spans fintech AI research (Bharat Alpha), EU pay transparency analytics (WorkforceGuard), government-scale geospatial intelligence (Aequitas), and EU AI Act governance tooling — on Google Vertex AI, Java / Spring Boot, Python, Azure Data Factory, Databricks, and GCP. M.Sc. Data Science, University of Greenwich (Merit). Microsoft Azure Data Engineer Associate (DP-203). Targeting ${profile.targetRoles}. Based in ${profile.location}.`}
+        />
       </p>
 
       <div className="hero-actions">

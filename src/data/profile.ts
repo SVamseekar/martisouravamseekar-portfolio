@@ -20,7 +20,11 @@ export const research = {
   author: "Marti, S. V. (2026)",
   venue: "May 2026",
   summary:
-    "Panel data econometrics and ML across a 20-country Eurostat dataset (2019–2024, 11 NACE sectors). Labour market tightness correlates positively with gender pay gaps (r = +0.41), contradicting competitive equalisation theory. Introduces the Combined Risk Quadrant (HPI × ERS) and four composite panel indices (HPI, LR, ERS, TR) via PCA-informed weighting. Implemented in WorkforceGuard with SHA-256 hash-chained governance log.",
+    "Panel data econometrics and ML across a 20-country Eurostat dataset (2019–2024, 11 NACE sectors). Labour market tightness correlates positively with gender pay gaps (r = +0.41), contradicting competitive equalisation theory. Four composite panel indices (HPI, LR, ERS, TR) via PCA-informed weighting. Implemented in WorkforceGuard with SHA-256 hash-chained governance log.",
+  methodology: {
+    name: "Combined Risk Quadrant",
+    detail: "HPI × ERS — an original framework for classifying labour-market risk profiles introduced in this paper.",
+  },
   publications: [
     {
       label: "SSRN",
@@ -143,6 +147,7 @@ export const skillGroups = [
       "scikit-learn",
       "TensorFlow",
     ],
+    featured: ["Gemini 2.5 Flash", "Google ADK", "RAG (FAISS, BM25, cross-encoder reranking)"],
   },
   {
     label: "Cloud & infrastructure",
@@ -156,6 +161,7 @@ export const skillGroups = [
       "Kubernetes",
       "GitHub Actions",
     ],
+    featured: ["Azure Data Factory", "Databricks", "GCP Cloud Run"],
   },
   {
     label: "Data engineering",
@@ -169,6 +175,7 @@ export const skillGroups = [
       "Parquet",
       "Power BI",
     ],
+    featured: ["Python", "dbt", "DuckDB"],
   },
   {
     label: "Backend & distributed systems",
@@ -182,6 +189,7 @@ export const skillGroups = [
       "Flyway",
       "Bucket4j",
     ],
+    featured: ["Java 17/21", "Spring Boot 3", "FastAPI"],
   },
   {
     label: "Databases",
@@ -195,6 +203,7 @@ export const skillGroups = [
       "SQLite",
       "DuckDB",
     ],
+    featured: ["PostgreSQL", "pgvector", "Supabase"],
   },
   {
     label: "Frontend & mobile",
@@ -207,5 +216,6 @@ export const skillGroups = [
       "shadcn/ui",
       "Tailwind CSS",
     ],
+    featured: ["TypeScript", "React 18/19", "Next.js"],
   },
 ] as const;

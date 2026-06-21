@@ -1,5 +1,6 @@
 import { IconLink } from "@/components/IconLink";
 import { research } from "@/data/profile";
+import { Highlight } from "@/lib/highlight";
 
 export function Research() {
   return (
@@ -21,7 +22,13 @@ export function Research() {
             {research.title}
           </a>
         </h3>
-        <p className="research-summary">{research.summary}</p>
+        <p className="research-summary">
+          <Highlight text={research.summary} />
+        </p>
+        <div className="research-method">
+          <span className="research-method-name">{research.methodology.name}</span>
+          <span className="research-method-detail">{research.methodology.detail}</span>
+        </div>
         <div className="icon-link-row">
           {research.publications.map((pub) => (
             <IconLink

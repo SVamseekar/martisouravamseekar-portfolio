@@ -1,6 +1,7 @@
 import { Certifications } from "@/components/Certifications";
 import { UniversityLogo } from "@/components/UniversityLogo";
 import { education, experience, skillGroups } from "@/data/profile";
+import { Highlight } from "@/lib/highlight";
 
 export function Background() {
   return (
@@ -23,7 +24,9 @@ export function Background() {
             <p className="background-entry-sector">{experience.sector}</p>
             <ul className="background-highlights">
               {experience.highlights.map((item) => (
-                <li key={item}>{item}</li>
+                <li key={item}>
+                  <Highlight text={item} />
+                </li>
               ))}
             </ul>
             <div className="background-entry-links">
@@ -69,7 +72,9 @@ export function Background() {
                     </a>
                   ))}
                 </div>
-                <p className="background-entry-text">{item.note}</p>
+                <p className="background-entry-text">
+                  <Highlight text={item.note} />
+                </p>
               </div>
             ))}
           </div>
@@ -83,7 +88,22 @@ export function Background() {
             {skillGroups.map((group) => (
               <div key={group.label} className="skills-group">
                 <p className="skills-group-label">{group.label}</p>
-                <p className="skills-group-items">{group.items.join(" · ")}</p>
+                <p className="skills-group-items">
+                  {group.items.map((item, i) => (
+                    <span key={item}>
+                      {i > 0 && " · "}
+                      <span
+                        className={
+                          (group.featured as readonly string[]).includes(item)
+                            ? "skill-item skill-item-featured"
+                            : "skill-item"
+                        }
+                      >
+                        {item}
+                      </span>
+                    </span>
+                  ))}
+                </p>
               </div>
             ))}
           </div>

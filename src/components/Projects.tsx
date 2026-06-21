@@ -1,5 +1,6 @@
 import { profile } from "@/data/profile";
 import { primaryProjects } from "@/data/projects";
+import { Highlight } from "@/lib/highlight";
 
 export function Projects() {
   return (
@@ -27,9 +28,17 @@ export function Projects() {
                     {project.name}
                   </a>
                 </h3>
-                <p className="project-tagline">{project.tagline}</p>
+                <p className="project-tagline">
+                  <Highlight text={project.tagline} />
+                </p>
               </div>
-              <span className="project-period">{project.period}</span>
+              <div className="project-item-meta">
+                <span className="live-status">
+                  <span className="live-status-dot" aria-hidden="true" />
+                  Live
+                </span>
+                <span className="project-period">{project.period}</span>
+              </div>
             </div>
 
             {project.regulation && (
@@ -38,7 +47,9 @@ export function Projects() {
 
             <ul className="project-metrics">
               {project.metrics.map((metric) => (
-                <li key={metric}>{metric}</li>
+                <li key={metric}>
+                  <Highlight text={metric} />
+                </li>
               ))}
             </ul>
 
@@ -55,18 +66,24 @@ export function Projects() {
                   href={project.liveUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="text-link"
+                  className="text-link text-link-arrow"
                 >
                   {project.liveUrl.replace("https://", "")}
+                  <span className="text-link-arrow-glyph" aria-hidden="true">
+                    →
+                  </span>
                 </a>
                 {project.githubUrl && (
                   <a
                     href={project.githubUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="text-link text-link-muted"
+                    className="text-link text-link-muted text-link-arrow"
                   >
                     Source
+                    <span className="text-link-arrow-glyph" aria-hidden="true">
+                      →
+                    </span>
                   </a>
                 )}
               </div>
