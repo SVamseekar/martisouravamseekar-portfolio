@@ -163,9 +163,6 @@ export const siteMetadata: Metadata = {
     images: [OG_IMAGE_PATH],
   },
   category: "technology",
-  verification: {
-    google: "vM0rkupHJK3T-f5TmPzsToeUijYVtnRaiBlPcLnGTzo",
-  },
 };
 
 export const siteViewport = {
