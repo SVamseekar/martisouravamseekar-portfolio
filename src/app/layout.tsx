@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import { IBM_Plex_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
-import { Analytics } from "@/components/Analytics";
 import { profile } from "@/data/profile";
+
+const GA_MEASUREMENT_ID =
+  process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim() || "";
 
 const personJsonLd = {
   "@context": "https://schema.org",
@@ -117,8 +120,10 @@ export default function RootLayout({
       </head>
       <body className={`${newsreader.variable} ${ibmPlexSans.variable}`}>
         {children}
+        {GA_MEASUREMENT_ID && process.env.NODE_ENV === "production" ? (
+          <GoogleAnalytics gaId={GA_MEASUREMENT_ID} />
+        ) : null}
       </body>
-      <Analytics />
     </html>
   );
 }
