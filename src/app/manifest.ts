@@ -1,15 +1,16 @@
 import type { MetadataRoute } from "next";
+import { DEFAULT_DESCRIPTION, DEFAULT_TITLE } from "@/lib/seo";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Marti Soura Vamseekar — AI & Infrastructure Engineer",
+    name: DEFAULT_TITLE,
     short_name: "Marti Soura Vamseekar",
-    description:
-      "AI and infrastructure engineer building RAG pipelines, event-driven microservices, and EU compliance platforms.",
+    description: DEFAULT_DESCRIPTION,
     start_url: "/",
     display: "standalone",
     background_color: "#f6f4ef",
     theme_color: "#f6f4ef",
+    lang: "en-GB",
     icons: [
       {
         src: "/apple-touch-icon.png",
