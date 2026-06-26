@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { IBM_Plex_Sans, Newsreader } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@/components/Analytics";
 import { profile } from "@/data/profile";
 
 const personJsonLd = {
@@ -117,6 +118,7 @@ export default function RootLayout({
       <body className={`${newsreader.variable} ${ibmPlexSans.variable}`}>
         {children}
       </body>
+      <Analytics />
     </html>
   );
 }
