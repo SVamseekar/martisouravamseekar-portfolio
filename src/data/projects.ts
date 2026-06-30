@@ -109,7 +109,7 @@ export const projects: Project[] = [
       "Cloud-native agentic restaurant management — 8 autonomous AI agents, 6 microservices, 3 production frontends. GDPR Art. 17 · EU VAT across 12 countries.",
     metrics: [
       "8 Google ADK 1.25 / Gemini agents with tool-use orchestration and Redis sessions",
-      "6 Spring Boot 3 / Java 21 microservices · 399 API endpoints · 11-state order machine",
+      "6 Spring Boot 3 / Java 21 microservices · 207 API endpoints · 11-state order machine",
       "Dual-write PostgreSQL + MongoDB · 3 RabbitMQ topic exchanges with DLQ",
       "React Native 0.83 crew/staff app with offline queue (1,000 actions / 30s sync)",
       "EU VAT engine (TSE, NF525, FDM, RT, NTCA) · 2-yr customer / 7-yr PCI retention",
