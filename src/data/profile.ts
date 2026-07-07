@@ -16,16 +16,22 @@ export const profile = {
 
 export const research = {
   title:
-    "Why Tight Labour Markets Do Not Close Gender Pay Gaps: Evidence from a 20-Country Eurostat Panel",
+    "Why Tight Labour Markets Do Not Close Gender Pay Gaps: Evidence from a 27-Country Eurostat Panel",
   author: "Marti, S. V. (2026)",
-  venue: "May 2026",
+  venue: "MPRA Paper No. 129330 · 2026",
   summary:
-    "Panel data econometrics and ML across a 20-country Eurostat dataset (2019–2024, 11 NACE sectors). Labour market tightness correlates positively with gender pay gaps (r = +0.41), contradicting competitive equalisation theory. Four composite panel indices (HPI, LR, ERS, TR) via PCA-informed weighting. Implemented in WorkforceGuard with SHA-256 hash-chained governance log.",
+    "Panel econometrics on a 27-country Eurostat dataset (2019–2024, 11 NACE sectors). Employment rate and gender pay gap correlate positively (r ≈ +0.44), contradicting competitive equalisation theory. Four composite indices (HPI, LR, ERS, TR) and Combined Risk Quadrant (HPI × ERS). Implemented in WorkforceGuard AI with SHA-256 hash-chained governance; live figures at workforceguardai.souravamseekar.com/app/research.",
   methodology: {
     name: "Combined Risk Quadrant",
-    detail: "HPI × ERS — an original framework for classifying labour-market risk profiles introduced in this paper.",
+    detail:
+      "HPI × ERS — integrated tightness-equity typology; finance-sector gap ~25% vs ~10.9% all-sector panel mean.",
   },
   publications: [
+    {
+      label: "MPRA",
+      href: "https://mpra.ub.uni-muenchen.de/129330/",
+      icon: "mpra",
+    },
     {
       label: "SSRN",
       href: "https://ssrn.com/abstract=6826361",
@@ -35,11 +41,6 @@ export const research = {
       label: "Zenodo",
       href: "https://doi.org/10.5281/zenodo.20455974",
       icon: "zenodo",
-    },
-    {
-      label: "MPRA",
-      href: "https://mpra.ub.uni-muenchen.de/129330/",
-      icon: "mpra",
     },
     {
       label: "ORCID",

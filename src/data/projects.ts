@@ -14,14 +14,14 @@ export const projects: Project[] = [
   {
     name: "WorkforceGuard AI",
     tagline:
-      "EU pay transparency and workforce intelligence platform — dbt + DuckDB + FastAPI + React 19.",
+      "EU pay transparency and workforce intelligence — dbt + DuckDB + FastAPI + React 19 · MPRA 129330",
     regulation: "EU Pay Transparency Directive 2023/970/EU",
     metrics: [
-      "16 Eurostat datasets (LFS, JVS, SES) across EU27 and 11 NACE sectors",
-      "28-model dbt pipeline computing HPI, LR, ERS, TR composite indices",
-      "SHA-256 hash-chained audit log for compliance evidence packs",
-      "7 ML models · Random Forest 94.7% accuracy · AUC 0.855 on 912K-record test set",
-      "Published research: r = +0.41 tightness–pay-gap correlation across 20 EU states",
+      "16 Eurostat datasets (LFS, JVS, SES) across 27 EU member states; 13 NACE sectors live (11-sector SES research panel)",
+      "Multi-layer dbt + DuckDB pipeline: HPI, LR, ERS, TR composite indices with formula versioning",
+      "SHA-256 hash-chained governance log; Directive thresholds 5% / 10% / 2% market delta",
+      "Published research: r ≈ +0.44 employment–GPG correlation (27-country panel); EU27 finance gap ~25%",
+      "Live paper figures at /app/research — same warehouse as compliance workflows",
     ],
     stack: [
       "Python",
