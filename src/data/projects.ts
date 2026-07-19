@@ -46,14 +46,15 @@ export const projects: Project[] = [
   {
     name: "EU AI Assurance OS",
     tagline:
-      "Governance control plane for EU AI Act compliance — risk classification, cited-evidence RAG, eval gates, and audit-ready evidence packs.",
-    regulation: "EU AI Act · technical documentation & conformity assessment",
+      "Multi-tenant governance control plane for EU AI Act release governance — guided risk classification, cited-evidence RAG, eval and contract gates, assisted obligation maps, certification readiness, and audit-ready evidence packs.",
+    regulation: "EU AI Act · release governance (not legal certification / notified-body)",
     metrics: [
-      "AI system registry with automated EU AI Act risk classification",
-      "Cited-evidence RAG: DJL + ONNX Runtime embeddings, pgvector HNSW, PASS / REVIEW / BLOCKED eval gates",
-      "HMAC-SHA-256 signed audit event stream and Evidence Pack JSON export",
-      "Spring Boot 3.3 backend: Flyway V1–V6, multi-tenant JPA isolation, eval worker queue",
-      "Next.js 16 dashboard with interactive DAG lineage graph (@xyflow/react)",
+      "AI system registry with guided EU AI Act risk classification (Minimal / Limited / High / Prohibited)",
+      "Cited-evidence RAG: DJL + ONNX Runtime (all-MiniLM-L6-v2), pgvector HNSW; PASS / REVIEW / BLOCKED release gates",
+      "HMAC-SHA-256 signed eval-result callbacks; hash-chained append-only audit ledger; Evidence Pack JSON + PDF",
+      "Assisted obligation determination; certification readiness score + gaps; reg monitor; 3 sector packs (insurance, HR, finance)",
+      "Spring Boot 3.3 backend: Flyway V1–V16, multi-tenant JPA, JWT + API keys, Google/Microsoft OAuth (prod smoke pending), 64 endpoints · 190 tests",
+      "Next.js 16 dashboard with interactive DAG lineage (@xyflow/react), contracts, approvals, readiness, reg monitor",
     ],
     stack: [
       "Java 17",
@@ -68,7 +69,7 @@ export const projects: Project[] = [
       "Apache Tika",
       "@xyflow/react",
     ],
-    period: "2024 – Present",
+    period: "2026 – Present",
     liveUrl: "https://euassuranceai.souravamseekar.com",
     githubUrl: "https://github.com/SVamseekar/eu-ai-assurance-os",
     priority: "primary",
