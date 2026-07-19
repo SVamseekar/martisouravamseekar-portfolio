@@ -82,7 +82,7 @@ export const projects: Project[] = [
       "103 quality checks · 0 failures · spatial join at 99.9993% accuracy",
       "Gini 0.5741 · Palma 5.702 · 4,245 zero-stop LSOAs · 612 triple-deprived communities",
       "ML: Random Forest (R² 0.472), HDBSCAN, Isolation Forest, 2SFCA accessibility scoring",
-      "FAISS RAG chatbot across 51 analytical sections and 8 policy dimensions",
+      "FAISS RAG chatbot across 55 analytical sections and 8 policy dimensions",
     ],
     stack: [
       "Python",
@@ -96,7 +96,7 @@ export const projects: Project[] = [
       "MapLibre GL",
       "D3.js",
       "Observable Plot",
-      "Supabase",
+      "Postgres session auth",
     ],
     period: "Oct 2021 – Present",
     liveUrl: "https://aequitas.souravamseekar.com",
