@@ -144,6 +144,7 @@ export const certifications = [
  * Featured = proven by selected work or Innosolv experience — not research-only methods.
  * Sources: WorkforceGuard, EU AI Assurance OS, Evident, Aequitas, MaSoVa, Bharat Alpha (exp).
  */
+/** Six groups → even 2×3 / 3×2 grid (no orphan last card). */
 export const skillGroups = [
   {
     label: "AI & GenAI",
@@ -153,8 +154,8 @@ export const skillGroups = [
       "RAG (FAISS, BM25, cross-encoder)",
       "Google ADK",
       "DJL / ONNX Runtime",
-      "MLflow adapters",
-      "LLM agents",
+      "Evidence Graph (Evident)",
+      "SARIF / OSCAL",
       "scikit-learn",
     ],
     featured: [
@@ -201,7 +202,7 @@ export const skillGroups = [
       "RabbitMQ",
       "Flyway",
       "WebSockets",
-      "REST / multi-service APIs",
+      "Hash-chained audit logs",
     ],
     featured: ["Spring Boot 3", "FastAPI", "Java 17/21"],
   },
@@ -215,6 +216,7 @@ export const skillGroups = [
       "DuckDB",
       "Supabase",
       "SQLite",
+      "MLflow",
     ],
     featured: ["PostgreSQL", "pgvector", "DuckDB"],
   },
@@ -228,23 +230,8 @@ export const skillGroups = [
       "Vite",
       "Redux Toolkit",
       "Tailwind CSS",
+      "shadcn/ui",
     ],
     featured: ["Next.js", "TypeScript", "React 18/19"],
-  },
-  {
-    label: "Governance & standards",
-    items: [
-      "EU AI Act tooling",
-      "Pay Transparency analytics",
-      "Evidence Graph (Evident)",
-      "SARIF / OSCAL reporters",
-      "Hash-chained audit logs",
-      "SHA-256 / HMAC integrity",
-    ],
-    featured: [
-      "EU AI Act tooling",
-      "Evidence Graph (Evident)",
-      "Hash-chained audit logs",
-    ],
   },
 ] as const;

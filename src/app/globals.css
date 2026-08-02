@@ -952,7 +952,7 @@ mark.keyword {
 
 .skills-grid {
   display: grid;
-  gap: 1.25rem;
+  gap: 1.35rem 1.75rem;
 }
 
 @media (min-width: 640px) {
@@ -967,18 +967,37 @@ mark.keyword {
   }
 }
 
+/* If a future odd count leaves one alone, span full row instead of a stub column */
+@media (min-width: 640px) and (max-width: 899px) {
+  .skills-grid .skills-group:last-child:nth-child(odd) {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (min-width: 900px) {
+  .skills-grid .skills-group:last-child:nth-child(3n + 1) {
+    grid-column: 1 / -1;
+  }
+}
+
+.skills-group {
+  min-width: 0;
+}
+
 .skills-group-label {
   font-size: 0.75rem;
   font-weight: 600;
   color: var(--ink-faint);
-  margin: 0 0 0.35rem;
+  margin: 0 0 0.4rem;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 
 .skills-group-items {
   font-size: 0.8125rem;
   color: var(--ink-muted);
   margin: 0;
-  line-height: 1.55;
+  line-height: 1.6;
 }
 
 .skill-item-featured {
