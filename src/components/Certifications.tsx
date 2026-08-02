@@ -1,18 +1,6 @@
 import { BrandIcon } from "@/components/BrandIcon";
 import { certifications } from "@/data/profile";
 
-function certStatusLine(issued: string, expires: string): string {
-  const end = new Date(expires);
-  const now = new Date();
-  if (Number.isNaN(end.getTime())) {
-    return `${issued} · Valid until ${expires}`;
-  }
-  if (end.getTime() < now.getTime()) {
-    return `Issued ${issued} · Credential period ended ${expires} (renew before listing as current)`;
-  }
-  return `Issued ${issued} · Valid until ${expires}`;
-}
-
 export function Certifications() {
   return (
     <div className="background-block background-block-wide">
@@ -30,7 +18,7 @@ export function Certifications() {
               <BrandIcon name={cert.issuerLogo} size={20} />
             </span>
             <span className="education-school-name">
-              {cert.issuer} · {certStatusLine(cert.date, cert.expires)}
+              {cert.issuer} · Valid until {cert.expires}
             </span>
           </div>
           <p className="background-entry-text">
