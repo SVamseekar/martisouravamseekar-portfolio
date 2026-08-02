@@ -6,10 +6,16 @@ export function Contact() {
     <section className="section section-contact" id="contact">
       <div className="section-head">
         <h2 className="section-title">Contact</h2>
-        <p className="section-desc">
-          Open to AI Engineer and Data Platform Engineer roles in Germany, the
-          Netherlands, Ireland, and Austria. EU Blue Card eligible.
-        </p>
+        <p className="section-desc">{profile.openTo}</p>
+      </div>
+
+      <div className="contact-primary">
+        <a href={`mailto:${profile.email}`} className="btn btn-primary">
+          Email me
+        </a>
+        <a href={profile.cvPath} className="btn btn-secondary" download>
+          Download CV
+        </a>
       </div>
 
       <div className="icon-link-row icon-link-row-contact">
@@ -17,11 +23,6 @@ export function Contact() {
           href={`mailto:${profile.email}`}
           icon="gmail"
           label={profile.email}
-        />
-        <IconLink
-          href={`tel:${profile.phone.replace(/\s/g, "")}`}
-          icon="phone"
-          label={profile.phone}
         />
         <IconLink
           href={profile.linkedin}
@@ -37,11 +38,9 @@ export function Contact() {
         />
       </div>
 
-      <div className="contact-cv">
-        <a href={profile.cvPath} className="text-link" download>
-          Download CV (PDF)
-        </a>
-      </div>
+      <p className="contact-note">
+        Phone on request or via CV — email preferred for first contact.
+      </p>
 
       <footer className="site-footer">
         <p>

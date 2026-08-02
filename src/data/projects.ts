@@ -1,3 +1,12 @@
+/**
+ * Selected work — souravamseekar.com
+ *
+ * Audience: EU job recruiters (AI / Data Platform) + PhD committees.
+ * Voice: CV bullets — action, system, stack, claimable metric.
+ *
+ * Locked five: WorkforceGuard · EU AI Assurance OS · Evident · Aequitas · MaSoVa
+ * Bharat Alpha → Experience (Innosolv) only.
+ */
 export type Project = {
   name: string;
   tagline: string;
@@ -5,37 +14,31 @@ export type Project = {
   metrics: string[];
   stack: string[];
   period: string;
-  liveUrl: string;
+  liveUrl?: string;
   githubUrl?: string;
-  priority: "primary" | "secondary";
+  priority: "primary";
 };
 
 export const projects: Project[] = [
   {
     name: "WorkforceGuard AI",
     tagline:
-      "EU pay transparency and workforce intelligence — dbt + DuckDB + FastAPI + React 19 · MPRA 129330",
-    regulation: "EU Pay Transparency Directive 2023/970/EU",
+      "Built an EU labour-market and pay-transparency analytics platform on dbt + DuckDB; panel research (MPRA) runs on the same warehouse as the product.",
+    regulation: "EU Pay Transparency Directive 2023/970/EU · working paper MPRA 129330",
     metrics: [
-      "16 Eurostat datasets (LFS, JVS, SES) across 27 EU member states; 13 NACE sectors live (11-sector SES research panel)",
-      "Multi-layer dbt + DuckDB pipeline: HPI, LR, ERS, TR composite indices with formula versioning",
-      "SHA-256 hash-chained governance log; Directive thresholds 5% / 10% / 2% market delta",
-      "Published research: r ≈ +0.44 employment–GPG correlation (27-country panel); EU27 finance gap ~25%",
-      "Live paper figures at /app/research — same warehouse as compliance workflows",
+      "Ingested 16 Eurostat datasets (LFS, JVS, SES) across 27 member states and 13 NACE sectors (11-sector SES research panel, 2019–2024).",
+      "Modeled HPI, LR, ERS, and TR in dbt (~31 models) on DuckDB; FastAPI and React 19 serve benchmarks and pay-gap review workflows.",
+      "Measured employment–GPG association r ≈ +0.44 (27-country panel); finance-sector GPG ~25% vs ~10.9% all-sector mean; SHA-256 hash-chained governance log.",
+      "Shipped live research figures at /app/research from the production warehouse (working paper, not peer-reviewed).",
     ],
     stack: [
       "Python",
-      "FastAPI",
       "dbt",
       "DuckDB",
+      "FastAPI",
       "React 19",
       "TypeScript",
-      "TanStack Query",
-      "Tailwind CSS 4",
-      "Vite",
-      "axe-core (a11y testing)",
-      "GCP",
-      "Vercel",
+      "Eurostat",
       "GitHub Actions",
     ],
     period: "Jan 2024 – Present",
@@ -46,28 +49,26 @@ export const projects: Project[] = [
   {
     name: "EU AI Assurance OS",
     tagline:
-      "Multi-tenant governance control plane for EU AI Act release governance — guided risk classification, cited-evidence RAG, eval and contract gates, assisted obligation maps, certification readiness, and audit-ready evidence packs.",
-    regulation: "EU AI Act · release governance (not legal certification / notified-body)",
+      "Designed a multi-tenant AI release-governance control plane (Spring Boot 3.3 + Next.js 16) for guided EU AI Act risk classes, RAG evidence, and sealed evidence packs.",
+    regulation:
+      "EU AI Act–oriented controls · assisted readiness only (not legal certification / notified body)",
     metrics: [
-      "AI system registry with guided EU AI Act risk classification (Minimal / Limited / High / Prohibited)",
-      "Cited-evidence RAG: DJL + ONNX Runtime (all-MiniLM-L6-v2), pgvector HNSW; PASS / REVIEW / BLOCKED release gates",
-      "HMAC-SHA-256 signed eval-result callbacks; hash-chained append-only audit ledger; Evidence Pack JSON + PDF",
-      "Assisted obligation determination; certification readiness score + gaps; reg monitor; 3 sector packs (insurance, HR, finance)",
-      "Spring Boot 3.3 backend: Flyway V1–V16, multi-tenant JPA, JWT + API keys, Google/Microsoft OAuth (prod smoke pending), 64 endpoints · 190 tests",
-      "Next.js 16 dashboard with interactive DAG lineage (@xyflow/react), contracts, approvals, readiness, reg monitor",
+      "Implemented Spring Boot 3.3 (Java 17) API with Flyway V1–V16, multi-tenant JPA, JWT + API keys — 64 REST endpoints and 190 automated tests.",
+      "Built cited-evidence RAG (DJL + ONNX Runtime, all-MiniLM-L6-v2, pgvector HNSW), PASS / REVIEW / BLOCKED release gates, and HMAC-SHA-256 signed eval callbacks.",
+      "Shipped hash-chained append-only audit ledger and sealed Evidence Pack exports (JSON + PDF); Next.js 16 dashboard with lineage and readiness views.",
+      "Added assisted obligation mapping and certification readiness scoring plus 3 sector packs (insurance, HR, finance) as SPI overlays — not live vendor connectors.",
     ],
     stack: [
       "Java 17",
       "Spring Boot 3.3",
+      "Flyway",
       "PostgreSQL",
       "pgvector",
       "Next.js 16",
+      "RAG",
       "DJL",
       "ONNX Runtime",
-      "HuggingFace tokenizers",
-      "AWS S3",
-      "Apache Tika",
-      "@xyflow/react",
+      "Docker",
     ],
     period: "2026 – Present",
     liveUrl: "https://euassuranceai.souravamseekar.com",
@@ -75,29 +76,49 @@ export const projects: Project[] = [
     priority: "primary",
   },
   {
-    name: "Aequitas",
+    name: "Evident",
     tagline:
-      "Public transport equity intelligence — M.Sc. dissertation extended to production. Applicable to EU, UK, Australia, NZ, and USA GTFS networks.",
+      "Open-sourced a Python library stack that turns Model Cards, approvals, and registry metadata into an Evidence Graph with deterministic, explainable findings.",
+    regulation: "Library stack · local/CI only · not a SaaS product · not legal certification",
     metrics: [
-      "1.75M GTFS trips · 13,099 routes · 274,719 stops · 33,755 LSOAs (56.5M population)",
-      "103 quality checks · 0 failures · spatial join at 99.9993% accuracy",
-      "Gini 0.5741 · Palma 5.702 · 4,245 zero-stop LSOAs · 612 triple-deprived communities",
-      "ML: Random Forest (R² 0.472), HDBSCAN, Isolation Forest, 2SFCA accessibility scoring",
-      "FAISS RAG chatbot across 55 analytical sections and 8 policy dimensions",
+      "Shipped monorepo v0.1.0: evident-core, evident-rules, evident, and evident-cli (Python 3.10+).",
+      "Defined Evidence Graph nodes/edges with bounded evidence levels; rules emit cited findings without mutating the graph.",
+      "Implemented adapters for Model Card/approval/deployment JSON, dataset manifests, and MLflow; reporters for JSON, Markdown, SARIF, and OSCAL.",
+      "Exposed scan() / CLI for local and CI use with pytest; third-party rule packs via entry points.",
     ],
     stack: [
       "Python",
-      "FastAPI",
+      "Evidence Graph",
+      "MLflow",
+      "SARIF",
+      "OSCAL",
+      "pytest",
+      "GitHub Actions",
+    ],
+    period: "2026 – Present",
+    githubUrl: "https://github.com/SVamseekar/evident",
+    priority: "primary",
+  },
+  {
+    name: "Aequitas",
+    tagline:
+      "Extended M.Sc. dissertation work into open transport-equity analytics on GTFS at nation scale (England reference): DuckDB warehouse, FastAPI, React.",
+    metrics: [
+      "Processed 1.75M GTFS trips, 13,099 routes, 274,719 stops, and 33,755 LSOAs (56.5M population) into a DuckDB warehouse with FastAPI and React.",
+      "Enforced 103 automated quality checks (0 failures) and 99.9993% spatial-join accuracy; Gini 0.5741, Palma 5.702×, 4,245 zero-stop LSOAs.",
+      "Delivered 55 analytical sections across 8 policy dimensions, including Random Forest (R² 0.472), HDBSCAN, Isolation Forest, and 2SFCA accessibility scoring.",
+      "Added FAISS + Gemini grounded chat over analytics; marketing site live — full dashboard API runs with local warehouse (cloud API deferred).",
+    ],
+    stack: [
+      "Python",
       "DuckDB",
+      "FastAPI",
       "React",
+      "GTFS",
       "FAISS",
-      "sentence-transformers",
-      "Gemini 2.5 Flash",
-      "SHAP",
+      "Gemini",
       "MapLibre GL",
-      "D3.js",
-      "Observable Plot",
-      "Postgres session auth",
+      "PostgreSQL",
     ],
     period: "Oct 2021 – Present",
     liveUrl: "https://aequitas.souravamseekar.com",
@@ -107,27 +128,23 @@ export const projects: Project[] = [
   {
     name: "MaSoVa",
     tagline:
-      "Cloud-native agentic restaurant OS — 8 AI assistants, 6 Spring Boot microservices, staff web + customer/crew React Native. EU-primary (Stripe, VAT, fiscal adapters).",
+      "Built an event-driven multi-service platform on Java 21 / Spring Boot 3 and RabbitMQ — multi-client web and React Native, dual-write data path, EU VAT and fiscal adapters.",
     metrics: [
-      "8 assistants (1 Google ADK chat + 7 ops agents) via LiteLLM; demo uses free-tier Groq; propose-only ops writes",
-      "6 Spring Boot 3 / Java 21 services · 207 REST controller mappings · 11-state order machine",
-      "Dual-write PostgreSQL + MongoDB · 3 RabbitMQ topic exchanges with DLQ · JWT + Redis",
-      "Crew app RN 0.83 + customer app RN 0.81 · POS/KDS/manager web · masova.souravamseekar.com",
-      "EU VAT config (12 markets) · fiscal adapters DE TSE · FR NF525 · IT RT · BE FDM · HU NTCA · GB MTD",
+      "Delivered 6 Spring Boot 3 services on Java 21 behind Spring Cloud Gateway with 207 canonical REST endpoints and an 11-state order lifecycle.",
+      "Ran dual-write PostgreSQL + MongoDB and RabbitMQ topic exchanges for orders/notifications; JWT + Redis for auth sessions.",
+      "Shipped multi-client surface: staff/customer web (React 19) plus customer and crew React Native apps; optional Google ADK support agent.",
+      "Implemented EU VAT for 12 markets and fiscal signing adapters (DE, FR, IT, BE, HU, GB) with Stripe SCA for EU payments.",
     ],
     stack: [
       "Java 21",
       "Spring Boot 3",
       "Spring Cloud Gateway",
-      "Google ADK 1.25",
-      "LiteLLM / Groq",
       "RabbitMQ",
+      "PostgreSQL",
+      "MongoDB",
+      "Redis",
       "React 19",
-      "MUI",
-      "Redux Toolkit",
-      "Stripe (EU)",
-      "React Native 0.83 / 0.81",
-      "Pact",
+      "React Native",
       "GCP Cloud Run",
     ],
     period: "Feb 2023 – Present",
@@ -135,64 +152,6 @@ export const projects: Project[] = [
     githubUrl: "https://github.com/SVamseekar/masova-platform",
     priority: "primary",
   },
-  {
-    name: "EmployerFlow",
-    tagline:
-      "Visa-aware employer discovery SaaS — deterministic shortlist scoring with template-based outreach, OpenAI-assisted application audits, and Stripe subscriptions.",
-    metrics: [
-      "15,000+ employer directory with visa filters",
-      "Deterministic shortlist scoring (Pro / Premium tiers)",
-      "CRM with application pack generation and AI-assisted audit",
-      "$0/month production stack (Render + Neon)",
-    ],
-    stack: [
-      "FastAPI",
-      "SQLAlchemy 2.0",
-      "Alembic",
-      "PostgreSQL",
-      "OpenAI",
-      "Stripe",
-      "JWT auth (python-jose, bcrypt)",
-      "Sentry",
-      "WeasyPrint",
-      "Vanilla JS",
-      "Docker",
-    ],
-    period: "2025 – Present",
-    liveUrl: "https://employerflow.souravamseekar.com",
-    githubUrl: "https://github.com/SVamseekar/employerflow",
-    priority: "primary",
-  },
-  {
-    name: "Bharat Alpha",
-    tagline:
-      "Institutional equity research terminal for 10 NSE sectors — hybrid RAG over annual reports with Tier-1/Tier-2 fundamental screening.",
-    metrics: [
-      "143K-chunk RAG pipeline: FAISS + BM25 + reciprocal rank fusion + cross-encoder reranking",
-      "305 annual reports · 52 Nifty 50 companies · FY2020–FY2025",
-      "Gemini 2.5 Flash with 10 Tier-1 filters and 100-point Tier-2 scoring model",
-      "SSE streaming with Supabase Auth and Postgres conversation history",
-    ],
-    stack: [
-      "Python",
-      "FastAPI",
-      "FAISS",
-      "BM25",
-      "tiktoken",
-      "structlog",
-      "yfinance",
-      "React 18",
-      "shadcn/ui",
-      "Radix UI",
-      "Supabase",
-      "pgvector",
-      "Gemini",
-    ],
-    period: "Jun 2024 – Present",
-    liveUrl: "https://bharatalpha.souravamseekar.com",
-    githubUrl: "https://github.com/SVamseekar/bharat-alpha",
-    priority: "secondary",
-  },
 ];
 
-export const primaryProjects = projects.filter((p) => p.priority === "primary");
+export const primaryProjects = projects;

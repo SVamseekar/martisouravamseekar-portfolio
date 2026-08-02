@@ -1,30 +1,46 @@
 import { profile } from "@/data/profile";
 import { Highlight } from "@/lib/highlight";
 
+const proofLines = [
+  "WorkforceGuard — dbt + DuckDB EU labour-market platform; MPRA working paper on the same warehouse.",
+  "EU AI Assurance OS + Evident — Spring Boot / Next.js governance control plane and Python Evidence Graph libraries.",
+  "Aequitas + MaSoVa — nation-scale GTFS equity analytics (M.Sc. lineage) and Java 21 / RabbitMQ multi-service systems.",
+  "Innosolv — production RAG (FAISS, BM25, Gemini 2.5 Flash) and trading infrastructure.",
+] as const;
+
 export function Hero() {
   return (
     <section className="hero" id="top">
-      <p className="hero-eyebrow">
-        {profile.blueCard} · Open to relocation: {profile.relocation}
-      </p>
+      <p className="hero-eyebrow">{profile.heroEyebrow}</p>
 
       <h1 className="hero-title">
-        AI and infrastructure engineer building production RAG pipelines,
-        event-driven microservices, and EU compliance analytics.
+        AI and data platform engineer building production systems and
+        research-backed analytics for EU roles.
       </h1>
 
-      <p className="hero-lead">
+      <ul className="hero-proof">
+        {proofLines.map((line) => (
+          <li key={line}>
+            <Highlight text={line} />
+          </li>
+        ))}
+      </ul>
+
+      <p className="hero-meta">
         <Highlight
-          text={`Delivery spans fintech AI research (Bharat Alpha), EU pay transparency analytics (WorkforceGuard), government-scale geospatial intelligence (Aequitas), and EU AI Act governance tooling — on Google Vertex AI, Java / Spring Boot, Python, Azure Data Factory, Databricks, and GCP. M.Sc. Data Science, University of Greenwich (Merit). Microsoft Azure Data Engineer Associate (DP-203). Targeting ${profile.targetRoles}. Based in ${profile.location}.`}
+          text={`Python · Java 17/21 · Spring Boot 3 · dbt · DuckDB · FastAPI · Next.js · Vertex AI · Azure · GCP. M.Sc. Data Science, University of Greenwich (Merit). Azure DP-203. Targeting ${profile.targetRoles}. Based in ${profile.location}.`}
         />
       </p>
 
       <div className="hero-actions">
         <a href="#work" className="btn btn-primary">
-          View live products
+          View selected work
         </a>
         <a href={profile.cvPath} className="btn btn-secondary" download>
           Download CV
+        </a>
+        <a href={`mailto:${profile.email}`} className="btn btn-secondary">
+          Email me
         </a>
       </div>
     </section>

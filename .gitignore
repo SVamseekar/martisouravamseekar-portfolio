@@ -40,3 +40,13 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .env*.local
+.desk-password.local
+
+# local research dumps / screenshots (not site source)
+/*.md
+!README.md
+/screenshot*.png
+/SouraVamseekarMarti_CV.pdf
+/public/icons/.next/
+/MaSoVa_project_phases.md
+/DOMAINS.md

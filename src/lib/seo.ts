@@ -9,7 +9,7 @@ export const SITE_LOCALE = "en_GB";
 export const DEFAULT_TITLE = `${profile.name} — ${profile.title}`;
 
 export const DEFAULT_DESCRIPTION =
-  "AI and infrastructure engineer building RAG pipelines, event-driven microservices, and EU compliance platforms: WorkforceGuard AI, EU AI Assurance OS, Aequitas. EU Blue Card eligible.";
+  "AI and data platform engineer for EU roles — production analytics, AI governance systems, and research implemented in software. EU Blue Card eligible. Open to AI Engineer and Data Platform Engineer roles in the European Union.";
 
 export const SITE_KEYWORDS = [
   profile.name,
@@ -17,17 +17,16 @@ export const SITE_KEYWORDS = [
   "Data Platform Engineer",
   "Infrastructure Engineer",
   "EU Blue Card",
-  "EU AI Act",
-  "Pay Transparency Directive",
+  "EU",
+  "Europe",
   "RAG",
   "Spring Boot",
-  "Vertex AI",
-  "dbt",
   "FastAPI",
+  "dbt",
   "Next.js",
-  "Hyderabad",
-  "Germany",
-  "Netherlands",
+  "Vertex AI",
+  "EU AI Act",
+  "Pay Transparency",
 ];
 
 export const OG_IMAGE_PATH = "/opengraph-image";
@@ -51,11 +50,24 @@ export function buildPersonSchema() {
       addressLocality: profile.location,
     },
     knowsAbout: [
+      "AI Engineer",
+      "Data Platform Engineer",
+      "Infrastructure Engineer",
       "Retrieval-augmented generation",
-      "EU AI Act compliance",
-      "EU Pay Transparency Directive",
+      "RAG",
+      "Spring Boot",
+      "FastAPI",
+      "dbt",
+      "Next.js",
+      "Vertex AI",
+      "EU Blue Card",
+      "EU",
+      "Europe",
+      "EU AI Act",
+      "Pay Transparency",
       "Data engineering",
       "Event-driven microservices",
+      "Executable governance evidence",
     ],
   };
 }
@@ -92,16 +104,19 @@ export function buildProjectsItemListSchema() {
     "@type": "ItemList",
     name: "Selected engineering projects",
     itemListElement: projects.map((project, index) => ({
-      "@type": "ListItem",
-      position: index + 1,
-      item: {
-        "@type": "SoftwareApplication",
-        name: project.name,
-        description: project.tagline,
-        url: project.liveUrl,
-        applicationCategory: "BusinessApplication",
-      },
-    })),
+        "@type": "ListItem",
+        position: index + 1,
+        item: {
+          "@type": "SoftwareApplication",
+          name: project.name,
+          description: project.tagline,
+          url: project.liveUrl ?? project.githubUrl,
+          applicationCategory:
+            project.name === "Evident"
+              ? "DeveloperApplication"
+              : "BusinessApplication",
+        },
+      })),
   };
 }
 
@@ -140,8 +155,7 @@ export const siteMetadata: Metadata = {
   },
   openGraph: {
     title: DEFAULT_TITLE,
-    description:
-      "Production RAG, microservices, and EU compliance analytics. Live products at souravamseekar.com.",
+    description: DEFAULT_DESCRIPTION,
     type: "website",
     locale: SITE_LOCALE,
     url: SITE_URL,
@@ -158,8 +172,7 @@ export const siteMetadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: DEFAULT_TITLE,
-    description:
-      "Production RAG, microservices, and EU compliance analytics. Live products at souravamseekar.com.",
+    description: DEFAULT_DESCRIPTION,
     images: [OG_IMAGE_PATH],
   },
   category: "technology",
