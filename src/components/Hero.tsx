@@ -15,7 +15,7 @@ export function Hero() {
 
       <h1 className="hero-title">
         AI and data platform engineer building production systems and
-        research-backed analytics for EU roles.
+        research-backed analytics.
       </h1>
 
       <ul className="hero-proof">

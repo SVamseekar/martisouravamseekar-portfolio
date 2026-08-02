@@ -9,7 +9,7 @@ export const SITE_LOCALE = "en_GB";
 export const DEFAULT_TITLE = `${profile.name} — ${profile.title}`;
 
 export const DEFAULT_DESCRIPTION =
-  "AI and data platform engineer for EU roles — production analytics, AI governance systems, and research implemented in software. EU Blue Card eligible. Open to AI Engineer and Data Platform Engineer roles in the European Union.";
+  "AI and data platform engineer — production analytics, AI governance systems, and research implemented in software. Open to AI Engineer and Data Platform Engineer roles in the European Union. EU Blue Card eligible.";
 
 export const SITE_KEYWORDS = [
   profile.name,
