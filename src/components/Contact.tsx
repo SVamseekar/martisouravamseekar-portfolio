@@ -38,10 +38,6 @@ export function Contact() {
         />
       </div>
 
-      <p className="contact-note">
-        Phone on request or via CV — email preferred for first contact.
-      </p>
-
       <footer className="site-footer">
         <p>
           © {new Date().getFullYear()} {profile.name}. Built with Next.js and
