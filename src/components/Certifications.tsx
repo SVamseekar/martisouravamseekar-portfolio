@@ -17,9 +17,7 @@ export function Certifications() {
             <span className="university-logo-frame certification-logo-frame">
               <BrandIcon name={cert.issuerLogo} size={20} />
             </span>
-            <span className="education-school-name">
-              {cert.issuer} · Valid until {cert.expires}
-            </span>
+            <span className="education-school-name">{cert.issuer}</span>
           </div>
           <p className="background-entry-text">
             Credential ID: {cert.credentialId} · Certification no.{" "}

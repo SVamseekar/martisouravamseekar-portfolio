@@ -51,7 +51,7 @@ export const projects: Project[] = [
     tagline:
       "Designed a multi-tenant AI release-governance control plane (Spring Boot 3.3 + Next.js 16) for guided EU AI Act risk classes, RAG evidence, and sealed evidence packs.",
     regulation:
-      "EU AI Act–oriented controls · assisted readiness only (not legal certification / notified body)",
+      "EU AI Act–oriented controls",
     metrics: [
       "Implemented Spring Boot 3.3 (Java 17) API with Flyway V1–V16, multi-tenant JPA, JWT + API keys — 64 REST endpoints and 190 automated tests.",
       "Built cited-evidence RAG (DJL + ONNX Runtime, all-MiniLM-L6-v2, pgvector HNSW), PASS / REVIEW / BLOCKED release gates, and HMAC-SHA-256 signed eval callbacks.",
@@ -79,7 +79,7 @@ export const projects: Project[] = [
     name: "Evgraph",
     tagline:
       "Open-sourced a Python library stack that turns Model Cards, approvals, and registry metadata into an Evidence Graph with deterministic, explainable findings.",
-    regulation: "Library stack · local/CI only · not a SaaS product · not legal certification",
+    regulation: "Library stack · local/CI only",
     metrics: [
       "Shipped monorepo v0.1.0: evgraph-core, evgraph-rules, evgraph, and evgraph-cli (Python 3.10+).",
       "Defined Evidence Graph nodes/edges with bounded evidence levels; rules emit cited findings without mutating the graph.",

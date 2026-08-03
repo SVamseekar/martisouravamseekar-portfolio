@@ -28,7 +28,7 @@ export function Hero() {
 
       <p className="hero-meta">
         <Highlight
-          text={`Python · Java 17/21 · Spring Boot 3 · dbt · DuckDB · FastAPI · Next.js · Vertex AI · Azure · GCP. M.Sc. Data Science, University of Greenwich (Merit). Azure DP-203. Targeting ${profile.targetRoles}. Based in ${profile.location}.`}
+          text={`Python · Java 17/21 · Spring Boot 3 · dbt · DuckDB · FastAPI · Next.js · Vertex AI · Azure · GCP. M.Sc. Data Science, University of Greenwich (Merit). Azure DP-203. Specializing in ${profile.targetRoles}, based in ${profile.location}.`}
         />
       </p>
 

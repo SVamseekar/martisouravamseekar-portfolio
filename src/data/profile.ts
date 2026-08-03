@@ -129,7 +129,6 @@ export const certifications = [
     issuer: "Microsoft",
     issuerLogo: "microsoft",
     date: "12 March 2025",
-    expires: "13 March 2026",
     credentialId: "CEA6999835BAD6E",
     certificationNumber: "0FB756-C158AR",
     document: {
