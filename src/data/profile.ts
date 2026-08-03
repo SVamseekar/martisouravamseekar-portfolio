@@ -142,7 +142,7 @@ export const certifications = [
 /**
  * Skills for EU AI Engineer / Data Platform hiring (+ PhD-adjacent stack).
  * Featured = proven by selected work or Innosolv experience — not research-only methods.
- * Sources: WorkforceGuard, EU AI Assurance OS, Evident, Aequitas, MaSoVa, Bharat Alpha (exp).
+ * Sources: WorkforceGuard, EU AI Assurance OS, Evgraph, Aequitas, MaSoVa, Bharat Alpha (exp).
  */
 /** Six groups → even 2×3 / 3×2 grid (no orphan last card). */
 export const skillGroups = [
@@ -154,7 +154,7 @@ export const skillGroups = [
       "RAG (FAISS, BM25, cross-encoder)",
       "Google ADK",
       "DJL / ONNX Runtime",
-      "Evidence Graph (Evident)",
+      "Evidence Graph (Evgraph)",
       "SARIF / OSCAL",
       "scikit-learn",
     ],

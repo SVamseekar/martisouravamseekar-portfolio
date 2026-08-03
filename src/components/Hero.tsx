@@ -3,7 +3,7 @@ import { Highlight } from "@/lib/highlight";
 
 const proofLines = [
   "WorkforceGuard — dbt + DuckDB EU labour-market platform; MPRA working paper on the same warehouse.",
-  "EU AI Assurance OS + Evident — Spring Boot / Next.js governance control plane and Python Evidence Graph libraries.",
+  "EU AI Assurance OS + Evgraph — Spring Boot / Next.js governance control plane and Python Evidence Graph libraries.",
   "Aequitas + MaSoVa — nation-scale GTFS equity analytics (M.Sc. lineage) and Java 21 / RabbitMQ multi-service systems.",
   "Innosolv — production RAG (FAISS, BM25, Gemini 2.5 Flash) and trading infrastructure.",
 ] as const;

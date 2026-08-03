@@ -4,7 +4,7 @@
  * Audience: EU job recruiters (AI / Data Platform) + PhD committees.
  * Voice: CV bullets — action, system, stack, claimable metric.
  *
- * Locked five: WorkforceGuard · EU AI Assurance OS · Evident · Aequitas · MaSoVa
+ * Locked five: WorkforceGuard · EU AI Assurance OS · Evgraph · Aequitas · MaSoVa
  * Bharat Alpha → Experience (Innosolv) only.
  */
 export type Project = {
@@ -76,12 +76,12 @@ export const projects: Project[] = [
     priority: "primary",
   },
   {
-    name: "Evident",
+    name: "Evgraph",
     tagline:
       "Open-sourced a Python library stack that turns Model Cards, approvals, and registry metadata into an Evidence Graph with deterministic, explainable findings.",
     regulation: "Library stack · local/CI only · not a SaaS product · not legal certification",
     metrics: [
-      "Shipped monorepo v0.1.0: evident-core, evident-rules, evident, and evident-cli (Python 3.10+).",
+      "Shipped monorepo v0.1.0: evgraph-core, evgraph-rules, evgraph, and evgraph-cli (Python 3.10+).",
       "Defined Evidence Graph nodes/edges with bounded evidence levels; rules emit cited findings without mutating the graph.",
       "Implemented adapters for Model Card/approval/deployment JSON, dataset manifests, and MLflow; reporters for JSON, Markdown, SARIF, and OSCAL.",
       "Exposed scan() / CLI for local and CI use with pytest; third-party rule packs via entry points.",
@@ -96,7 +96,7 @@ export const projects: Project[] = [
       "GitHub Actions",
     ],
     period: "2026 – Present",
-    githubUrl: "https://github.com/SVamseekar/evident",
+    githubUrl: "https://github.com/SVamseekar/evgraph",
     priority: "primary",
   },
   {

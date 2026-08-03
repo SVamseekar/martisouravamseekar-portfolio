@@ -112,7 +112,7 @@ export function buildProjectsItemListSchema() {
           description: project.tagline,
           url: project.liveUrl ?? project.githubUrl,
           applicationCategory:
-            project.name === "Evident"
+            project.name === "Evgraph"
               ? "DeveloperApplication"
               : "BusinessApplication",
         },
