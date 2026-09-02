@@ -1,14 +1,14 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
-import { Boundary, Defs, Edge, Label, Node, Packet } from "./parts";
+import { Boundary, Defs, Label, Node, Route } from "./parts";
 
 /**
- * moveq — a library, drawn as a function.
+ * moveq — the four packages, and what each one is for.
  *
- * Data in on the left, measures out on the right, and the harmonization
- * contract as a boundary around the cross-country case. The contract is the
- * distinctive idea: an omission has to be declared, not silently dropped.
+ * The stack is the subject: core computes, catalogue governs cross-country
+ * method, cli drives it, and the meta package installs the pair. Showing only
+ * the core made it look like a single-module library, which undersold it.
  */
 export function MoveqExplainer() {
   const measures = [
@@ -24,49 +24,60 @@ export function MoveqExplainer() {
     { key: "omit", detail: "declared, not hidden", tone: "warn" as const },
   ];
 
-  const colOut = 372;
-  const wOut = 168;
-  const outY = (i: number) => 56 + i * 58;
-  const outMid = (i: number) => outY(i) + 23;
+  const colIn = 24;
+  const wIn = 150;
+  const colCore = 214;
+  const wCore = 138;
+  const colOut = 400;
+  const wOut = 150;
+  const colCat = 578;
+  const wCat = 118;
+
+  const outY = (i: number) => 74 + i * 46;
+  const outMid = (i: number) => outY(i) + 19;
+  const axis = 150;
 
   return (
     <ExplainerFrame
       kicker="Library"
-      caption="A CSV in, standard measures out. Cross-country work must declare how each measure travels — so an omission appears in the output."
-      description="A CSV of trips per area, population counts and deprivation ranks is read by a pure NumPy core with no required input-output or geospatial dependencies. It computes population-weighted Gini, the Palma ratio, the Wagstaff concentration index and a configurable composite accessibility score. For cross-country work, a catalogue holds a harmonization contract where each measure is declared as the same, replaced by a national equivalent, or omitted, so omissions are explicit rather than silent. A command-line interface exposes the same functions."
+      caption="Four packages: a NumPy core that computes, a catalogue that governs how methods travel, a CLI that drives them, and a meta package that installs the pair."
+      description="A CSV of trips per area, population counts and deprivation ranks is read by moveq-core, a pure NumPy layer with no required input-output or geospatial dependencies. It computes population-weighted Gini, the Palma ratio, the Wagstaff concentration index and a configurable composite accessibility score. moveq-catalogue holds a harmonization registry where each measure in a cross-country study is declared as the same, replaced by a national equivalent, or omitted, so omissions are explicit. moveq-cli exposes the same functions as a command line, and the moveq meta package installs core and catalogue together."
     >
       {({ motion }) => (
         <svg
-          viewBox="0 0 720 330"
+          viewBox="0 0 720 360"
           className="explainer-svg"
           role="img"
-          aria-label="moveq computing inequality measures under a harmonization contract"
+          aria-label="The four moveq packages and the measures they compute"
         >
           <Defs />
 
           {/* ---- Input ---- */}
-          <Label x={24} y={40} step="s1">
+          <Label x={colIn} y={44} step="s1">
             Input
           </Label>
           <Node
-            x={24}
-            y={110}
-            w={150}
+            x={colIn}
+            y={axis - 29}
+            w={wIn}
             h={58}
             label="areas.csv"
-            detail="trips · population · rank"
+            detail="trips · population"
             kind="external"
             step="s1"
           />
 
-          <Edge d="M 174,139 H 216" kind="sync" flow />
-          <Packet path="M 174,139 H 216" dur={1.2} count={2} enabled={motion} />
+          <Route
+            d={`M ${colIn + wIn},${axis} H ${colCore}`}
+            motion={motion}
+            dur={1.2}
+          />
 
           {/* ---- Core ---- */}
           <Node
-            x={216}
-            y={110}
-            w={130}
+            x={colCore}
+            y={axis - 29}
+            w={wCore}
             h={58}
             label="moveq-core"
             detail="pure NumPy"
@@ -76,86 +87,86 @@ export function MoveqExplainer() {
             step="s2"
           />
 
-          {/* ---- Measures ---- */}
-          <Label x={colOut} y={40} step="s3">
+          {/* ---- Measures: every branch carries traffic ---- */}
+          <Label x={colOut} y={44} step="s3">
             Measures
           </Label>
-          {measures.map((measure, i) => {
-            const d = `M 346,139 H ${colOut - 24} V ${outMid(i)} H ${colOut}`;
-            return (
-              <g key={measure.label}>
-                <Edge d={d} kind="sync" head flow={i === 1} />
-                <Node
-                  x={colOut}
-                  y={outY(i)}
-                  w={wOut}
-                  h={40}
-                  label={measure.label}
-                  detail={measure.detail}
-                  kind="service"
-                  active
-                  phase={`q${i}`}
-                  step={`s${3 + i}`}
-                />
-              </g>
-            );
-          })}
+          {measures.map((measure, i) => (
+            <Route
+              key={`to-${measure.label}`}
+              d={`M ${colCore + wCore},${axis} H ${colOut - 24} V ${outMid(i)} H ${colOut}`}
+              motion={motion}
+              dur={1.6}
+              begin={0.3 + i * 0.35}
+            />
+          ))}
+          {measures.map((measure, i) => (
+            <Node
+              key={measure.label}
+              x={colOut}
+              y={outY(i)}
+              w={wOut}
+              h={38}
+              label={measure.label}
+              detail={measure.detail}
+              kind="service"
+              active
+              phase={`q${i}`}
+              step={`s${3 + i}`}
+            />
+          ))}
 
-          <Packet
-            path={`M 346,139 H ${colOut - 24} V ${outMid(0)} H ${colOut}`}
-            dur={1.5}
-            begin={0.8}
-            enabled={motion}
-          />
-          <Packet
-            path={`M 346,139 H ${colOut - 24} V ${outMid(3)} H ${colOut}`}
-            dur={1.5}
-            begin={1.4}
-            enabled={motion}
-          />
-
-          {/* ---- Harmonization contract ---- */}
-          <Boundary x={566} y={40} w={130} h={238} label="Catalogue" step="s8" />
-
-          <text className="dg-note dg-in s8" x={580} y={78}>
+          {/* ---- Catalogue: the cross-country contract ---- */}
+          <Boundary x={colCat} y={62} w={wCat} h={196} label="Catalogue" step="s8" />
+          <text className="dg-note dg-in s8" x={colCat + 14} y={98}>
             cross-country
           </text>
-          <text className="dg-note dg-in s8" x={580} y={94}>
-            contract
-          </text>
+
+          <Route
+            d={`M ${colOut + wOut},${outMid(1)} H ${colCat}`}
+            kind="lineage"
+            motion={motion}
+          />
 
           {contracts.map((contract, i) => (
             <g key={contract.key} className={`dg-in s${9 + i}`}>
               <circle
-                cx={588}
-                cy={128 + i * 48}
+                cx={colCat + 20}
+                cy={128 + i * 42}
                 r="5"
                 className={`dg-dot dg-packet-${contract.tone}`}
               />
-              <text className={`dg-note-strong dg-text-${contract.tone}`} x={602} y={132 + i * 48}>
+              <text
+                className={`dg-note-strong dg-text-${contract.tone}`}
+                x={colCat + 34}
+                y={132 + i * 42}
+              >
                 {contract.key}
               </text>
-              <text className="dg-note" x={580} y={148 + i * 48}>
+              <text className="dg-note" x={colCat + 14} y={148 + i * 42}>
                 {contract.detail}
               </text>
             </g>
           ))}
 
-          <Edge d="M 540,139 H 566" kind="lineage" />
+          {/* ---- The stack ---- */}
+          <Boundary x={colIn} y={272} w={672} h={72} label="Four packages on PyPI" step="s12" />
 
-          {/* ---- CLI ---- */}
-          <Node
-            x={24}
-            y={272}
-            w={516}
-            h={40}
-            label="moveq gini areas.csv --population pop --value trips"
-            kind="external"
-            step="s12"
-          />
-          <text className="dg-note dg-in s12" x={556} y={296} textAnchor="end">
-            moveq-cli
-          </text>
+          {[
+            { name: "moveq-core", role: "algorithms" },
+            { name: "moveq-catalogue", role: "method contracts" },
+            { name: "moveq-cli", role: "command line" },
+            { name: "moveq", role: "installs the pair" },
+          ].map((pkg, i) => (
+            <g key={pkg.name} className={`dg-in s${12 + Math.min(i, 3)}`}>
+              <text className="dg-note-strong" x={colIn + 18 + i * 166} y={306}>
+                {pkg.name}
+              </text>
+              <text className="dg-note" x={colIn + 18 + i * 166} y={324}>
+                {pkg.role}
+              </text>
+            </g>
+          ))}
         </svg>
       )}
     </ExplainerFrame>

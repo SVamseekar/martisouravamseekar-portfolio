@@ -1,29 +1,26 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
-import { Boundary, Defs, Edge, Label, Node, Packet } from "./parts";
+import { Boundary, Defs, Label, Node, Route } from "./parts";
 
 /**
- * MaSoVa — the platform, laid out as a symmetric left-to-right flow.
+ * MaSoVa — the platform as one symmetric left-to-right machine.
  *
- * Services are named for what they do rather than for their module name, and
- * local port numbers are omitted: they describe a developer's laptop, not the
- * architecture. Columns are evenly spaced and vertically centred on a shared
- * axis so the diagram reads as one machine.
+ * Every connection is a Route, so every arrow carries traffic: a reader can
+ * follow any path and see it used, rather than wondering why one branch moves
+ * and its neighbour does not.
  */
 export function MasovaArchitecture() {
-  // Column geometry — fixed x positions keep the three bands aligned.
   const colClient = 24;
-  const colGateway = 214;
+  const colGateway = 220;
   const colService = 376;
   const colStore = 566;
 
-  const wClient = 140;
-  const wGateway = 118;
+  const wClient = 148;
+  const wGateway = 112;
   const wService = 150;
   const wStore = 130;
 
-  // Five clients and five services, both centred on the same axis (y = 190).
   const clients = [
     { label: "Customer web", detail: "browse · order" },
     { label: "Customer app", detail: "React Native" },
@@ -49,11 +46,20 @@ export function MasovaArchitecture() {
   const rowY = (i: number) => topY + i * pitch;
   const rowMid = (i: number) => rowY(i) + rowH / 2;
 
+  // Bus geometry: clients gather on one vertical, the gateway fans out on another.
+  const busIn = colGateway - 30;
+  const busOut = colService - 30;
+
+  const inPath = (i: number) =>
+    `M ${colClient + wClient},${rowMid(i)} H ${busIn} V ${axis} H ${colGateway}`;
+  const outPath = (i: number) =>
+    `M ${colGateway + wGateway},${axis} H ${busOut} V ${rowMid(i)} H ${colService}`;
+
   return (
     <ExplainerFrame
       kicker="Architecture"
       caption="Five surfaces, one gateway, five services. Money commits synchronously; everything else learns by event."
-      description="Five client surfaces — customer web, customer mobile app, crew app, kitchen display and point of sale — call a single API gateway that handles authentication and routing. The gateway fans out to five services: orders and menu, commerce covering pricing and VAT, payments, delivery, and intelligence. Services write to PostgreSQL synchronously for financial records, project to MongoDB asynchronously for read models, and use Redis for sessions. Every order state transition publishes to a topic exchange, which fans out to the kitchen display, crew app, customer notifications and analytics."
+      description="Five client surfaces — customer web, customer mobile app, crew app, kitchen display and point of sale — call a single API gateway handling authentication and routing. The gateway fans out to five services: orders and menu, commerce, payments, delivery and intelligence. Orders commit to PostgreSQL synchronously for financial truth, project to MongoDB asynchronously for read models, and use Redis for sessions. Every order state transition publishes to a topic exchange that fans out to the kitchen and crew apps, customer notifications and analytics."
     >
       {({ motion }) => (
         <svg
@@ -81,29 +87,17 @@ export function MasovaArchitecture() {
             />
           ))}
 
-          {/* Clients converge on the gateway — fan-in. */}
-          {clients.map((_, i) => (
-            <Edge
-              key={`in-${i}`}
-              d={`M ${colClient + wClient},${rowMid(i)} H ${colGateway - 28} V ${axis} H ${colGateway}`}
-              kind="sync"
+          {/* Every surface calls the gateway, and every one shows it. */}
+          {clients.map((client, i) => (
+            <Route
+              key={`in-${client.label}`}
+              d={inPath(i)}
               head={i === 2}
-              flow={i === 2}
+              motion={motion}
+              dur={2.2}
+              begin={i * 0.4}
             />
           ))}
-
-          <Packet
-            path={`M ${colClient + wClient},${rowMid(0)} H ${colGateway - 28} V ${axis} H ${colGateway}`}
-            dur={2.4}
-            count={2}
-            enabled={motion}
-          />
-          <Packet
-            path={`M ${colClient + wClient},${rowMid(3)} H ${colGateway - 28} V ${axis} H ${colGateway}`}
-            dur={2.4}
-            begin={0.8}
-            enabled={motion}
-          />
 
           {/* ---------- Gateway ---------- */}
           <Node
@@ -120,39 +114,21 @@ export function MasovaArchitecture() {
             centre
           />
 
-          {/* Gateway fans out to the services. */}
-          {services.map((_, i) => (
-            <Edge
-              key={`out-${i}`}
-              d={`M ${colGateway + wGateway},${axis} H ${colService - 28} V ${rowMid(i)} H ${colService}`}
-              kind="sync"
-              flow={i < 3}
-            />
-          ))}
-
-          <Packet
-            path={`M ${colGateway + wGateway},${axis} H ${colService - 28} V ${rowMid(0)} H ${colService}`}
-            dur={1.6}
-            begin={0.4}
-            enabled={motion}
-          />
-          <Packet
-            path={`M ${colGateway + wGateway},${axis} H ${colService - 28} V ${rowMid(2)} H ${colService}`}
-            dur={1.6}
-            begin={1.1}
-            enabled={motion}
-          />
-          <Packet
-            path={`M ${colGateway + wGateway},${axis} H ${colService - 28} V ${rowMid(4)} H ${colService}`}
-            dur={1.6}
-            begin={1.8}
-            enabled={motion}
-          />
-
           {/* ---------- Services ---------- */}
           <Label x={colService} y={54} step="s7">
             Services
           </Label>
+
+          {services.map((service, i) => (
+            <Route
+              key={`out-${service.label}`}
+              d={outPath(i)}
+              motion={motion}
+              dur={1.7}
+              begin={0.3 + i * 0.34}
+            />
+          ))}
+
           {services.map((service, i) => (
             <Node
               key={service.label}
@@ -168,10 +144,34 @@ export function MasovaArchitecture() {
             />
           ))}
 
-          {/* ---------- Stores ---------- */}
+          {/* ---------- State ---------- */}
           <Label x={colStore} y={54} step="s12">
             State
           </Label>
+
+          {/* Money commits first, synchronously. */}
+          <Route
+            d={`M ${colService + wService},${rowMid(0)} H ${colStore}`}
+            motion={motion}
+            dur={1.1}
+            tone="live"
+          />
+          {/* Read models and sessions follow asynchronously — and are shown doing so. */}
+          <Route
+            d={`M ${colService + wService},${rowMid(1)} H ${colStore}`}
+            kind="async"
+            motion={motion}
+            dur={1.4}
+            begin={0.5}
+          />
+          <Route
+            d={`M ${colService + wService},${rowMid(2)} H ${colStore}`}
+            kind="async"
+            motion={motion}
+            dur={1.4}
+            begin={1}
+          />
+
           <Node
             x={colStore}
             y={rowY(0)}
@@ -201,30 +201,17 @@ export function MasovaArchitecture() {
             step="s13"
           />
 
-          {/* Money commits synchronously; projections follow asynchronously. */}
-          <Edge
-            d={`M ${colService + wService},${rowMid(0)} H ${colStore}`}
-            kind="sync"
-            flow
-          />
-          <Packet
-            path={`M ${colService + wService},${rowMid(0)} H ${colStore}`}
-            dur={1.2}
-            tone="live"
-            enabled={motion}
-          />
-
-          <Edge
-            d={`M ${colService + wService},${rowMid(1)} H ${colStore}`}
-            kind="async"
-          />
-          <Edge
-            d={`M ${colService + wService},${rowMid(2)} H ${colStore}`}
-            kind="async"
-          />
-
-          {/* ---------- Event band ---------- */}
+          {/* ---------- Events ---------- */}
           <Boundary x={24} y={352} w={672} h={84} label="Events" step="s14" />
+
+          {/* Services publish into the exchange, down the right of the column. */}
+          <Route
+            d={`M ${colService + wService / 2},${rowY(4) + rowH} V 336 H 118 V 374`}
+            kind="async"
+            motion={motion}
+            dur={2.2}
+            begin={0.4}
+          />
 
           <Node
             x={44}
@@ -238,22 +225,22 @@ export function MasovaArchitecture() {
             step="s14"
           />
 
-          {/* Services publish into the exchange. */}
-          <Edge
-            d={`M ${colService + wService / 2},${rowY(4) + 46} V 338 H 138 V 374`}
+          {/* The exchange fans out to both consumer groups. */}
+          <Route
+            d="M 232,397 H 404"
             kind="async"
-            flow
+            motion={motion}
+            dur={1.5}
+            count={2}
+            tone="live"
           />
-          <Packet
-            path={`M ${colService + wService / 2},${rowY(4) + 46} V 338 H 138 V 374`}
-            dur={2}
-            begin={0.6}
-            enabled={motion}
+          <Route
+            d="M 536,397 H 548"
+            kind="async"
+            motion={motion}
+            dur={0.7}
+            tone="live"
           />
-
-          {/* The exchange fans out to every surface that cares. */}
-          <Edge d="M 232,397 H 396" kind="async" flow />
-          <Packet path="M 232,397 H 396" dur={1.5} count={2} tone="live" enabled={motion} />
 
           <Node
             x={404}
@@ -273,8 +260,6 @@ export function MasovaArchitecture() {
             kind="client"
             step="s16"
           />
-
-          <Edge d="M 536,397 H 548" kind="async" head={false} />
         </svg>
       )}
     </ExplainerFrame>

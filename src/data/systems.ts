@@ -47,6 +47,8 @@ export type System = {
     readonly why: string;
   }[];
   readonly stack: readonly string[];
+  /** What each technology does in this system — the part worth reading. */
+  readonly stackRoles?: Readonly<Record<string, string>>;
   /** Countable evidence shown beside the diagram. */
   readonly figures: readonly { readonly value: string; readonly label: string }[];
 };
@@ -113,6 +115,15 @@ export const systems: readonly System[] = [
       },
     ],
     stack: ["Python", "dbt", "DuckDB", "FastAPI", "React", "TypeScript", "GCP"],
+    stackRoles: {
+      Python: "ingestion and metrics",
+      dbt: "layered transformation",
+      DuckDB: "embedded warehouse",
+      FastAPI: "evidence bundles",
+      React: "benchmark workflows",
+      TypeScript: "typed client",
+      GCP: "container deploys",
+    },
     figures: [
       { value: "27", label: "member states" },
       { value: "13", label: "NACE sectors" },
@@ -208,6 +219,14 @@ export const systems: readonly System[] = [
       },
     ],
     stack: ["Java 17", "Spring Boot 3.3", "PostgreSQL", "pgvector", "Next.js", "Docker"],
+    stackRoles: {
+      "Java 17": "gate and ledger",
+      "Spring Boot 3.3": "multi-tenant API",
+      PostgreSQL: "registry and audit",
+      pgvector: "cited evidence search",
+      "Next.js": "dashboard",
+      Docker: "reproducible deploys",
+    },
     figures: [
       { value: "64", label: "REST endpoints" },
       { value: "190", label: "automated tests" },
@@ -311,10 +330,22 @@ export const systems: readonly System[] = [
       "PostgreSQL",
       "MongoDB",
       "Redis",
-      "React 19",
+      "React",
       "React Native",
       "Docker",
     ],
+    stackRoles: {
+      "Java 21": "six services",
+      "Spring Boot 3": "service runtime",
+      "Spring Cloud Gateway": "auth and routing",
+      RabbitMQ: "order event fan-out",
+      PostgreSQL: "financial truth",
+      MongoDB: "read models",
+      Redis: "sessions",
+      React: "storefront and console",
+      "React Native": "customer and crew apps",
+      Docker: "local and CI parity",
+    },
     figures: [
       { value: "6", label: "microservices" },
       { value: "207", label: "API endpoints" },
@@ -384,6 +415,14 @@ export const systems: readonly System[] = [
       },
     ],
     stack: ["Python", "Google ADK", "Gemini", "FastAPI", "RAG", "pytest"],
+    stackRoles: {
+      Python: "agent runtime",
+      "Google ADK": "conductor and tools",
+      Gemini: "reasoning, voice in/out",
+      FastAPI: "console and triggers",
+      RAG: "ops-manual grounding",
+      pytest: "agent evals",
+    },
     figures: [
       { value: "8", label: "agents incl. conductor" },
       { value: "7", label: "ops specialists" },
@@ -397,7 +436,7 @@ export const systems: readonly System[] = [
     whatItIs:
       "Answers one question the same way in every country: who here is underserved by public transport, and by how much?",
     forWhom:
-      "For transport authorities and researchers who need a comparable briefing rather than a bespoke study per region.",
+      "For transport authorities and researchers in any country with published timetables and an official deprivation index.",
     period: "Oct 2021 – Present",
     status: "live",
     liveUrl: "https://aequitas.souravamseekar.com",
@@ -405,31 +444,31 @@ export const systems: readonly System[] = [
     explainer: "EquityExplainer",
     architectureExplainer: "AequitasArchitecture",
     problem:
-      "Timetables, small-area geography and a deprivation index are all published already. What is missing is a briefing that asks the same question in each region — so answers from England and Ireland can sit in the same room without being quietly incomparable.",
+      "Your country already publishes the pieces: timetables, small-area geography, and an official deprivation index. What it does not have is a briefing that turns them into the same answer every time. So each region commissions its own study, each study picks its own method, and none of the findings can be set beside another — including the ones from the region next door.",
     story: [
       {
-        step: "Take what the country already publishes",
+        step: "It starts from what you already publish",
         detail:
-          "Official timetables, census geography and the national deprivation measure — no proprietary feeds, no invented travel times.",
+          "Your national timetable feed, your census geography, your deprivation index. No proprietary data, no invented travel times, nothing you cannot audit — England runs on IMD, Ireland on Pobal HP, the Netherlands on CBS SES-WOA, France on F-EDI.",
       },
       {
-        step: "Score inside the country, never across",
+        step: "Your score is yours",
         detail:
-          "One formula applied within each country. England's index and the Netherlands' are never plotted on the same axis, because they do not mean the same thing.",
+          "The same formula runs inside each country against that country's own index. Your regions are ranked against each other, never against another country's — because your index and theirs do not measure the same thing.",
       },
       {
-        step: "Read the briefing",
+        step: "You get a briefing, not a dataset",
         detail:
-          "A map, a quotable score and a fixed set of exhibits: coverage, evening isolation, weekday quality, and how service tracks deprivation.",
+          "A map, a quotable national score, and a fixed set of exhibits: who lives near a stop, who is stranded after seven, how service quality tracks deprivation across your own deciles.",
       },
       {
-        step: "Compare like with like",
+        step: "It travels to your country next",
         detail:
-          "Two regions inside one country, side by side. Where evidence is weak the exhibit is omitted rather than filled with an estimate.",
+          "Adding a country means supplying its feed, its geography and its index — the analytics, the validation gates and the briefing come with the method. Four are live; the fifth is a data question, not a rebuild.",
       },
     ],
     build: [
-      "Four national warehouses live — England (IMD 2025, LSOA 2021), Ireland (Pobal HP 2022), the Netherlands (CBS SES-WOA 2023) and France (F-EDI 2021, IGN IRIS).",
+      "Four national warehouses live, each with its own ingestion, processing and banding modules: England (IMD 2025, LSOA 2021, 79.3% within 400 m, score 80.0), Ireland (Pobal HP 2022, 18,919 small areas, 55.1%, score 55.5), the Netherlands (CBS SES-WOA 2023, 91.9%, score 69.6 on bus) and France (F-EDI 2021, IGN IRIS, 48,522 areas, score 47.7).",
       "Analytics are pre-computed when the warehouse is built; the API is a lookup layer, so the interface cannot invent a figure at request time.",
       "Composite score weights 400 m coverage, evening service, weekday quality and the deprivation–service correlation, renormalising when a term is unavailable.",
       "Thirteen product surfaces including equity, access, service, network HHI, correlations, scenarios, time series and in-country compare.",
@@ -439,7 +478,7 @@ export const systems: readonly System[] = [
       {
         choice: "In-country scores only",
         instead: "one European league table",
-        why: "IMD, Pobal HP and SES-WOA are constructed differently. A single ranking would look authoritative and mean nothing — the most tempting feature to build and the wrong one.",
+        why: "IMD, Pobal HP, SES-WOA and F-EDI are constructed differently. A table ranking your country against another would look authoritative and mean nothing — the most requested feature and the wrong one to build.",
       },
       {
         choice: "Pre-computed warehouse",
@@ -453,11 +492,20 @@ export const systems: readonly System[] = [
       },
     ],
     stack: ["Python", "DuckDB", "FastAPI", "React", "MapLibre", "GTFS", "FAISS"],
+    stackRoles: {
+      Python: "per-country pipelines",
+      DuckDB: "national warehouses",
+      FastAPI: "read-only lookup",
+      React: "briefing surfaces",
+      MapLibre: "small-area maps",
+      GTFS: "official timetables",
+      FAISS: "grounded chat index",
+    },
     figures: [
-      { value: "4", label: "countries live" },
-      { value: "1.75M", label: "GTFS trips (England)" },
+      { value: "4", label: "national warehouses live" },
       { value: "103", label: "quality checks, 0 failures" },
-      { value: "13", label: "product surfaces" },
+      { value: "13", label: "product surfaces per country" },
+      { value: "1", label: "method, applied per country" },
     ],
   },
 
@@ -520,6 +568,13 @@ export const systems: readonly System[] = [
       },
     ],
     stack: ["Python", "SARIF", "OSCAL", "MLflow", "pytest"],
+    stackRoles: {
+      Python: "graph, rules, adapters",
+      SARIF: "code-scanning output",
+      OSCAL: "compliance toolchains",
+      MLflow: "registry adapter",
+      pytest: "rule verification",
+    },
     figures: [
       { value: "4", label: "packages on PyPI" },
       { value: "4", label: "report formats" },
@@ -583,6 +638,12 @@ export const systems: readonly System[] = [
       },
     ],
     stack: ["Python", "NumPy", "pytest", "PyPI"],
+    stackRoles: {
+      Python: "library surface",
+      NumPy: "inequality algorithms",
+      pytest: "numerical checks",
+      PyPI: "four published packages",
+    },
     figures: [
       { value: "4", label: "packages on PyPI" },
       { value: "3", label: "inequality measures" },

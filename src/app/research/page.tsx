@@ -4,6 +4,7 @@ import { research } from "@/data/profile";
 import { publications } from "@/data/evidence";
 import { pageMetadata, buildScholarlyArticleSchema } from "@/lib/seo";
 import { FindingExplainer } from "@/components/explainers/FindingExplainer";
+import { RefLink } from "@/components/RefLink";
 
 export const metadata: Metadata = pageMetadata({
   title: "Research",
@@ -42,17 +43,14 @@ export default function ResearchPage() {
           the pay gap move together instead.
         </p>
 
-        <div className="detail-meta">
+        <div className="detail-meta ref-list">
           {publications.map((publication) => (
-            <a
+            <RefLink
               key={publication.label}
               href={publication.href}
-              target="_blank"
-              rel="noreferrer"
-              className="go"
-            >
-              {publication.label}
-            </a>
+              variant="record"
+              label={publication.label}
+            />
           ))}
         </div>
       </header>

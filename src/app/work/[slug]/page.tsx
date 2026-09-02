@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { systems, getSystem } from "@/data/systems";
 import { pageMetadata } from "@/lib/seo";
 import { SystemExplainer } from "@/components/explainers/SystemExplainer";
+import { StackSpec } from "@/components/StackSpec";
+import { RefLink } from "@/components/RefLink";
 
 type Params = { params: Promise<{ slug: string }> };
 
@@ -64,16 +66,21 @@ export default async function SystemPage({ params }: Params) {
           )}
         </div>
 
-        <div className="meta-row">
+        <div className="meta-row ref-list">
           {system.liveUrl && (
-            <a href={system.liveUrl} target="_blank" rel="noreferrer" className="go">
-              {system.liveUrl.replace("https://", "")}
-            </a>
+            <RefLink
+              href={system.liveUrl}
+              variant="deploy"
+              label={system.liveUrl.replace("https://", "")}
+              meta="live"
+            />
           )}
           {system.githubUrl && (
-            <a href={system.githubUrl} target="_blank" rel="noreferrer" className="go">
-              Source
-            </a>
+            <RefLink
+              href={system.githubUrl}
+              variant="source"
+              label={system.githubUrl.replace("https://github.com/", "")}
+            />
           )}
         </div>
       </header>
@@ -136,7 +143,7 @@ export default async function SystemPage({ params }: Params) {
 
       {/* ---- Engineering notes ---- */}
       <section className="shell shell-wide band band-rule">
-        <div className="split">
+        <div className="split split-spec">
           <div>
             <h2 className="t-section eyebrow-line">Engineering notes</h2>
             <ul className="notes">
@@ -145,17 +152,11 @@ export default async function SystemPage({ params }: Params) {
               ))}
             </ul>
           </div>
-          <aside className="stack-panel">
+          <aside>
             <p className="t-label" style={{ marginBottom: "0.7rem" }}>
-              Stack
+              Built from
             </p>
-            <div className="tags">
-              {system.stack.map((tech) => (
-                <span key={tech} className="tag">
-                  {tech}
-                </span>
-              ))}
-            </div>
+            <StackSpec stack={system.stack} roles={system.stackRoles} />
           </aside>
         </div>
       </section>

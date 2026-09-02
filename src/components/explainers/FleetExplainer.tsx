@@ -1,7 +1,7 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
-import { Defs, Edge, Label, Node, Packet } from "./parts";
+import { Defs, Label, Node, Route } from "./parts";
 
 /**
  * MaSoVa Enterprise Fleet — an agent system, drawn as an agent flow.
@@ -61,8 +61,7 @@ export function FleetExplainer() {
             step="s1"
           />
 
-          <Edge d="M 174,79 H 258" kind="sync" flow />
-          <Packet path="M 174,79 H 258" dur={1.3} count={2} enabled={motion} />
+<Route d="M 174,79 H 258" motion={motion} dur={1.3} count={2} />
 
           {/* ---- The conductor ---- */}
           <Node
@@ -79,7 +78,7 @@ export function FleetExplainer() {
           />
 
           {/* Grounded, not improvised. */}
-          <Edge d="M 438,79 H 522" kind="lineage" />
+<Route d="M 438,79 H 522" kind="lineage" motion={motion} />
           <Node
             x={522}
             y={56}
@@ -100,7 +99,7 @@ export function FleetExplainer() {
             const d = `M 348,102 V 126 H ${colMid(i)} V ${agentY}`;
             return (
               <g key={agent[0]}>
-                <Edge d={d} kind="sync" head={false} flow={i === 3} />
+<Route d={d} head={false} motion={motion} dur={1.5} begin={0.8 + i * 0.22} />
                 <Node
                   x={colX(i)}
                   y={agentY}
@@ -114,21 +113,19 @@ export function FleetExplainer() {
                   step={`s${4 + i}`}
                 />
                 {/* Convergence: every agent drops a draft into the queue. */}
-                <Edge
+                <Route
                   d={`M ${colMid(i)},${agentY + agentH} V ${gateY}`}
                   kind="async"
                   head={false}
+                  motion={motion}
+                  dur={1.4}
+                  begin={2.4 + i * 0.18}
                 />
               </g>
             );
           })}
 
-          <Packet path={`M 348,102 V 126 H ${colMid(0)} V ${agentY}`} dur={1.5} begin={1} enabled={motion} />
-          <Packet path={`M 348,102 V 126 H ${colMid(3)} V ${agentY}`} dur={1.5} begin={1.4} enabled={motion} />
-          <Packet path={`M 348,102 V 126 H ${colMid(6)} V ${agentY}`} dur={1.5} begin={1.8} enabled={motion} />
 
-          <Packet path={`M ${colMid(1)},${agentY + agentH} V ${gateY}`} dur={1.2} begin={2.6} enabled={motion} />
-          <Packet path={`M ${colMid(4)},${agentY + agentH} V ${gateY}`} dur={1.2} begin={2.9} enabled={motion} />
 
           {/* ---- The gate ---- */}
           <Node
@@ -145,8 +142,7 @@ export function FleetExplainer() {
           />
 
           {/* ---- Audit ---- */}
-          <Edge d="M 360,286 V 306" kind="sync" flow />
-          <Packet path="M 360,286 V 306" dur={0.9} begin={3.4} tone="live" enabled={motion} />
+<Route d="M 360,286 V 306" motion={motion} dur={0.9} begin={3.4} tone="live" />
 
           <Node
             x={186}

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { profile, experience, education, certifications } from "@/data/profile";
 import { pageMetadata } from "@/lib/seo";
+import { RefLink } from "@/components/RefLink";
 
 export const metadata: Metadata = pageMetadata({
   title: "About",
@@ -144,19 +145,29 @@ export default function AboutPage() {
               <a href={`mailto:${profile.email}`}>{profile.email}</a>
             </p>
 
-            <div className="stack-list" style={{ flexDirection: "column", gap: "0.5rem" }}>
-              <a href={profile.cvPath} className="go" download>
-                Download CV
-              </a>
-              <a href={profile.github} target="_blank" rel="noreferrer" className="go">
-                GitHub
-              </a>
-              <a href={profile.linkedin} target="_blank" rel="noreferrer" className="go">
-                LinkedIn
-              </a>
-              <a href={profile.orcid} target="_blank" rel="noreferrer" className="go">
-                ORCID
-              </a>
+            <div className="ref-stack">
+              <RefLink
+                href={profile.cvPath}
+                variant="package"
+                label="CV"
+                meta="pdf"
+                external={false}
+              />
+              <RefLink
+                href={profile.github}
+                variant="source"
+                label={profile.github.replace("https://github.com/", "")}
+              />
+              <RefLink
+                href={profile.linkedin}
+                variant="contact"
+                label={profile.linkedin.replace("https://www.linkedin.com/in/", "linkedin/")}
+              />
+              <RefLink
+                href={profile.orcid}
+                variant="record"
+                label={profile.orcid.replace("https://orcid.org/", "ORCID ")}
+              />
             </div>
           </aside>
         </div>

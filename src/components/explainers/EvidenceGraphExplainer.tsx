@@ -1,7 +1,7 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
-import { Boundary, Defs, Edge, GraphNode, Label, Node, Packet } from "./parts";
+import { Boundary, Defs, GraphNode, Label, Node, Route } from "./parts";
 
 /**
  * Evgraph — a graph system, drawn as a graph.
@@ -19,10 +19,12 @@ export function EvidenceGraphExplainer() {
   ];
 
   // Graph layout — a real shape, not a row of boxes.
-  const card = { x: 430, y: 92 };
-  const appr = { x: 600, y: 66 };
-  const depl = { x: 600, y: 176 };
-  const run = { x: 430, y: 200 };
+  // Laid out as a diamond with the labels above each dot, so an edge between
+  // two nodes never passes through a third node's text.
+  const card = { x: 530, y: 102 };
+  const appr = { x: 660, y: 158 };
+  const depl = { x: 530, y: 214 };
+  const run = { x: 400, y: 158 };
 
   const artY = (i: number) => 62 + i * 46;
 
@@ -34,7 +36,7 @@ export function EvidenceGraphExplainer() {
     >
       {({ motion }) => (
         <svg
-          viewBox="0 0 720 330"
+          viewBox="0 0 720 340"
           className="explainer-svg"
           role="img"
           aria-label="Adapters assembling an evidence graph, with a rule finding a missing link"
@@ -59,20 +61,21 @@ export function EvidenceGraphExplainer() {
           ))}
 
           {/* Adapters read them into the builder. */}
-          {artifacts.map((_, i) => {
-            const d = `M 182,${artY(i) + 17} H 224 V 148 H 262`;
-            return (
-              <g key={`read-${i}`}>
-                <Edge d={d} kind="sync" head={i === 1} flow={i === 1} />
-                <Packet path={d} dur={1.8} begin={i * 0.45} enabled={motion} />
-              </g>
-            );
-          })}
+          {artifacts.map((artifact, i) => (
+            <Route
+              key={`read-${artifact}`}
+              d={`M 182,${artY(i) + 17} H 210 V 158 H 232`}
+              head={i === 1}
+              motion={motion}
+              dur={1.8}
+              begin={i * 0.4}
+            />
+          ))}
 
           <Node
-            x={262}
-            y={125}
-            w={110}
+            x={232}
+            y={135}
+            w={104}
             h={46}
             label="Adapters"
             detail="build graph"
@@ -84,67 +87,76 @@ export function EvidenceGraphExplainer() {
           />
 
           {/* ---- The graph ---- */}
-          <Boundary x={396} y={40} w={300} h={190} label="Evidence graph" step="s6" />
+          <Boundary x={362} y={68} w={334} h={182} label="Evidence graph" step="s6" />
 
-          {/* Edges that exist. */}
-          <Edge d={`M ${card.x},${card.y} L ${appr.x},${appr.y}`} kind="sync" head={false} />
-          <Edge d={`M ${card.x},${card.y} L ${run.x},${run.y}`} kind="sync" head={false} />
-          <Edge d={`M ${run.x},${run.y} L ${depl.x},${depl.y}`} kind="sync" head={false} />
+          {/* Edges that exist — the rule walks each of them. */}
+          <Route
+            d={`M ${run.x},${run.y} L ${card.x},${card.y}`}
+            head={false}
+            motion={motion}
+            dur={1.5}
+            begin={1.6}
+          />
+          <Route
+            d={`M ${card.x},${card.y} L ${appr.x},${appr.y}`}
+            head={false}
+            motion={motion}
+            dur={1.5}
+            begin={2.2}
+          />
+          <Route
+            d={`M ${run.x},${run.y} L ${depl.x},${depl.y}`}
+            head={false}
+            motion={motion}
+            dur={1.5}
+            begin={2.8}
+          />
 
           {/* The edge the rule expects and cannot find. */}
-          <Edge d={`M ${appr.x},${appr.y + 12} L ${depl.x},${depl.y - 12}`} kind="rejected" head={false} />
-          <text className="dg-note dg-text-warn dg-in s9" x={614} y={126}>
+          <Route
+            d={`M ${appr.x},${appr.y} L ${depl.x},${depl.y}`}
+            kind="rejected"
+            head={false}
+            motion={motion}
+            dur={1.6}
+            begin={3.4}
+          />
+          <text className="dg-note dg-text-warn dg-in s9" x={600} y={202}>
             no link
           </text>
 
-          <GraphNode x={card.x} y={card.y} label="model card" step="s6" />
-          <GraphNode x={appr.x} y={appr.y} label="approval" step="s7" anchor="end" />
-          <GraphNode x={depl.x} y={depl.y} label="deployment" step="s8" anchor="end" />
-          <GraphNode x={run.x} y={run.y} label="mlflow run" step="s7" />
+          <GraphNode x={card.x} y={card.y} label="model card" step="s6" anchor="middle" />
+          <GraphNode x={appr.x} y={appr.y} label="approval" step="s7" anchor="middle" />
+          <GraphNode x={depl.x} y={depl.y} label="deployment" step="s8" anchor="middle" />
+          <GraphNode x={run.x} y={run.y} label="mlflow run" step="s7" anchor="middle" />
 
-          {/* Edge into the graph, and the rule walking it. */}
-          <Edge d={`M 372,148 H ${card.x - 10}`} kind="sync" flow />
-          <Packet path={`M 372,148 H ${card.x - 10}`} dur={1.1} begin={1.4} enabled={motion} />
-          <Packet
-            path={`M ${card.x},${card.y} L ${appr.x},${appr.y}`}
-            dur={1.3}
-            begin={2}
-            enabled={motion}
-          />
-          <Packet
-            path={`M ${card.x},${card.y} L ${run.x},${run.y} L ${depl.x},${depl.y}`}
-            dur={2}
-            begin={2.4}
-            enabled={motion}
-          />
-          <Packet
-            path={`M ${appr.x},${appr.y + 12} L ${depl.x},${depl.y - 12}`}
-            dur={1.2}
-            begin={3.6}
-            tone="warn"
-            enabled={motion}
+          <Route
+            d={`M 336,158 H ${run.x - 16}`}
+            motion={motion}
+            dur={1.1}
+            begin={1.2}
           />
 
           {/* ---- Finding ---- */}
-          <Boundary x={262} y={248} w={434} h={62} label="Finding" step="s10" />
-          <text className="dg-note-strong dg-text-signal dg-in s10" x={280} y={284}>
+          <Boundary x={262} y={256} w={434} h={62} label="Finding" step="s10" />
+          <text className="dg-note-strong dg-text-signal dg-in s10" x={280} y={292}>
             STRUCTURAL
           </text>
-          <text className="dg-note-strong dg-in s10" x={372} y={284}>
+          <text className="dg-note-strong dg-in s10" x={372} y={292}>
             deployment has no linked approval
           </text>
-          <text className="dg-note dg-in s11" x={280} y={302}>
+          <text className="dg-note dg-in s11" x={280} y={310}>
             cited · deployment.json → approval
           </text>
 
           {/* ---- Certainty ladder ---- */}
-          <Label x={24} y={264} step="s11">
+          <Label x={24} y={272} step="s11">
             Certainty
           </Label>
-          <text className="dg-note dg-in s11" x={24} y={286}>
+          <text className="dg-note dg-in s11" x={24} y={294}>
             structural → consistency
           </text>
-          <text className="dg-note dg-in s12" x={24} y={302}>
+          <text className="dg-note dg-in s12" x={24} y={310}>
             → heuristic → interpretive
           </text>
         </svg>

@@ -1,7 +1,7 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
-import { Boundary, Defs, Edge, Node, Packet } from "./parts";
+import { Boundary, Defs, Node, Route } from "./parts";
 
 /**
  * Aequitas — the per-country pipeline, drawn as a pipeline.
@@ -16,27 +16,27 @@ export function AequitasArchitecture() {
     {
       label: "Ingest",
       detail: "GTFS · census · index",
-      note: "BODS, NaPTAN, boundaries",
+      short: "feeds · boundaries",
     },
     {
       label: "Process",
       detail: "spatial join · dedup",
-      note: "route geometry, frequency",
+      short: "geometry · frequency",
     },
     {
       label: "Analytics",
       detail: "equity · access · ML",
-      note: "2SFCA, clustering, anomaly",
+      short: "2SFCA · clustering",
     },
     {
       label: "Validate",
       detail: "gates · ground truth",
-      note: "103 checks, 0 failures",
+      short: "103 checks · 0 fail",
     },
     {
       label: "Warehouse",
       detail: "pre-compute",
-      note: "packs, chart dispatch",
+      short: "packs · provenance",
     },
   ];
 
@@ -89,11 +89,20 @@ export function AequitasArchitecture() {
           ))}
 
           {/* Each country enters the shared pipeline. */}
-          <Edge d={`M ${left + 88},80 V ${stageY}`} kind="sync" flow />
-          <Packet path={`M ${left + 88},80 V ${stageY}`} dur={1.2} enabled={motion} />
-          <Edge d={`M ${left + 250},80 V 94 H ${left + 88} V ${stageY}`} kind="sync" head={false} />
-          <Edge d={`M ${left + 412},80 V 94 H ${left + 88} V ${stageY}`} kind="sync" head={false} />
-          <Edge d={`M ${left + 574},80 V 94 H ${left + 88} V ${stageY}`} kind="sync" head={false} />
+          {[88, 250, 412, 574].map((x, i) => (
+            <Route
+              key={`country-${x}`}
+              d={
+                i === 0
+                  ? `M ${left + 88},80 V ${stageY}`
+                  : `M ${left + x},80 V 94 H ${left + 88} V ${stageY}`
+              }
+              head={i === 0}
+              motion={motion}
+              dur={1.6}
+              begin={i * 0.35}
+            />
+          ))}
 
           {/* ---- The pipeline ---- */}
           {stages.map((stage, i) => (
@@ -113,10 +122,11 @@ export function AequitasArchitecture() {
               <text
                 className="dg-note dg-in"
                 style={{ animationDelay: `${600 + i * 70}ms` }}
-                x={stageX(i)}
+                x={stageX(i) + stageW / 2}
                 y={stageY + stageH + 18}
+                textAnchor="middle"
               >
-                {stage.note}
+                {stage.short}
               </text>
             </g>
           ))}
@@ -125,21 +135,17 @@ export function AequitasArchitecture() {
           {stages.slice(0, -1).map((_, i) => {
             const d = `M ${stageX(i) + stageW},${mid} H ${stageX(i + 1)}`;
             return (
-              <g key={`link-${i}`}>
-                <Edge d={d} kind="sync" flow />
-                <Packet path={d} dur={1.1} begin={0.5 + i * 0.5} enabled={motion} />
-              </g>
+              <Route key={`link-${i}`} d={d} motion={motion} dur={1.1} begin={0.5 + i * 0.45} />
             );
           })}
 
           {/* ---- Warehouse output ---- */}
-          <Edge d={`M ${stageX(4) + stageW / 2},${stageY + stageH + 26} V 226`} kind="sync" flow />
-          <Packet
-            path={`M ${stageX(4) + stageW / 2},${stageY + stageH + 26} V 226`}
+          <Route
+            d={`M ${stageX(4) + stageW / 2},${stageY + stageH + 26} V 226`}
+            motion={motion}
             dur={1.2}
             begin={2.4}
             tone="live"
-            enabled={motion}
           />
 
           <Node
@@ -154,8 +160,7 @@ export function AequitasArchitecture() {
           />
 
           {/* ---- Read-only serving layer ---- */}
-          <Edge d="M 456,249 H 372" kind="sync" flow />
-          <Packet path="M 456,249 H 372" dur={1.1} begin={2.9} enabled={motion} />
+<Route d="M 456,249 H 372" motion={motion} dur={1.1} begin={2.9} />
 
           <Node
             x={222}
@@ -170,8 +175,7 @@ export function AequitasArchitecture() {
             step="s12"
           />
 
-          <Edge d="M 222,249 H 174" kind="sync" flow />
-          <Packet path="M 222,249 H 174" dur={1} begin={3.3} enabled={motion} />
+<Route d="M 222,249 H 174" motion={motion} dur={1} begin={3.3} />
 
           <Node
             x={24}
@@ -184,7 +188,7 @@ export function AequitasArchitecture() {
           />
 
           {/* Grounded chat reads the same warehouse. */}
-          <Edge d="M 576,272 V 308" kind="lineage" />
+          <Route d="M 576,272 V 308" kind="lineage" motion={motion} />
           <Node
             x={456}
             y={308}

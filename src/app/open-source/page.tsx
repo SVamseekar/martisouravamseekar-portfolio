@@ -3,6 +3,7 @@ import Link from "next/link";
 import { packages } from "@/data/evidence";
 import { pageMetadata } from "@/lib/seo";
 import { CopyLine } from "@/components/CopyLine";
+import { RefLink } from "@/components/RefLink";
 
 export const metadata: Metadata = pageMetadata({
   title: "Open source",
@@ -71,26 +72,28 @@ export default function OpenSourcePage() {
                 <p className="t-label" style={{ marginBottom: "0.6rem" }}>
                   Links
                 </p>
-                <div className="link-stack">
+                <div className="ref-stack">
                   <Link href={stack.detail} className="go">
                     How it works
                   </Link>
-                  <a href={stack.repo} target="_blank" rel="noreferrer" className="go">
-                    Source
-                  </a>
+                  <RefLink
+                    href={stack.repo}
+                    variant="source"
+                    label={stack.repo.replace("https://github.com/", "")}
+                  />
                   {"site" in stack && stack.site && (
-                    <a href={stack.site} target="_blank" rel="noreferrer" className="go">
-                      {stack.site.replace("https://", "")}
-                    </a>
+                    <RefLink
+                      href={stack.site}
+                      variant="deploy"
+                      label={stack.site.replace("https://", "")}
+                      meta="live"
+                    />
                   )}
-                  <a
+                  <RefLink
                     href={`https://pypi.org/project/${stack.id}/`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="go"
-                  >
-                    PyPI project
-                  </a>
+                    variant="package"
+                    label={`pypi.org/project/${stack.id}`}
+                  />
                 </div>
               </aside>
             </div>
@@ -98,14 +101,11 @@ export default function OpenSourcePage() {
             <div className="rows" style={{ marginTop: "1.5rem" }}>
               {members.map((pkg) => (
                 <div key={pkg.name} className="row">
-                  <a
+                  <RefLink
                     href={`https://pypi.org/project/${pkg.name}/`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="row-name"
-                  >
-                    {pkg.name}
-                  </a>
+                    variant="package"
+                    label={pkg.name}
+                  />
                   <p className="t-small">{pkg.summary}</p>
                   <span className="t-mono ink-faint">v{pkg.version}</span>
                 </div>

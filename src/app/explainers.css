@@ -197,6 +197,15 @@
   font-weight: 500;
 }
 
+/* A halo behind a graph label, so an edge passing under it never runs
+   through the text. Painted in the diagram ground colour. */
+.dg-label-halo {
+  stroke: var(--diagram-ground);
+  stroke-width: 5;
+  stroke-linejoin: round;
+  paint-order: stroke;
+}
+
 .dg-detail {
   fill: var(--ink-soft);
   font-family: var(--font-mono);
@@ -346,6 +355,19 @@
   stroke: var(--signal);
   stroke-width: 1.25;
 }
+
+/* Series colours for multi-country charts. Distinct in hue but held to the
+   same restrained value range, so a chart never turns into a pie of primaries.
+   These identify a series; they do not carry state meaning. */
+.dg-series-0 { fill: var(--series-0-fill); stroke: var(--series-0); }
+.dg-series-1 { fill: var(--series-1-fill); stroke: var(--series-1); }
+.dg-series-2 { fill: var(--series-2-fill); stroke: var(--series-2); }
+.dg-series-3 { fill: var(--series-3-fill); stroke: var(--series-3); }
+
+.dg-key-0 { fill: var(--series-0); }
+.dg-key-1 { fill: var(--series-1); }
+.dg-key-2 { fill: var(--series-2); }
+.dg-key-3 { fill: var(--series-3); }
 
 .dg-bar-warn {
   fill: var(--warn-fill);

@@ -149,6 +149,88 @@ export function Packet({
   );
 }
 
+/* ------------------------------------------------------------------ routes */
+
+type RouteProps = {
+  /** SVG path data — the edge and its traffic share this exactly. */
+  d: string;
+  kind?: EdgeKind;
+  head?: boolean;
+  /** Omit motion (reduced motion). */
+  motion?: boolean;
+  dur?: number;
+  begin?: number;
+  tone?: "signal" | "live" | "warn";
+  count?: number;
+  /** Suppress the packet for a relationship that carries no runtime traffic. */
+  traffic?: boolean;
+};
+
+/**
+ * An edge and the traffic on it, declared together.
+ *
+ * Every route a request actually takes should show a packet on it. Declaring
+ * the two separately meant an arrow could quietly end up with no traffic while
+ * its neighbour had some, which read as though the system only used half its
+ * connections. Pairing them makes that impossible: draw a route, get traffic.
+ *
+ * Lineage edges default to no packet, because nothing flows along them at
+ * runtime — they record a relationship, not a call.
+ */
+export function Route({
+  d,
+  kind = "sync",
+  head = true,
+  motion = true,
+  dur = 1.6,
+  begin = 0,
+  tone,
+  count = 1,
+  traffic,
+}: RouteProps) {
+  const carries = traffic ?? kind !== "lineage";
+  const packetTone = tone ?? (kind === "rejected" ? "warn" : "signal");
+
+  return (
+    <>
+      <Edge d={d} kind={kind} head={head} flow={carries} />
+      {carries && (
+        <Packet
+          path={d}
+          dur={dur}
+          begin={begin}
+          tone={packetTone}
+          count={count}
+          enabled={motion}
+        />
+      )}
+    </>
+  );
+}
+
+/* ------------------------------------------------------------- text fitting */
+
+/**
+ * Approximate rendered width of a string, in SVG user units.
+ *
+ * Both faces are metrically stable enough that a per-character average is
+ * within a few percent, which is all we need to decide whether a label fits.
+ * Measuring here means a diagram can never ship with text spilling out of its
+ * box — the failure mode that kept appearing when widths were eyeballed.
+ */
+function textWidth(text: string, size: number, mono: boolean) {
+  const ratio = mono ? 0.6 : 0.53;
+  return text.length * size * ratio;
+}
+
+/** Truncates to fit, with an ellipsis, only when it genuinely does not fit. */
+function fit(text: string, maxWidth: number, size: number, mono: boolean) {
+  if (textWidth(text, size, mono) <= maxWidth) return text;
+  const ratio = mono ? 0.6 : 0.53;
+  const max = Math.max(1, Math.floor(maxWidth / (size * ratio)) - 1);
+  return `${text.slice(0, max).trimEnd()}…`;
+}
+
 /* ------------------------------------------------------------------ nodes */
 
 type NodeProps = {
@@ -191,6 +273,11 @@ export function Node({
   const anchor = centre ? "middle" : "start";
   const baseline = detail ? y + h / 2 - 3 : y + h / 2 + 4;
 
+  // Text is fitted to the box rather than trusted to be short enough.
+  const inner = w - GRID.padX * 2;
+  const labelText = fit(label, inner, 13, false);
+  const detailText = detail ? fit(detail, inner, 10.5, true) : undefined;
+
   return (
     <g className={`dg-node ${nodeClass[kind]} dg-${state} dg-in ${step}`}>
       <rect x={x} y={y} width={w} height={h} rx={GRID.radius} className="dg-shape" />
@@ -212,11 +299,11 @@ export function Node({
       )}
 
       <text className="dg-label" x={tx} y={baseline} textAnchor={anchor}>
-        {label}
+        {labelText}
       </text>
-      {detail && (
+      {detailText && (
         <text className="dg-detail" x={tx} y={baseline + 15} textAnchor={anchor}>
-          {detail}
+          {detailText}
         </text>
       )}
     </g>
@@ -240,12 +327,24 @@ export function GraphNode({
   anchor?: "start" | "end" | "middle";
 }) {
   const dx = anchor === "end" ? -14 : anchor === "middle" ? 0 : 14;
+  const dy = anchor === "middle" ? -16 : 4;
+
+  // The label sits on a halo of the diagram ground so an edge passing behind
+  // it never runs through the text.
   return (
     <g className={`dg-graphnode dg-${state} dg-pop ${step}`}>
-      <circle cx={x} cy={y} r="7" className="dg-dot" />
-      <text className="dg-label" x={x + dx} y={y + 4} textAnchor={anchor}>
+      <text
+        className="dg-label dg-label-halo"
+        x={x + dx}
+        y={y + dy}
+        textAnchor={anchor}
+      >
         {label}
       </text>
+      <text className="dg-label" x={x + dx} y={y + dy} textAnchor={anchor}>
+        {label}
+      </text>
+      <circle cx={x} cy={y} r="7" className="dg-dot" />
     </g>
   );
 }

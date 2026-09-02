@@ -1,15 +1,14 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
-import { Boundary, Defs, Edge, Label, Node, Packet } from "./parts";
+import { Boundary, Defs, Label, Node, Route } from "./parts";
 
 /**
  * EU AI Assurance OS — a release meeting the gate.
  *
- * Composition is a decision, so the gate sits at the centre with one route in
- * and two routes out: rejected back to the team, sealed down to the ledger.
- * The refusal is the product, so the rejected edge carries the heaviest line
- * in the grammar.
+ * The gate sits centre with one route in and two out: rejected back to the
+ * team, sealed down to the ledger. Routes are laid out in their own lanes so
+ * the rejection never crosses a box it has nothing to do with.
  */
 export function ReleaseGateExplainer() {
   const checks = [
@@ -19,20 +18,21 @@ export function ReleaseGateExplainer() {
     { label: "Human oversight evidence", ok: false },
   ];
 
-  const inbound = "M 168,124 H 250";
-  const verdict = "M 470,124 H 552";
-  const sealed = "M 610,178 V 236";
-  const rejected = "M 552,150 V 300 H 100 V 148";
+  const gateX = 250;
+  const gateW = 224;
+  const gateY = 60;
+  const gateH = 176;
+  const axis = gateY + 64;
 
   return (
     <ExplainerFrame
       kicker="Release gate"
       caption="A release is classified, checked against the obligations that class carries, and stopped on the one it cannot evidence."
-      description="A continuous integration pipeline posts release v2.4 to the assurance gate. The gate classifies it as high risk and checks four obligations: technical documentation, data governance, and logging and traceability all pass; human oversight evidence is missing. The gate returns blocked and the release travels back to the team with the reason attached. Cited evidence is retrieved from a vector index over the tenant's own documents. The decision and its evidence are sealed into an evidence pack and appended to a hash-chained ledger."
+      description="A deploy pipeline posts release v2.4 to the assurance gate. The gate classifies it as high risk and checks four obligations: technical documentation, data governance, and logging and traceability pass; human oversight evidence is missing. The gate returns blocked, and the release travels back to the team with the reason attached. Cited evidence is retrieved from a vector index over the tenant's own documents. The decision and its evidence are sealed into an evidence pack and appended to a hash-chained ledger."
     >
       {({ motion }) => (
         <svg
-          viewBox="0 0 720 330"
+          viewBox="0 0 720 360"
           className="explainer-svg"
           role="img"
           aria-label="Release gate blocking a high-risk model deployment"
@@ -40,13 +40,13 @@ export function ReleaseGateExplainer() {
           <Defs />
 
           {/* ---- Inbound ---- */}
-          <Label x={24} y={54} step="s1">
+          <Label x={24} y={44} step="s1">
             Deploy pipeline
           </Label>
           <Node
             x={24}
-            y={100}
-            w={144}
+            y={axis - 24}
+            w={150}
             h={48}
             label="Release v2.4"
             detail="POST /gate"
@@ -54,13 +54,17 @@ export function ReleaseGateExplainer() {
             step="s1"
           />
 
-          <Edge d={inbound} kind="sync" flow />
-          <Packet path={inbound} dur={1.4} count={2} enabled={motion} />
+          <Route
+            d={`M 174,${axis} H ${gateX}`}
+            motion={motion}
+            dur={1.3}
+            count={2}
+          />
 
           {/* ---- The gate ---- */}
-          <Boundary x={250} y={44} w={220} h={186} label="Assurance gate" step="s2" />
+          <Boundary x={gateX} y={gateY} w={gateW} h={gateH} label="Assurance gate" step="s2" />
 
-          <text className="dg-note-strong dg-in s2" x={268} y={82}>
+          <text className="dg-note-strong dg-in s2" x={gateX + 18} y={gateY + 38}>
             Risk class · HIGH
           </text>
 
@@ -68,45 +72,54 @@ export function ReleaseGateExplainer() {
             <g key={check.label} className={`dg-in s${3 + i}`}>
               <text
                 className={check.ok ? "dg-note dg-text-live" : "dg-note dg-text-warn"}
-                x={268}
-                y={110 + i * 26}
+                x={gateX + 18}
+                y={gateY + 66 + i * 25}
               >
                 {check.ok ? "✓" : "✕"}
               </text>
               <text
                 className={check.ok ? "dg-note" : "dg-note dg-text-warn"}
-                x={286}
-                y={110 + i * 26}
+                x={gateX + 36}
+                y={gateY + 66 + i * 25}
               >
                 {check.label}
               </text>
             </g>
           ))}
 
-          {/* Evidence retrieval supports the decision. */}
-          <Edge d="M 360,262 V 230" kind="lineage" />
+          {/* Evidence supports the decision — a lineage edge, no runtime traffic. */}
           <Node
-            x={250}
+            x={gateX}
             y={262}
-            w={220}
-            h={38}
+            w={gateW}
+            h={40}
             label="Cited evidence"
-            detail="vector index · tenant documents"
+            detail="vector index · tenant docs"
             kind="store"
             active
             phase="q2"
             step="s7"
           />
+          <Route
+            d={`M ${gateX + gateW / 2},262 V ${gateY + gateH}`}
+            kind="lineage"
+            motion={motion}
+          />
 
           {/* ---- Verdict ---- */}
-          <Edge d={verdict} kind="rejected" flow />
-          <Packet path={verdict} dur={1.3} begin={1.4} tone="warn" enabled={motion} />
+          <Route
+            d={`M ${gateX + gateW},${axis} H 528`}
+            kind="rejected"
+            motion={motion}
+            dur={1.2}
+            begin={1.2}
+          />
 
           <Node
-            x={552}
-            y={100}
-            w={144}
-            h={48}
+            x={528}
+            y={axis - 26}
+            w={168}
+            h={52}
             label="BLOCKED"
             detail="1 obligation unmet"
             kind="gate"
@@ -115,25 +128,33 @@ export function ReleaseGateExplainer() {
             centre
           />
 
-          {/* Rejected: back to the team. The heaviest line on the page. */}
-          <Edge d={rejected} kind="rejected" flow />
-          <Packet path={rejected} dur={3} begin={2} tone="warn" radius={5} enabled={motion} />
-
-          <text className="dg-note-strong dg-text-warn dg-in s9" x={326} y={318}>
+          {/* Rejected: back to the team, in a clear lane below the gate. */}
+          <Route
+            d={`M 612,${axis + 26} V 330 H 99 V ${axis + 24}`}
+            kind="rejected"
+            motion={motion}
+            dur={3}
+            begin={2}
+          />
+          <text className="dg-note-strong dg-text-warn dg-in s9" x={360} y={348} textAnchor="middle">
             ✕ shipping blocked — returned with the reason attached
           </text>
 
-          {/* Sealed: down to the ledger. */}
-          <Edge d={sealed} kind="sync" flow />
-          <Packet path={sealed} dur={1.1} begin={2.6} tone="live" enabled={motion} />
-
+          {/* Sealed: down its own lane, clear of the evidence box. */}
+          <Route
+            d={`M 640,${axis + 26} V 262`}
+            motion={motion}
+            dur={1.1}
+            begin={2.6}
+            tone="live"
+          />
           <Node
-            x={504}
-            y={236}
-            w={192}
-            h={44}
+            x={528}
+            y={262}
+            w={168}
+            h={40}
             label="Evidence pack"
-            detail="sealed → hash-chained ledger"
+            detail="sealed → ledger"
             kind="store"
             state="verified"
             step="s10"

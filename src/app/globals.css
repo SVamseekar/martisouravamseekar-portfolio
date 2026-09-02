@@ -59,6 +59,16 @@
   --bar-fill: rgba(29, 78, 216, 0.16);
   --warn-fill: rgba(168, 84, 27, 0.1);
 
+  /* Chart series. Four hues at a similar value, so no series shouts. */
+  --series-0: #1d4ed8;
+  --series-1: #0f7a4d;
+  --series-2: #a8541b;
+  --series-3: #6d5bb5;
+  --series-0-fill: rgba(29, 78, 216, 0.22);
+  --series-1-fill: rgba(15, 122, 77, 0.22);
+  --series-2-fill: rgba(168, 84, 27, 0.22);
+  --series-3-fill: rgba(109, 91, 181, 0.22);
+
   /* Motion */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -103,6 +113,15 @@
   --boundary-fill: rgba(255, 255, 255, 0.02);
   --bar-fill: rgba(143, 180, 255, 0.2);
   --warn-fill: rgba(240, 168, 104, 0.12);
+
+  --series-0: #8fb4ff;
+  --series-1: #5fd99b;
+  --series-2: #f0a868;
+  --series-3: #b3a4f0;
+  --series-0-fill: rgba(143, 180, 255, 0.26);
+  --series-1-fill: rgba(95, 217, 155, 0.26);
+  --series-2-fill: rgba(240, 168, 104, 0.26);
+  --series-3-fill: rgba(179, 164, 240, 0.26);
 }
 
 /* =============================================================================
@@ -917,6 +936,12 @@ svg {
     gap: 3rem;
     align-items: start;
   }
+
+  /* A specimen list carries a name and a role, so it needs more room than a
+     plain aside. */
+  .split-spec {
+    grid-template-columns: 1fr 21rem;
+  }
 }
 
 /* =============================================================================
@@ -1052,5 +1077,132 @@ svg {
   display: flex;
   flex-direction: column;
   gap: 0.45rem;
+  align-items: flex-start;
+}
+
+/* =============================================================================
+   Technology specimens
+
+   The stack set as a parts list rather than a tag cloud. Each mark is a mono
+   glyph drawn from the technology's own world, tinted by the layer it belongs
+   to, so the list communicates the shape of the system rather than decorating
+   the page.
+   ========================================================================== */
+
+.spec {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 1px;
+  background: var(--rule);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.spec-row {
+  display: grid;
+  grid-template-columns: 2.6rem 1fr;
+  align-items: baseline;
+  gap: 0.6rem;
+  background: var(--ground-raised);
+  padding: 0.5rem 0.7rem;
+}
+
+@media (min-width: 26rem) {
+  .spec-row {
+    grid-template-columns: 2.6rem minmax(6rem, auto) 1fr;
+  }
+}
+
+.spec-glyph {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-align: center;
+  padding: 0.15rem 0.2rem;
+  border-radius: 2px;
+  background: var(--ground-sunk);
+  color: var(--ink-soft);
+  border: 1px solid var(--rule);
+}
+
+/* Layer tint. Restrained: a border and ink shift, never a filled chip. */
+.spec-glyph[data-kind="language"]  { color: var(--series-0); border-color: color-mix(in srgb, var(--series-0) 35%, var(--rule)); }
+.spec-glyph[data-kind="framework"] { color: var(--series-1); border-color: color-mix(in srgb, var(--series-1) 35%, var(--rule)); }
+.spec-glyph[data-kind="data"]      { color: var(--series-2); border-color: color-mix(in srgb, var(--series-2) 35%, var(--rule)); }
+.spec-glyph[data-kind="infra"]     { color: var(--series-3); border-color: color-mix(in srgb, var(--series-3) 35%, var(--rule)); }
+
+.spec-name {
+  font-size: 0.875rem;
+  color: var(--ink);
+}
+
+.spec-role {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: var(--ink-faint);
+}
+
+/* =============================================================================
+   External references
+
+   Document metadata, not social buttons. Each variant reflects what the link
+   actually is — a deployment, a repository, a package, a citation, a person.
+   ========================================================================== */
+
+.ref {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.45rem;
+  text-decoration: none;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+  border-bottom: 1px solid transparent;
+  padding-bottom: 1px;
+}
+
+.ref:hover {
+  color: var(--signal);
+  border-bottom-color: color-mix(in srgb, var(--signal) 45%, transparent);
+}
+
+.ref-sigil { color: var(--ink-faint); }
+.ref:hover .ref-sigil { color: var(--signal); }
+
+.ref-dot {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: var(--live);
+  flex: none;
+  align-self: center;
+}
+
+.ref-meta {
+  color: var(--ink-faint);
+  font-size: 0.75rem;
+}
+
+.ref-deploy .ref-label { color: var(--ink); }
+
+/* A citation sits in the reading face, since it is a bibliographic record. */
+.ref-record {
+  font-family: var(--font-text);
+  font-size: 0.9375rem;
+}
+
+.ref-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+}
+
+.ref-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
   align-items: flex-start;
 }

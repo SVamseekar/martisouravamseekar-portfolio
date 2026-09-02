@@ -1,12 +1,6 @@
 import Link from "next/link";
 import { profile } from "@/data/profile";
-
-const ELSEWHERE = [
-  { href: profile.github, label: "GitHub" },
-  { href: profile.linkedin, label: "LinkedIn" },
-  { href: profile.orcid, label: "ORCID" },
-  { href: "https://blog.souravamseekar.com", label: "Blog" },
-] as const;
+import { RefLink } from "@/components/RefLink";
 
 export function SiteFooter() {
   return (
@@ -24,12 +18,27 @@ export function SiteFooter() {
           </p>
         </div>
 
-        <nav aria-label="Elsewhere" className="foot-links">
-          {ELSEWHERE.map(({ href, label }) => (
-            <a key={label} href={href} target="_blank" rel="noreferrer">
-              {label}
-            </a>
-          ))}
+        <nav aria-label="Elsewhere" className="ref-list">
+          <RefLink
+            href={profile.github}
+            variant="source"
+            label={profile.github.replace("https://github.com/", "")}
+          />
+          <RefLink
+            href={profile.linkedin}
+            variant="contact"
+            label="linkedin"
+          />
+          <RefLink
+            href={profile.orcid}
+            variant="record"
+            label="ORCID"
+          />
+          <RefLink
+            href="https://blog.souravamseekar.com"
+            variant="deploy"
+            label="blog"
+          />
         </nav>
       </div>
 
