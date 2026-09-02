@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "verify": "node scripts/verify-claims.mjs"
   },
   "dependencies": {
     "@next/third-parties": "^16.2.9",

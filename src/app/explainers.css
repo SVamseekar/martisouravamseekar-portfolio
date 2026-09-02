@@ -1,0 +1,445 @@
+/* =============================================================================
+   Explainers
+
+   One shared draw-in system for every system diagram. Each element carries a
+   stage class (.gx-d1 … .gx-d12) that only sets a delay; the animation itself
+   is shared, so the diagrams stay consistent and cheap to add to.
+
+   Nothing animates until the figure's data-play flips true, and under reduced
+   motion everything renders in its final state immediately.
+   ========================================================================== */
+
+.explainer {
+  margin: 0;
+  padding: 0;
+}
+
+.explainer-stage {
+  background: var(--ground-sunk);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  padding: clamp(0.75rem, 2vw, 1.25rem);
+  overflow-x: auto;
+}
+
+.explainer-svg {
+  display: block;
+  width: 100%;
+  min-width: 34rem;
+  height: auto;
+  color: var(--ink-faint);
+}
+
+.explainer-caption {
+  margin-top: 0.875rem;
+  max-width: 44rem;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ---- Shared SVG vocabulary --------------------------------------------- */
+
+.explainer-svg rect,
+.explainer-svg circle {
+  vector-effect: non-scaling-stroke;
+}
+
+.gx-node rect {
+  fill: var(--ground-raised);
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+
+.gx-title {
+  fill: var(--ink);
+  font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.gx-sub {
+  fill: var(--ink-soft);
+  font-family: var(--font-text);
+  font-size: 12px;
+}
+
+.gx-label {
+  fill: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+}
+
+.gx-hash {
+  fill: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.gx-centred {
+  text-anchor: middle;
+}
+
+.gx-wire {
+  stroke: var(--rule-strong);
+  stroke-width: 1.25;
+  fill: none;
+}
+
+/* ---- Release gate ------------------------------------------------------- */
+
+.gx-gate rect {
+  fill: var(--ground-raised);
+  stroke: var(--rule-strong);
+}
+
+.gx-risk {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.gx-item {
+  fill: var(--ink-soft);
+  font-family: var(--font-text);
+  font-size: 11.5px;
+}
+
+.gx-tick {
+  fill: var(--live);
+  font-size: 12px;
+}
+
+.gx-cross {
+  fill: var(--blocked);
+  font-size: 12px;
+}
+
+.gx-check.gx-fail .gx-item {
+  fill: var(--blocked);
+}
+
+.gx-verdict rect {
+  fill: color-mix(in srgb, var(--blocked) 10%, var(--ground-raised));
+  stroke: var(--blocked);
+}
+
+.gx-blocked {
+  fill: var(--blocked);
+  font-family: var(--font-mono);
+  font-size: 17px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-anchor: middle;
+}
+
+.gx-seal rect {
+  fill: var(--ground-sunk);
+  stroke: var(--rule);
+  stroke-dasharray: 3 2;
+}
+
+/* ---- Charts (pay gap, equity, finding) ---------------------------------- */
+
+.wg-axis {
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+
+.wg-grid {
+  stroke: var(--rule);
+  stroke-width: 1;
+  stroke-dasharray: 2 3;
+}
+
+.wg-tick,
+.wg-cat {
+  fill: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  text-anchor: middle;
+}
+
+.wg-tick {
+  text-anchor: end;
+}
+
+.wg-bar rect {
+  fill: color-mix(in srgb, var(--signal) 22%, transparent);
+  stroke: var(--signal);
+  stroke-width: 1;
+}
+
+.wg-val {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-anchor: middle;
+}
+
+.wg-youline {
+  stroke: var(--blocked);
+  stroke-width: 1.25;
+  stroke-dasharray: 4 3;
+}
+
+.wg-youchip {
+  fill: var(--blocked);
+}
+
+.wg-youtext {
+  fill: var(--ground);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  text-anchor: middle;
+}
+
+/* ---- Evidence graph ----------------------------------------------------- */
+
+.eg-loose rect {
+  fill: var(--ground-raised);
+  stroke: var(--rule-strong);
+  stroke-dasharray: 3 2;
+}
+
+.eg-node circle {
+  fill: var(--signal);
+  stroke: var(--ground);
+  stroke-width: 2;
+}
+
+.eg-edge {
+  stroke: var(--rule-strong);
+  stroke-width: 1.25;
+}
+
+.eg-missing {
+  stroke: var(--blocked);
+  stroke-dasharray: 3 3;
+}
+
+.eg-gap {
+  fill: var(--blocked);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+
+.eg-finding rect {
+  fill: var(--ground-sunk);
+  stroke: var(--rule);
+}
+
+.eg-level {
+  fill: var(--signal);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.1em;
+}
+
+/* ---- Equity ------------------------------------------------------------- */
+
+.aq-bar rect {
+  fill: color-mix(in srgb, var(--signal) 20%, transparent);
+  stroke: var(--signal);
+  stroke-width: 1;
+}
+
+.aq-wall {
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+  stroke-dasharray: 4 4;
+}
+
+.aq-score {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-anchor: end;
+}
+
+/* ---- Order flow --------------------------------------------------------- */
+
+.mv-chan rect,
+.mv-out rect {
+  fill: var(--ground-raised);
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+}
+
+.mv-queue rect {
+  fill: var(--signal-soft);
+  stroke: var(--signal);
+  stroke-width: 1;
+}
+
+.mv-state {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.mv-wire {
+  stroke: var(--rule-strong);
+  stroke-width: 1.15;
+  fill: none;
+}
+
+/* ---- Finding scatter ---------------------------------------------------- */
+
+.fx-point {
+  fill: color-mix(in srgb, var(--signal) 55%, transparent);
+  stroke: var(--signal);
+  stroke-width: 1;
+}
+
+.fx-fit {
+  stroke: var(--blocked);
+  stroke-width: 2;
+}
+
+.fx-r {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 19px;
+  font-weight: 500;
+}
+
+/* =============================================================================
+   Draw-in
+
+   Elements start hidden, then reveal in stage order once the figure plays.
+   Lines draw themselves; boxes and text fade up; bars grow from the baseline.
+   ========================================================================== */
+
+.explainer[data-play] .gx-node,
+.explainer[data-play] .gx-check,
+.explainer[data-play] .eg-loose,
+.explainer[data-play] .eg-node,
+.explainer[data-play] .eg-finding,
+.explainer[data-play] .mv-chan,
+.explainer[data-play] .mv-queue,
+.explainer[data-play] .mv-out,
+.explainer[data-play] .mv-persist,
+.explainer[data-play] .wg-bar,
+.explainer[data-play] .wg-you,
+.explainer[data-play] .wg-prov,
+.explainer[data-play] .aq-bar,
+.explainer[data-play] .aq-countries,
+.explainer[data-play] .fx-stat,
+.explainer[data-play] .fx-point,
+.explainer[data-play] .gx-label,
+.explainer[data-play] .gx-hash {
+  opacity: 0;
+}
+
+.explainer[data-play] .gx-wire,
+.explainer[data-play] .mv-wire,
+.explainer[data-play] .eg-edge,
+.explainer[data-play] .fx-fit,
+.explainer[data-play] .aq-wall {
+  opacity: 0;
+}
+
+.explainer[data-play="true"] .gx-node,
+.explainer[data-play="true"] .gx-check,
+.explainer[data-play="true"] .eg-loose,
+.explainer[data-play="true"] .eg-node,
+.explainer[data-play="true"] .eg-finding,
+.explainer[data-play="true"] .mv-chan,
+.explainer[data-play="true"] .mv-queue,
+.explainer[data-play="true"] .mv-out,
+.explainer[data-play="true"] .mv-persist,
+.explainer[data-play="true"] .wg-you,
+.explainer[data-play="true"] .wg-prov,
+.explainer[data-play="true"] .aq-countries,
+.explainer[data-play="true"] .fx-stat,
+.explainer[data-play="true"] .gx-label,
+.explainer[data-play="true"] .gx-hash {
+  animation: ex-rise 0.44s var(--ease) forwards;
+}
+
+.explainer[data-play="true"] .fx-point {
+  animation: ex-pop 0.3s var(--ease) forwards;
+}
+
+.explainer[data-play="true"] .wg-bar,
+.explainer[data-play="true"] .aq-bar {
+  animation: ex-rise 0.4s var(--ease) forwards;
+  transform-box: fill-box;
+  transform-origin: bottom;
+}
+
+.explainer[data-play="true"] .gx-wire,
+.explainer[data-play="true"] .mv-wire,
+.explainer[data-play="true"] .eg-edge,
+.explainer[data-play="true"] .fx-fit,
+.explainer[data-play="true"] .aq-wall {
+  animation: ex-fade 0.4s var(--ease) forwards;
+}
+
+@keyframes ex-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ex-pop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes ex-fade {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Stage delays. Only timing lives here. */
+.gx-d1,  .eg-d1,  .mv-d1,  .wg-d1,  .aq-d1,  .fx-d1  { animation-delay: 60ms; }
+.gx-d2,  .eg-d2,  .mv-d2,  .wg-d2,  .aq-d2,  .fx-d2  { animation-delay: 160ms; }
+.gx-d3,  .eg-d3,  .mv-d3,  .wg-d3,  .aq-d3,  .fx-d3  { animation-delay: 260ms; }
+.gx-d4,  .eg-d4,  .mv-d4,  .wg-d4,  .aq-d4           { animation-delay: 360ms; }
+.gx-d5,  .eg-d5,  .mv-d5,  .wg-d5,  .aq-d5           { animation-delay: 460ms; }
+.gx-d6,  .eg-d6,  .mv-d6,  .wg-d6,  .aq-d6           { animation-delay: 560ms; }
+.gx-d7,  .eg-d7,  .mv-d7,           .aq-d7           { animation-delay: 660ms; }
+.gx-d8,  .eg-d8,  .mv-d8,           .aq-d8           { animation-delay: 760ms; }
+.gx-d9,  .eg-d9,  .mv-d9,           .aq-d9           { animation-delay: 860ms; }
+.gx-d10, .eg-d10,                   .aq-d10          { animation-delay: 960ms; }
+.gx-d11,                            .aq-d11          { animation-delay: 1060ms; }
+.gx-d12,                            .aq-d12          { animation-delay: 1160ms; }
+
+/* Reduced motion: show the finished diagram, skip the choreography. */
+@media (prefers-reduced-motion: reduce) {
+  .explainer[data-play] *,
+  .explainer[data-play="true"] * {
+    opacity: 1 !important;
+    animation: none !important;
+    transform: none !important;
+  }
+}

@@ -50,3 +50,7 @@ next-env.d.ts
 /public/icons/.next/
 /MaSoVa_project_phases.md
 /DOMAINS.md
+
+# local QA screenshots
+screenshot-*.png
+.playwright-mcp/
