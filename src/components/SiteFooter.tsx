@@ -10,11 +10,18 @@ export function SiteFooter() {
           <p className="t-small ink-strong" style={{ marginBottom: "0.35rem" }}>
             {profile.name}
           </p>
-          <p className="t-small">
+          {/* The signal reports the one piece of status this page actually
+              knows: that the author is looking. It is not synthetic telemetry
+              about a third-party service. */}
+          <p className="foot-status">
+            <span className="foot-status-dot" aria-hidden="true" />
             Open to engineering and research roles worldwide.{" "}
             <Link href="/about" className="go">
               How to reach me
             </Link>
+          </p>
+          <p className="foot-domains">
+            open source · AI systems · infrastructure
           </p>
         </div>
 

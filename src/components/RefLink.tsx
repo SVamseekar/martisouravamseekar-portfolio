@@ -96,6 +96,13 @@ export function RefLink({
       </span>
       <span className="ref-label">{label}</span>
       {meta && <span className="ref-meta">{meta}</span>}
+      {/* Shown only for links that actually leave the site, so the indicator
+          means something rather than being uniform decoration. */}
+      {external && (
+        <span className="ref-out" aria-hidden="true">
+          ↗
+        </span>
+      )}
     </a>
   );
 }

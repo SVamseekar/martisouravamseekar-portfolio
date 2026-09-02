@@ -1004,6 +1004,47 @@ svg {
   gap: 1.5rem 2rem;
 }
 
+/* The availability signal. A slow breath rather than a blink — it reports a
+   standing state, not an event. */
+.foot-status {
+  font-size: 0.875rem;
+  color: var(--ink-soft);
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0.15rem 0.4rem;
+}
+
+.foot-status-dot {
+  width: 0.4375rem;
+  height: 0.4375rem;
+  border-radius: 50%;
+  background: var(--live);
+  flex: none;
+  align-self: center;
+  box-shadow: 0 0 0 0 color-mix(in srgb, var(--live) 55%, transparent);
+  animation: foot-breathe 3.2s ease-in-out infinite;
+}
+
+@keyframes foot-breathe {
+  0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--live) 50%, transparent); }
+  50%      { box-shadow: 0 0 0 3px color-mix(in srgb, var(--live) 0%, transparent); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .foot-status-dot { animation: none; }
+}
+
+/* The domains line gives the footer an identity beyond a list of links. */
+.foot-domains {
+  margin-top: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
 .foot-links {
   display: flex;
   flex-wrap: wrap;
@@ -1103,26 +1144,31 @@ svg {
 
 .spec-row {
   display: grid;
-  grid-template-columns: 2.6rem 1fr;
-  align-items: baseline;
-  gap: 0.6rem;
+  grid-template-columns: 1.5rem 1fr;
+  align-items: center;
+  gap: 0.55rem;
   background: var(--ground-raised);
-  padding: 0.5rem 0.7rem;
+  padding: 0.3rem 0.6rem;
 }
 
+/* The role shares the row rather than wrapping under the name, which is what
+   keeps the list roughly as tall as the notes it sits beside. */
 @media (min-width: 26rem) {
   .spec-row {
-    grid-template-columns: 2.6rem minmax(6rem, auto) 1fr;
+    grid-template-columns: 1.5rem minmax(5.5rem, auto) 1fr;
   }
 }
 
 .spec-glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  letter-spacing: 0.04em;
-  text-align: center;
-  padding: 0.2rem 0.2rem;
-  border-radius: 3px;
+  font-size: 0.625rem;
+  letter-spacing: 0.03em;
+  border-radius: 4px;
   /* --hue and --hue-dark are set per technology; --tone picks the one that
      belongs to the current ground. */
   --tone: var(--hue, var(--ink-soft));
@@ -1144,14 +1190,16 @@ svg {
 .spec-row[data-kind="infra"]     { box-shadow: inset 2px 0 0 var(--series-3); }
 
 .spec-name {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--ink);
+  line-height: 1.3;
 }
 
 .spec-role {
   font-family: var(--font-mono);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
   color: var(--ink-faint);
+  line-height: 1.3;
 }
 
 /* =============================================================================
@@ -1170,24 +1218,51 @@ svg {
   font-size: 0.8125rem;
   line-height: 1;
   color: var(--ink-soft);
-  padding: 0.4rem 0.7rem 0.4rem 0.4rem;
-  border: 1px solid var(--rule);
+  padding: 0.35rem 0.7rem 0.35rem 0.35rem;
+  border: 1px solid color-mix(in srgb, var(--rule) 80%, transparent);
   border-radius: 999px;
-  background: color-mix(in srgb, var(--ink) 3%, transparent);
-  transition: color 0.18s ease, border-color 0.18s ease,
-    background 0.18s ease, transform 0.18s ease;
+  /* A translucent surface over a light blur: the chip picks up whatever it
+     sits on instead of being a flat swatch, which is what gives it the slight
+     dimensionality of a panel rather than a button. */
+  background: color-mix(in srgb, var(--ground-raised) 62%, transparent);
+  backdrop-filter: blur(6px) saturate(1.2);
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease,
+    transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .ref:hover {
   color: var(--ink-strong);
-  border-color: color-mix(in srgb, var(--tone) 60%, var(--rule));
-  background: color-mix(in srgb, var(--tone) 10%, transparent);
+  /* Illumination, not a glow: the border lifts toward the destination's own
+     colour and a single hairline ring picks it up. */
+  border-color: color-mix(in srgb, var(--tone) 55%, var(--rule));
+  background: color-mix(in srgb, var(--tone) 8%, var(--ground-raised));
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 14%, transparent),
+    0 1px 10px -6px color-mix(in srgb, var(--tone) 60%, transparent);
   transform: translateY(-1px);
 }
 
 .ref:focus-visible {
   outline: 2px solid var(--tone);
   outline-offset: 2px;
+}
+
+/* The indicator holds its width from the start, so a hover reveals it without
+   the label shifting underneath the pointer. */
+.ref-out {
+  width: 0.55rem;
+  margin-left: -0.15rem;
+  font-size: 0.75rem;
+  line-height: 1;
+  color: var(--tone);
+  opacity: 0;
+  transform: translate(-2px, 1px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.ref:hover .ref-out,
+.ref:focus-visible .ref-out {
+  opacity: 1;
+  transform: translate(0, 0);
 }
 
 /* The glyph sits in its own well, which is what keeps the chip from reading
@@ -1201,13 +1276,17 @@ svg {
   height: 1.5rem;
   flex: none;
   border-radius: 999px;
-  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  background: color-mix(in srgb, var(--tone) 13%, transparent);
   color: var(--tone);
-  transition: background 0.18s ease, transform 0.18s ease;
+  /* Recessed: an inner hairline reads as a well cut into the surface. */
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 18%, transparent);
+  transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .ref:hover .ref-mark {
-  background: color-mix(in srgb, var(--tone) 24%, transparent);
+  background: color-mix(in srgb, var(--tone) 22%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 34%, transparent);
+  transform: translateY(-1px);
 }
 
 /* Destination colours. Each is picked twice — once for each ground — so the
@@ -1253,7 +1332,10 @@ svg {
 
 @media (prefers-reduced-motion: reduce) {
   .ref-pulse { animation: none; opacity: 0.5; transform: none; }
-  .ref:hover { transform: none; }
+  .ref:hover,
+  .ref:hover .ref-mark { transform: none; }
+  .ref-out { transition: opacity 0.2s ease; transform: none; }
+  .ref:hover .ref-out { transform: none; }
 }
 
 .ref-meta {
@@ -1274,6 +1356,36 @@ svg {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
+}
+
+/* Staggered entrance. Done with nth-child rather than a script: no timers, no
+   layout pass, and it degrades to simply being present if animation is off. */
+.ref-list .ref,
+.ref-stack .ref {
+  animation: ref-enter 0.4s cubic-bezier(0.2, 0.7, 0.3, 1) backwards;
+}
+
+.ref-list .ref:nth-child(1), .ref-stack .ref:nth-child(1) { animation-delay: 0.02s; }
+.ref-list .ref:nth-child(2), .ref-stack .ref:nth-child(2) { animation-delay: 0.07s; }
+.ref-list .ref:nth-child(3), .ref-stack .ref:nth-child(3) { animation-delay: 0.12s; }
+.ref-list .ref:nth-child(4), .ref-stack .ref:nth-child(4) { animation-delay: 0.17s; }
+.ref-list .ref:nth-child(5), .ref-stack .ref:nth-child(5) { animation-delay: 0.22s; }
+.ref-list .ref:nth-child(n + 6), .ref-stack .ref:nth-child(n + 6) { animation-delay: 0.27s; }
+
+@keyframes ref-enter {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Stated after the stagger rules above so it actually wins on cascade order:
+   a reader who asks for less motion gets the chips already in place. */
+@media (prefers-reduced-motion: reduce) {
+  .ref-list .ref,
+  .ref-stack .ref {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 .ref-stack {
