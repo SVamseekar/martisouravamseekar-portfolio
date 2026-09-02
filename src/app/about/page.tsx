@@ -141,11 +141,13 @@ export default function AboutPage() {
             <p className="t-label" style={{ marginBottom: "0.75rem" }}>
               Contact
             </p>
-            <p className="t-small" style={{ marginBottom: "1.25rem" }}>
-              <a href={`mailto:${profile.email}`}>{profile.email}</a>
-            </p>
-
-            <div className="ref-stack">
+            <div className="ref-stack" style={{ marginTop: "0.25rem" }}>
+              <RefLink
+                href={`mailto:${profile.email}`}
+                variant="contact"
+                label={profile.email}
+                external={false}
+              />
               <RefLink
                 href={profile.cvPath}
                 variant="package"

@@ -20,6 +20,12 @@ export function SiteFooter() {
 
         <nav aria-label="Elsewhere" className="ref-list">
           <RefLink
+            href={`mailto:${profile.email}`}
+            variant="contact"
+            label={profile.email}
+            external={false}
+          />
+          <RefLink
             href={profile.github}
             variant="source"
             label={profile.github.replace("https://github.com/", "")}

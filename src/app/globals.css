@@ -1121,18 +1121,27 @@ svg {
   font-size: 0.6875rem;
   letter-spacing: 0.04em;
   text-align: center;
-  padding: 0.15rem 0.2rem;
-  border-radius: 2px;
-  background: var(--ground-sunk);
-  color: var(--ink-soft);
-  border: 1px solid var(--rule);
+  padding: 0.2rem 0.2rem;
+  border-radius: 3px;
+  /* --hue and --hue-dark are set per technology; --tone picks the one that
+     belongs to the current ground. */
+  --tone: var(--hue, var(--ink-soft));
+  background: color-mix(in srgb, var(--tone) 13%, transparent);
+  color: var(--tone);
+  border: 1px solid color-mix(in srgb, var(--tone) 40%, transparent);
+  font-weight: 600;
 }
 
-/* Layer tint. Restrained: a border and ink shift, never a filled chip. */
-.spec-glyph[data-kind="language"]  { color: var(--series-0); border-color: color-mix(in srgb, var(--series-0) 35%, var(--rule)); }
-.spec-glyph[data-kind="framework"] { color: var(--series-1); border-color: color-mix(in srgb, var(--series-1) 35%, var(--rule)); }
-.spec-glyph[data-kind="data"]      { color: var(--series-2); border-color: color-mix(in srgb, var(--series-2) 35%, var(--rule)); }
-.spec-glyph[data-kind="infra"]     { color: var(--series-3); border-color: color-mix(in srgb, var(--series-3) 35%, var(--rule)); }
+:root[data-theme="dark"] .spec-glyph,
+:root:not([data-theme="light"]) .spec-glyph {
+  --tone: var(--hue-dark, var(--ink-soft));
+}
+
+/* The layer still reads, as a hairline on the row's leading edge. */
+.spec-row[data-kind="language"]  { box-shadow: inset 2px 0 0 var(--series-0); }
+.spec-row[data-kind="framework"] { box-shadow: inset 2px 0 0 var(--series-1); }
+.spec-row[data-kind="data"]      { box-shadow: inset 2px 0 0 var(--series-2); }
+.spec-row[data-kind="infra"]     { box-shadow: inset 2px 0 0 var(--series-3); }
 
 .spec-name {
   font-size: 0.875rem;
@@ -1154,55 +1163,122 @@ svg {
 
 .ref {
   display: inline-flex;
-  align-items: baseline;
-  gap: 0.45rem;
+  align-items: center;
+  gap: 0.5rem;
   text-decoration: none;
   font-family: var(--font-mono);
   font-size: 0.8125rem;
+  line-height: 1;
   color: var(--ink-soft);
-  border-bottom: 1px solid transparent;
-  padding-bottom: 1px;
+  padding: 0.4rem 0.7rem 0.4rem 0.4rem;
+  border: 1px solid var(--rule);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--ink) 3%, transparent);
+  transition: color 0.18s ease, border-color 0.18s ease,
+    background 0.18s ease, transform 0.18s ease;
 }
 
 .ref:hover {
-  color: var(--signal);
-  border-bottom-color: color-mix(in srgb, var(--signal) 45%, transparent);
+  color: var(--ink-strong);
+  border-color: color-mix(in srgb, var(--tone) 60%, var(--rule));
+  background: color-mix(in srgb, var(--tone) 10%, transparent);
+  transform: translateY(-1px);
 }
 
-.ref-sigil { color: var(--ink-faint); }
-.ref:hover .ref-sigil { color: var(--signal); }
+.ref:focus-visible {
+  outline: 2px solid var(--tone);
+  outline-offset: 2px;
+}
 
-.ref-dot {
-  width: 0.4375rem;
-  height: 0.4375rem;
-  border-radius: 50%;
-  background: var(--live);
+/* The glyph sits in its own well, which is what keeps the chip from reading
+   as a plain text link with a picture stuck on the front. */
+.ref-mark {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.5rem;
+  height: 1.5rem;
   flex: none;
-  align-self: center;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--tone) 14%, transparent);
+  color: var(--tone);
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.ref:hover .ref-mark {
+  background: color-mix(in srgb, var(--tone) 24%, transparent);
+}
+
+/* Destination colours. Each is picked twice — once for each ground — so the
+   mark keeps its identity in dark mode instead of being inverted into a hue
+   that no longer belongs to the brand. */
+.ref[data-tone="github"]   { --tone: #24292f; }
+.ref[data-tone="linkedin"] { --tone: #0a66c2; }
+.ref[data-tone="mail"]     { --tone: #c5442e; }
+.ref[data-tone="orcid"]    { --tone: #8db63c; }
+.ref[data-tone="pypi"]     { --tone: #b58900; }
+.ref[data-tone="live"]     { --tone: var(--live); }
+.ref[data-tone="doc"]      { --tone: #6a5acd; }
+
+:root[data-theme="dark"] .ref[data-tone="github"],
+:root:not([data-theme="light"]) .ref[data-tone="github"] { --tone: #c9d1d9; }
+:root[data-theme="dark"] .ref[data-tone="linkedin"],
+:root:not([data-theme="light"]) .ref[data-tone="linkedin"] { --tone: #57a8f5; }
+:root[data-theme="dark"] .ref[data-tone="mail"],
+:root:not([data-theme="light"]) .ref[data-tone="mail"] { --tone: #f08a72; }
+:root[data-theme="dark"] .ref[data-tone="orcid"],
+:root:not([data-theme="light"]) .ref[data-tone="orcid"] { --tone: #b4d96a; }
+:root[data-theme="dark"] .ref[data-tone="pypi"],
+:root:not([data-theme="light"]) .ref[data-tone="pypi"] { --tone: #e3c05c; }
+:root[data-theme="dark"] .ref[data-tone="doc"],
+:root:not([data-theme="light"]) .ref[data-tone="doc"] { --tone: #a396f0; }
+
+/* A deployment is the one link whose state can change, so it is the one that
+   earns motion: a slow ring, stilled for readers who ask for that. */
+.ref-pulse {
+  position: absolute;
+  inset: -1px;
+  border-radius: 999px;
+  border: 1px solid var(--live);
+  opacity: 0;
+  animation: ref-ring 2.6s ease-out infinite;
+}
+
+@keyframes ref-ring {
+  0%   { transform: scale(0.85); opacity: 0.85; }
+  70%  { transform: scale(1.25); opacity: 0; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ref-pulse { animation: none; opacity: 0.5; transform: none; }
+  .ref:hover { transform: none; }
 }
 
 .ref-meta {
   color: var(--ink-faint);
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
-.ref-deploy .ref-label { color: var(--ink); }
-
-/* A citation sits in the reading face, since it is a bibliographic record. */
-.ref-record {
+/* A citation carries a bibliographic identifier, so it is set in the reading
+   face while keeping the same chip shape as its neighbours. */
+.ref-record .ref-label {
   font-family: var(--font-text);
-  font-size: 0.9375rem;
+  font-size: 0.9rem;
 }
 
 .ref-list {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
+  gap: 0.5rem;
 }
 
 .ref-stack {
   display: flex;
   flex-direction: column;
-  gap: 0.55rem;
+  gap: 0.5rem;
   align-items: flex-start;
 }

@@ -1,3 +1,5 @@
+import type { CSSProperties } from "react";
+
 import { techMark } from "@/data/tech";
 
 /**
@@ -21,8 +23,18 @@ export function StackSpec({
       {stack.map((tech) => {
         const mark = techMark(tech);
         return (
-          <li key={tech} className="spec-row">
-            <span className="spec-glyph" aria-hidden="true" data-kind={mark.kind}>
+          <li key={tech} className="spec-row" data-kind={mark.kind}>
+            <span
+              className="spec-glyph"
+              aria-hidden="true"
+              data-kind={mark.kind}
+              style={
+                {
+                  "--hue": mark.hue[0],
+                  "--hue-dark": mark.hue[1],
+                } as CSSProperties
+              }
+            >
               {mark.glyph}
             </span>
             <span className="spec-name">{tech}</span>

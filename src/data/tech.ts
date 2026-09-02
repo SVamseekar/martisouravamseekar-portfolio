@@ -19,49 +19,60 @@ export type TechKind =
   | "interface"
   | "method";
 
-export type Mark = { readonly glyph: string; readonly kind: TechKind };
+/**
+ * Each technology carries its own hue, given twice — once for each ground.
+ * They are the colours the technologies are actually known by, so the stack
+ * reads at a glance, but they are chosen (not inverted) for dark mode so a
+ * dark brand ink like Java's does not vanish into the page.
+ */
+export type Mark = {
+  readonly glyph: string;
+  readonly kind: TechKind;
+  /** [light ground, dark ground] */
+  readonly hue: readonly [string, string];
+};
 
 const MARKS: Readonly<Record<string, Mark>> = {
   // Languages
-  Python: { glyph: "py", kind: "language" },
-  "Java 17": { glyph: "jv", kind: "language" },
-  "Java 21": { glyph: "jv", kind: "language" },
-  TypeScript: { glyph: "ts", kind: "language" },
-  NumPy: { glyph: "np", kind: "language" },
+  Python: { glyph: "py", kind: "language" , hue: ["#3572A5", "#6ba7dd"] },
+  "Java 17": { glyph: "jv", kind: "language" , hue: ["#b07219", "#d8a44f"] },
+  "Java 21": { glyph: "jv", kind: "language" , hue: ["#b07219", "#d8a44f"] },
+  TypeScript: { glyph: "ts", kind: "language" , hue: ["#2f74c0", "#6aa9e9"] },
+  NumPy: { glyph: "np", kind: "language" , hue: ["#4d77cf", "#8aa8ee"] },
 
   // Frameworks and runtimes
-  "Spring Boot 3": { glyph: "sb", kind: "framework" },
-  "Spring Boot 3.3": { glyph: "sb", kind: "framework" },
-  "Spring Cloud Gateway": { glyph: "gw", kind: "framework" },
-  FastAPI: { glyph: "fa", kind: "framework" },
-  "Next.js": { glyph: "nx", kind: "framework" },
-  React: { glyph: "re", kind: "framework" },
-  "React Native": { glyph: "rn", kind: "framework" },
-  "Google ADK": { glyph: "adk", kind: "framework" },
-  Gemini: { glyph: "gm", kind: "framework" },
+  "Spring Boot 3": { glyph: "sb", kind: "framework" , hue: ["#4f9c53", "#7fd06a"] },
+  "Spring Boot 3.3": { glyph: "sb", kind: "framework" , hue: ["#4f9c53", "#7fd06a"] },
+  "Spring Cloud Gateway": { glyph: "gw", kind: "framework" , hue: ["#4f9c53", "#7fd06a"] },
+  FastAPI: { glyph: "fa", kind: "framework" , hue: ["#059486", "#3fc4b4"] },
+  "Next.js": { glyph: "nx", kind: "framework" , hue: ["#3a3a3a", "#d0d4da"] },
+  React: { glyph: "re", kind: "framework" , hue: ["#0b93b8", "#61dafb"] },
+  "React Native": { glyph: "rn", kind: "framework" , hue: ["#0b93b8", "#61dafb"] },
+  "Google ADK": { glyph: "adk", kind: "framework" , hue: ["#3b7ddd", "#7aa9ef"] },
+  Gemini: { glyph: "gm", kind: "framework" , hue: ["#7256d8", "#a390f0"] },
 
   // Data stores and transformation
-  PostgreSQL: { glyph: "pg", kind: "data" },
-  MongoDB: { glyph: "mg", kind: "data" },
-  Redis: { glyph: "rd", kind: "data" },
-  DuckDB: { glyph: "dk", kind: "data" },
-  dbt: { glyph: "dbt", kind: "data" },
-  pgvector: { glyph: "vec", kind: "data" },
-  RabbitMQ: { glyph: "mq", kind: "data" },
+  PostgreSQL: { glyph: "pg", kind: "data" , hue: ["#31648c", "#7ba7cc"] },
+  MongoDB: { glyph: "mg", kind: "data" , hue: ["#3f8b3f", "#6cc36c"] },
+  Redis: { glyph: "rd", kind: "data" , hue: ["#c0392b", "#ef7a6b"] },
+  DuckDB: { glyph: "dk", kind: "data" , hue: ["#a37200", "#e9c04c"] },
+  dbt: { glyph: "dbt", kind: "data" , hue: ["#d1553d", "#f0876e"] },
+  pgvector: { glyph: "vec", kind: "data" , hue: ["#31648c", "#7ba7cc"] },
+  RabbitMQ: { glyph: "mq", kind: "data" , hue: ["#d1682a", "#f09a5e"] },
 
   // Infrastructure
-  Docker: { glyph: "dc", kind: "infra" },
-  GCP: { glyph: "gcp", kind: "infra" },
-  PyPI: { glyph: "pypi", kind: "infra" },
-  pytest: { glyph: "test", kind: "infra" },
+  Docker: { glyph: "dc", kind: "infra" , hue: ["#1d84c6", "#5cb3e8"] },
+  GCP: { glyph: "gcp", kind: "infra" , hue: ["#3b7ddd", "#7aa9ef"] },
+  PyPI: { glyph: "pypi", kind: "infra" , hue: ["#a37200", "#e9c04c"] },
+  pytest: { glyph: "test", kind: "infra" , hue: ["#2b8a8a", "#54c2c2"] },
 
   // Interfaces and formats
-  MapLibre: { glyph: "map", kind: "interface" },
-  GTFS: { glyph: "gtfs", kind: "interface" },
-  SARIF: { glyph: "sarif", kind: "method" },
-  OSCAL: { glyph: "oscal", kind: "method" },
-  MLflow: { glyph: "ml", kind: "method" },
-  FAISS: { glyph: "faiss", kind: "method" },
+  MapLibre: { glyph: "map", kind: "interface" , hue: ["#2b7a5a", "#59bd91"] },
+  GTFS: { glyph: "gtfs", kind: "interface" , hue: ["#5a6b7d", "#9aabbd"] },
+  SARIF: { glyph: "sarif", kind: "method" , hue: ["#7256d8", "#a390f0"] },
+  OSCAL: { glyph: "oscal", kind: "method" , hue: ["#7256d8", "#a390f0"] },
+  MLflow: { glyph: "ml", kind: "method" , hue: ["#0d7fc4", "#5bb0e8"] },
+  FAISS: { glyph: "faiss", kind: "method" , hue: ["#3b7ddd", "#7aa9ef"] },
 };
 
 /** Falls back to the first two letters, so an unlisted technology still works. */
@@ -70,6 +81,7 @@ export function techMark(tech: string): Mark {
     MARKS[tech] ?? {
       glyph: tech.replace(/[^A-Za-z]/g, "").slice(0, 2).toLowerCase(),
       kind: "method",
+      hue: ["#5a6b7d", "#9aabbd"],
     }
   );
 }
