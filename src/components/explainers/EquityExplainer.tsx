@@ -1,107 +1,155 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
+import { ArrowDefs, Caption, NodeBox, Packet } from "./parts";
 
 /**
- * Aequitas — who is underserved, and the discipline behind the answer.
+ * Aequitas — official sources in, one briefing out, four times over.
  *
- * The visual is deprivation deciles with service coverage laid over them, so
- * the gap between "most deprived" and "served" is something you see rather
- * than read. The in-country rule matters as much as the score, so the barrier
- * between countries is drawn explicitly.
+ * The discipline is the point: the same pipeline runs per country, and the
+ * scores never share an axis because the deprivation indices are not
+ * comparable. The wall in the middle of the diagram is that rule, drawn.
  */
 export function EquityExplainer() {
-  // Deciles 1 (most deprived) to 10. Coverage falls as deprivation rises —
-  // the pattern the briefing exists to quantify.
-  const deciles = [
-    { d: 1, coverage: 0.52 },
-    { d: 2, coverage: 0.58 },
-    { d: 3, coverage: 0.61 },
-    { d: 4, coverage: 0.66 },
-    { d: 5, coverage: 0.7 },
-    { d: 6, coverage: 0.73 },
-    { d: 7, coverage: 0.79 },
-    { d: 8, coverage: 0.83 },
-    { d: 9, coverage: 0.88 },
-    { d: 10, coverage: 0.91 },
+  const deciles = [0.52, 0.58, 0.61, 0.66, 0.7, 0.73, 0.79, 0.83, 0.88, 0.91];
+
+  const countries = [
+    { name: "England", index: "IMD 2025", score: "80.0" },
+    { name: "Ireland", index: "Pobal HP 2022", score: "55.5" },
+    { name: "Netherlands", index: "CBS SES-WOA", score: "69.6" },
+    { name: "France", index: "F-EDI 2021", score: "47.7" },
   ];
+
+  const baseY = 214;
+  const chartH = 132;
 
   return (
     <ExplainerFrame
-      caption="Service coverage against deprivation decile — inside one country. Scores are never compared across borders."
-      description="A bar chart showing the share of people within 400 metres of a stop, by deprivation decile, inside a single country. Coverage rises from 52 percent in the most deprived decile to 91 percent in the least deprived. Four countries are live — England, Ireland, the Netherlands and France — each scored with the same formula but never plotted on a shared axis, because their deprivation indices are not comparable."
+      kicker="Method"
+      caption="Coverage falls as deprivation rises. The same formula runs in each country — and the scores never share an axis, because the indices are not comparable."
+      description="Official GTFS timetables, census small-area geography and the national deprivation index are ingested per country into a DuckDB warehouse where all analytics are pre-computed. A bar chart shows the share of people within 400 metres of a stop by deprivation decile: 52 percent in the most deprived decile rising to 91 percent in the least deprived. Four countries are live with their own deprivation index and score: England 80.0 using IMD 2025, Ireland 55.5 using Pobal HP 2022, the Netherlands 69.6 using CBS SES-WOA, and France 47.7 using F-EDI 2021. Scores are computed inside each country and never plotted on a shared axis."
     >
-      <svg
-        viewBox="0 0 720 300"
-        className="explainer-svg"
-        role="img"
-        aria-label="Transport coverage by deprivation decile within one country"
-      >
-        <text className="gx-label aq-d1" x="52" y="22">
-          PEOPLE WITHIN 400 m OF A STOP · BY DEPRIVATION DECILE
-        </text>
+      {({ motion }) => (
+        <svg
+          viewBox="0 0 720 300"
+          className="explainer-svg"
+          role="img"
+          aria-label="Transport coverage by deprivation decile, scored separately per country"
+        >
+          <ArrowDefs />
 
-        <line className="wg-axis" x1="52" y1="200" x2="470" y2="200" />
+          {/* ---- Official inputs ---- */}
+          <Caption x={16} y={24} delay="d1">
+            OFFICIAL SOURCES ONLY
+          </Caption>
+          <NodeBox x={16} y={34} w={126} h={30} title="GTFS timetables" delay="d1" />
+          <NodeBox x={16} y={70} w={126} h={30} title="census geography" delay="d2" />
+          <NodeBox x={16} y={106} w={126} h={30} title="deprivation index" delay="d3" />
 
-        {deciles.map((item, i) => {
-          const x = 52 + i * 42;
-          const h = item.coverage * 150;
-          return (
-            <g key={item.d} className={`aq-bar aq-d${i + 1}`}>
-              <rect
-                x={x}
-                y={200 - h}
-                width="28"
-                height={h}
-                style={{ "--h": `${h}px` } as React.CSSProperties}
+          <path className="ex-wire" d="M 142,49 Q 176,49 176,85" />
+          <path className="ex-wire" d="M 142,85 H 176" />
+          <path className="ex-wire" d="M 142,121 Q 176,121 176,85" />
+          <path className="ex-wire" d="M 176,85 H 208" markerEnd="url(#ex-arrow)" />
+
+          <Packet path="M 142,49 Q 176,49 176,85 L 206,85" dur={2} enabled={motion} />
+          <Packet path="M 142,121 Q 176,121 176,85 L 206,85" dur={2} begin={1} enabled={motion} />
+
+          <NodeBox
+            x={216}
+            y={64}
+            w={128}
+            h={42}
+            title="pre-compute"
+            meta="DuckDB warehouse"
+            variant="accent"
+            pulse
+            delay="d4"
+          />
+          <text className="ex-mono ex-step d5" x={216} y={124}>
+            API is a lookup layer —
+          </text>
+          <text className="ex-mono ex-step d5" x={216} y={137}>
+            it cannot invent a figure
+          </text>
+
+          {/* ---- Coverage by decile ---- */}
+          <Caption x={16} y={168} delay="d6">
+            PEOPLE WITHIN 400 m OF A STOP · BY DEPRIVATION DECILE
+          </Caption>
+
+          <line className="ex-axis" x1={16} y1={baseY} x2={392} y2={baseY} />
+
+          {deciles.map((coverage, i) => {
+            const h = coverage * chartH;
+            return (
+              <g key={i} className={`ex-grow d${i + 1}`}>
+                <rect
+                  x={16 + i * 38}
+                  y={baseY - h}
+                  width={26}
+                  height={h}
+                  className="ex-bar"
+                />
+              </g>
+            );
+          })}
+
+          <text className="ex-mono ex-step d8" x={16} y={230}>
+            most deprived
+          </text>
+          <text className="ex-mono ex-end ex-step d8" x={392} y={230}>
+            least deprived
+          </text>
+          <text className="ex-mono ex-step d9" x={16} y={252}>
+            coverage 52% → 91%
+          </text>
+
+          {/* ---- The wall: no cross-country axis ---- */}
+          <line
+            className="ex-wire"
+            x1={430}
+            y1={20}
+            x2={430}
+            y2={286}
+            strokeDasharray="4 4"
+          />
+          <text className="ex-mono ex-text-warn ex-step d10" x={438} y={286}>
+            never one axis
+          </text>
+
+          {/* ---- Per-country scores ---- */}
+          <Caption x={456} y={24} delay="d10">
+            SCORED SEPARATELY
+          </Caption>
+          {countries.map((country, i) => (
+            <g key={country.name} className={`ex-step d${10 + i}`}>
+              <text className="ex-name" x={456} y={56 + i * 44}>
+                {country.name}
+              </text>
+              <text className="ex-mono" x={456} y={70 + i * 44}>
+                {country.index}
+              </text>
+              <text className="ex-mono-strong ex-end" x={704} y={62 + i * 44}>
+                {country.score}
+              </text>
+              <line
+                className="ex-grid"
+                x1={456}
+                y1={78 + i * 44}
+                x2={704}
+                y2={78 + i * 44}
               />
-              <text className="wg-cat" x={x + 14} y="216">
-                {item.d}
-              </text>
-            </g>
-          );
-        })}
-
-        <text className="gx-hash aq-d11" x="52" y="238">
-          most deprived
-        </text>
-        <text className="gx-hash aq-d11" x="404" y="238">
-          least deprived
-        </text>
-
-        {/* The in-country rule, drawn as a wall rather than stated as a caveat */}
-        <line className="aq-wall aq-d12" x1="512" y1="30" x2="512" y2="270" />
-
-        <g className="aq-countries aq-d12">
-          <text className="gx-label" x="536" y="52">SCORED SEPARATELY</text>
-
-          {[
-            { c: "England", s: "80.0" },
-            { c: "Ireland", s: "55.5" },
-            { c: "Netherlands", s: "69.6" },
-            { c: "France", s: "47.7" },
-          ].map((row, i) => (
-            <g key={row.c}>
-              <text className="gx-sub" x="536" y={84 + i * 26}>
-                {row.c}
-              </text>
-              <text className="aq-score" x="678" y={84 + i * 26}>
-                {row.s}
-              </text>
             </g>
           ))}
 
-          <text className="gx-hash" x="536" y="212">
-            one formula, applied
+          <text className="ex-mono ex-step d14" x={456} y={252}>
+            one formula, applied inside
           </text>
-          <text className="gx-hash" x="536" y="228">
-            inside each country —
+          <text className="ex-mono ex-step d14" x={456} y={266}>
+            each country
           </text>
-          <text className="gx-hash" x="536" y="244">
-            never on one axis
-          </text>
-        </g>
-      </svg>
+        </svg>
+      )}
     </ExplainerFrame>
   );
 }

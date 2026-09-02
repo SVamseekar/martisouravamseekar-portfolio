@@ -20,18 +20,18 @@ export const metadata: Metadata = pageMetadata({
 export default function AboutPage() {
   return (
     <>
-      <header className="shell shell-wide detail-head">
+      <header className="shell shell-wide page-head">
         <h1 className="t-title" style={{ marginBottom: "1rem" }}>
           About
         </h1>
-        <p className="t-lead measure">
+        <p className="t-lead measure-wide">
           I work on the part of a system that has to hold up under scrutiny —
           where a number needs provenance, a decision needs a record, and
           &ldquo;trust me&rdquo; is not an acceptable answer.
         </p>
       </header>
 
-      <section className="shell shell-wide section section-rule">
+      <section className="shell shell-wide band band-rule">
         <div className="split">
           <div>
             <div className="eyebrow">
@@ -59,7 +59,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="shell shell-wide section section-rule">
+      <section className="shell shell-wide band band-rule">
         <div className="eyebrow">
           <span className="t-label">Education</span>
         </div>
@@ -80,7 +80,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="shell shell-wide section section-rule">
+      <section className="shell shell-wide band band-rule">
         <div className="eyebrow">
           <span className="t-label">Certification</span>
         </div>
@@ -103,7 +103,7 @@ export default function AboutPage() {
       </section>
 
       {/* Eligibility, stated once and plainly, without narrowing to one market. */}
-      <section className="shell shell-wide section section-rule">
+      <section className="shell shell-wide band band-rule">
         <div className="split">
           <div>
             <div className="eyebrow">

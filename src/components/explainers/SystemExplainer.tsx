@@ -3,14 +3,17 @@ import { ReleaseGateExplainer } from "./ReleaseGateExplainer";
 import { EquityExplainer } from "./EquityExplainer";
 import { EvidenceGraphExplainer } from "./EvidenceGraphExplainer";
 import { OrderFlowExplainer } from "./OrderFlowExplainer";
+import { MasovaArchitecture } from "./MasovaArchitecture";
+import { FleetExplainer } from "./FleetExplainer";
+import { MoveqExplainer } from "./MoveqExplainer";
 
 /**
- * Maps a system's `explainer` key to its diagram.
+ * Maps a system's explainer key to its diagram.
  *
  * Each system gets a bespoke explainer rather than one parameterised
- * component: a release being blocked and an order reaching a kitchen are
- * different ideas, and a shared abstraction would flatten both into the same
- * three boxes.
+ * component: a release being blocked, an order walking a state machine and a
+ * rule traversing a graph are different ideas, and a shared abstraction would
+ * flatten all three into the same three boxes.
  */
 const EXPLAINERS = {
   PayGapExplainer,
@@ -18,6 +21,9 @@ const EXPLAINERS = {
   EquityExplainer,
   EvidenceGraphExplainer,
   OrderFlowExplainer,
+  MasovaArchitecture,
+  FleetExplainer,
+  MoveqExplainer,
 } as const;
 
 export function SystemExplainer({ name }: { name: string }) {

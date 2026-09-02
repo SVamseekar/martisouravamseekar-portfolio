@@ -13,18 +13,18 @@ export const metadata: Metadata = pageMetadata({
 export default function WorkIndex() {
   return (
     <>
-      <section className="shell shell-wide detail-head">
+      <section className="shell shell-wide page-head">
         <h1 className="t-title" style={{ marginBottom: "1rem" }}>
-          Five systems
+          Seven systems
         </h1>
-        <p className="t-lead measure">
+        <p className="t-lead measure-wide">
           Each one exists because a decision had to be defensible to someone
           else — a regulator, an auditor, a transport authority. Open any of
-          them to see how it works for the people who use it.
+          them for the system story, the architecture and the trade-offs.
         </p>
       </section>
 
-      <section className="shell shell-wide" style={{ paddingBottom: "3rem" }}>
+      <section className="shell shell-wide band">
         <div className="rows">
           {systems.map((system) => (
             <article key={system.slug} className="row">
@@ -49,14 +49,14 @@ export default function WorkIndex() {
               </div>
 
               <span className="status">
-                {system.status === "live" ? (
-                  <>
-                    <span className="dot dot-live" aria-hidden="true" />
-                    Live
-                  </>
-                ) : (
-                  "PyPI"
+                {system.status === "live" && (
+                  <span className="dot dot-live" aria-hidden="true" />
                 )}
+                {system.status === "live"
+                  ? "Live"
+                  : system.status === "packages"
+                    ? "PyPI"
+                    : "Source"}
               </span>
             </article>
           ))}

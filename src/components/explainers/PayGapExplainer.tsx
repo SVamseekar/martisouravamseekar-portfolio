@@ -1,95 +1,164 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
+import { ArrowDefs, Caption, NodeBox, Packet } from "./parts";
 
 /**
- * WorkforceGuard AI — the question an HR lead actually has.
+ * WorkforceGuard AI — the pipeline that makes a pay-gap answer defensible.
  *
- * Not "what is our pay gap" (they know) but "is ours normal here, and can I
- * defend it?". So the diagram is a comparison: the company's number placed
- * against its own country-and-sector benchmark, with the provenance that
- * makes the comparison defensible shown as part of the result, not a footnote.
+ * Eurostat series and the company's own payroll travel through the real dbt
+ * layers (staging → core → internal → public marts) into the benchmark the
+ * employer is measured against, with provenance carried the whole way.
  */
 export function PayGapExplainer() {
-  // Illustrative sector benchmarks drawn from the panel's shape: finance sits
-  // far above the all-sector mean, which is the point the comparison makes.
-  const sectors = [
-    { label: "All sectors", gap: 10.9, x: 96 },
-    { label: "Manufacturing", gap: 13.2, x: 216 },
-    { label: "Health", gap: 17.5, x: 336 },
-    { label: "Finance", gap: 25.0, x: 456 },
+  const sources = [
+    { title: "LFS", sub: "labour force", y: 44 },
+    { title: "JVS", sub: "vacancies", y: 92 },
+    { title: "SES", sub: "earnings", y: 140 },
   ];
 
-  const scale = (gap: number) => 196 - (gap / 28) * 150;
+  const layers = [
+    { title: "staging", meta: "typed + tested", x: 306 },
+    { title: "core", meta: "EU27 × 13 NACE", x: 306 },
+  ];
 
   return (
     <ExplainerFrame
-      caption="The company's gap is placed against its own country and sector — with the source of every number attached."
-      description="A bar chart of gender pay gap benchmarks by sector: all sectors 10.9 percent, manufacturing 13.2, health 17.5, finance 25.0. A company's own figure of 21.4 percent is plotted against the finance benchmark, showing it sits below its sector but well above the all-sector mean. Each figure carries its Eurostat dataset source and formula version."
+      kicker="Data path"
+      caption="Eurostat series and the company's own payroll meet in the same models, so the benchmark and the answer carry one shared provenance."
+      description="Three Eurostat sources — Labour Force Survey, Job Vacancy Statistics and Structure of Earnings Survey — are ingested as Parquet into a DuckDB warehouse, then modelled through layered dbt: staging, core covering all 27 member states and 13 NACE sectors, then internal and public benchmark marts. A company's uploaded payroll joins at the internal layer. The API assembles an evidence bundle where every figure carries its Eurostat dataset id, formula version and review status, and writes each decision to a SHA-256 hash-chained governance log."
     >
-      <svg
-        viewBox="0 0 720 300"
-        className="explainer-svg"
-        role="img"
-        aria-label="Company pay gap compared against sector benchmarks"
-      >
-        {/* Baseline and scale */}
-        <line className="wg-axis" x1="60" y1="196" x2="660" y2="196" />
-        <text className="gx-label" x="60" y="26">GENDER PAY GAP · EU27 · SES</text>
+      {({ motion }) => (
+        <svg
+          viewBox="0 0 720 300"
+          className="explainer-svg"
+          role="img"
+          aria-label="WorkforceGuard data pipeline from Eurostat through dbt to a benchmarked answer"
+        >
+          <ArrowDefs />
 
-        {[0, 10, 20].map((tick) => (
-          <g key={tick}>
-            <line
-              className="wg-grid"
-              x1="60"
-              y1={scale(tick)}
-              x2="660"
-              y2={scale(tick)}
+          {/* ---- Public sources ---- */}
+          <Caption x={16} y={26} delay="d1">
+            EUROSTAT · 16 DATASETS
+          </Caption>
+          {sources.map((source, i) => (
+            <NodeBox
+              key={source.title}
+              x={16}
+              y={source.y}
+              w={112}
+              h={38}
+              title={source.title}
+              sub={source.sub}
+              pulse
+              phase={`p${i}`}
+              delay={`d${i + 1}`}
             />
-            <text className="wg-tick" x="46" y={scale(tick) + 4}>
-              {tick}%
+          ))}
+
+          {/* Ingest */}
+          <path className="ex-wire" d="M 128,63 Q 176,63 176,112" />
+          <path className="ex-wire" d="M 128,111 H 176" />
+          <path className="ex-wire" d="M 128,159 Q 176,159 176,112" />
+          <path className="ex-wire" d="M 176,112 H 216" markerEnd="url(#ex-arrow)" />
+
+          <Packet path="M 128,63 Q 176,63 176,112 L 214,112" dur={2.2} enabled={motion} />
+          <Packet path="M 128,159 Q 176,159 176,112 L 214,112" dur={2.2} begin={1.1} enabled={motion} />
+
+          <NodeBox
+            x={224}
+            y={92}
+            w={62}
+            h={40}
+            title="Parquet"
+            variant="sunk"
+            delay="d4"
+          />
+
+          {/* ---- dbt layers ---- */}
+          <Caption x={306} y={26} delay="d5">
+            dbt ON DUCKDB · ~31 MODELS
+          </Caption>
+          {layers.map((layer, i) => (
+            <NodeBox
+              key={layer.title}
+              x={layer.x}
+              y={44 + i * 52}
+              w={140}
+              h={40}
+              title={layer.title}
+              meta={layer.meta}
+              pulse
+              phase={`p${i + 3}`}
+              delay={`d${5 + i}`}
+            />
+          ))}
+          <NodeBox
+            x={306}
+            y={148}
+            w={140}
+            h={40}
+            title="internal mart"
+            meta="company × market"
+            variant="accent"
+            pulse
+            phase="p5"
+            delay="d7"
+          />
+
+          <path className="ex-wire" d="M 286,112 Q 296,112 296,64 H 306" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire" d="M 376,84 V 96" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire" d="M 376,136 V 148" markerEnd="url(#ex-arrow)" />
+
+          <Packet path="M 376,84 V 146" dur={1.6} begin={2.2} enabled={motion} />
+
+          {/* ---- The employer's own payroll joins ---- */}
+          <NodeBox
+            x={306}
+            y={226}
+            w={140}
+            h={40}
+            title="your payroll"
+            meta="CSV upload"
+            variant="dashed"
+            delay="d8"
+          />
+          <path className="ex-wire-soft" d="M 376,226 V 188" markerEnd="url(#ex-arrow)" />
+          <Packet path="M 376,224 V 190" dur={1.3} begin={3} tone="live" enabled={motion} />
+
+          {/* ---- The answer, with provenance ---- */}
+          <path className="ex-wire" d="M 446,168 H 496" markerEnd="url(#ex-arrow)" />
+          <Packet path="M 446,168 H 494" dur={1.2} begin={3.6} enabled={motion} />
+
+          <g className="ex-step d9">
+            <rect x={504} y={92} width={200} height={110} rx="3" className="ex-box" />
+            <text className="ex-label" x={520} y={114}>
+              EVIDENCE BUNDLE
+            </text>
+            <text className="ex-mono-strong" x={520} y={138}>
+              you · 21.4%
+            </text>
+            <text className="ex-mono" x={520} y={156}>
+              finance benchmark · 25.0%
+            </text>
+            <text className="ex-mono" x={520} y={170}>
+              all-sector mean · 10.9%
+            </text>
+            <text className="ex-mono" x={520} y={190}>
+              earn_gr_gpgr2 · formula v3
             </text>
           </g>
-        ))}
 
-        {/* Sector benchmarks rise in sequence */}
-        {sectors.map((sector, i) => (
-          <g key={sector.label} className={`wg-bar wg-d${i + 1}`}>
-            <rect
-              x={sector.x}
-              y={scale(sector.gap)}
-              width="58"
-              height={196 - scale(sector.gap)}
-              style={{ "--h": `${196 - scale(sector.gap)}px` } as React.CSSProperties}
-            />
-            <text className="wg-val" x={sector.x + 29} y={scale(sector.gap) - 8}>
-              {sector.gap.toFixed(1)}%
-            </text>
-            <text className="wg-cat" x={sector.x + 29} y="212">
-              {sector.label}
+          {/* Governance log */}
+          <path className="ex-wire" d="M 604,202 V 232" markerEnd="url(#ex-arrow)" />
+          <g className="ex-step d10">
+            <rect x={504} y={236} width={200} height={34} rx="3" className="ex-box-sunk" />
+            <text className="ex-mono ex-mid" x={604} y={257}>
+              SHA-256 chain · verified per call
             </text>
           </g>
-        ))}
-
-        {/* The company's own figure, arriving last against its sector */}
-        <g className="wg-you wg-d5">
-          <line className="wg-youline" x1="60" y1={scale(21.4)} x2="660" y2={scale(21.4)} />
-          <rect className="wg-youchip" x="556" y={scale(21.4) - 15} width="104" height="30" rx="3" />
-          <text className="wg-youtext" x="608" y={scale(21.4) + 5}>
-            you · 21.4%
-          </text>
-        </g>
-
-        {/* Provenance is part of the answer */}
-        <g className="wg-prov wg-d6">
-          <text className="gx-hash" x="60" y="252">
-            source · earn_gr_gpgr2 · formula v3 · reviewed 2026-02
-          </text>
-          <text className="gx-hash" x="60" y="270">
-            below sector benchmark · above all-sector mean · explanation required
-          </text>
-        </g>
-      </svg>
+        </svg>
+      )}
     </ExplainerFrame>
   );
 }

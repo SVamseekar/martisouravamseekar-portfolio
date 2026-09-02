@@ -3,32 +3,53 @@
 import type { ReactNode } from "react";
 import { useInViewOnce, usePrefersReducedMotion } from "@/hooks/useInViewOnce";
 
+type RenderProps = {
+  /** False when the visitor prefers reduced motion — skip SMIL entirely. */
+  motion: boolean;
+};
+
 type Props = {
   /** What the reader is looking at, in plain language. */
   caption: string;
-  /** Accessible prose description — the diagram's meaning without the picture. */
+  /** Prose description, so the diagram is never the only source of the information. */
   description: string;
-  children: ReactNode;
+  /** Optional label above the diagram. */
+  kicker?: string;
+  children: ReactNode | ((props: RenderProps) => ReactNode);
 };
 
 /**
  * Shared container for the system explainers.
  *
- * Handles the parts every diagram needs identically: play once on first view,
- * skip the animation entirely under reduced motion, and expose a text
- * description so the diagram is not the only way to get the information.
+ * Publishes play state as `data-play` on the wrapper once the figure scrolls
+ * into view; the stylesheet keys every animation off that, so a diagram only
+ * runs while it is on screen and no diagram needs its own timing logic.
  *
- * Play state is published as `data-play` on the wrapper; each diagram's CSS
- * keys its own draw-in off that, so no diagram needs its own timing logic.
+ * Children may be a render function, which receives `motion: false` when the
+ * visitor prefers reduced motion. Diagrams use that to omit travelling
+ * packets rather than leaving them frozen on the page.
  */
-export function ExplainerFrame({ caption, description, children }: Props) {
+export function ExplainerFrame({
+  caption,
+  description,
+  kicker,
+  children,
+}: Props) {
   const { ref, inView } = useInViewOnce<HTMLDivElement>();
   const reduced = usePrefersReducedMotion();
-  const play = reduced || inView;
 
   return (
-    <figure className="explainer" ref={ref} data-play={play}>
-      <div className="explainer-stage">{children}</div>
+    <figure className="explainer" ref={ref} data-play={inView}>
+      {kicker && (
+        <p className="t-label" style={{ marginBottom: "0.6rem" }}>
+          {kicker}
+        </p>
+      )}
+      <div className="explainer-stage">
+        {typeof children === "function"
+          ? children({ motion: !reduced })
+          : children}
+      </div>
       <figcaption className="explainer-caption t-small">{caption}</figcaption>
       <p className="sr-only">{description}</p>
     </figure>

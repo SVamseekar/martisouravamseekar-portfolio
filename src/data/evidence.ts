@@ -30,6 +30,7 @@ export const liveSystems = [
   },
   { slug: "aequitas", href: "https://aequitas.souravamseekar.com" },
   { slug: "masova", href: "https://masova.souravamseekar.com" },
+  { slug: "moveq", href: "https://moveq.souravamseekar.com" },
 ] as const;
 
 /**

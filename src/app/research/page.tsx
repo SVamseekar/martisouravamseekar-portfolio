@@ -29,14 +29,14 @@ export default function ResearchPage() {
         }}
       />
 
-      <header className="shell shell-wide detail-head">
+      <header className="shell shell-wide page-head">
         <p className="t-label" style={{ marginBottom: "1rem" }}>
           Working paper · 2026
         </p>
         <h1 className="t-title measure" style={{ marginBottom: "1.25rem" }}>
           {research.title}
         </h1>
-        <p className="t-lead measure">
+        <p className="t-lead measure-wide">
           Competition for workers is supposed to bid wages up and close the
           gender pay gap. Across 27 member states and six years, employment and
           the pay gap move together instead.
@@ -57,11 +57,11 @@ export default function ResearchPage() {
         </div>
       </header>
 
-      <section className="shell shell-wide" style={{ paddingBottom: "3rem" }}>
+      <section className="shell shell-wide band">
         <FindingExplainer />
       </section>
 
-      <section className="shell shell-wide section section-rule">
+      <section className="shell shell-wide band band-rule">
         <div className="split">
           <div>
             <div className="eyebrow">
@@ -114,7 +114,7 @@ export default function ResearchPage() {
       </section>
 
       {/* Stating the limits plainly is what makes the claims usable. */}
-      <section className="shell shell-wide section section-rule">
+      <section className="shell shell-wide band band-rule">
         <div className="eyebrow">
           <span className="t-label">What this does not claim</span>
         </div>
@@ -134,7 +134,7 @@ export default function ResearchPage() {
         </ul>
       </section>
 
-      <section className="shell shell-wide section section-rule">
+      <section className="shell shell-wide band band-rule">
         <div className="split">
           <div>
             <div className="eyebrow">

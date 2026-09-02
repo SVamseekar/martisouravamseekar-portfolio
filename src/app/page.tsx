@@ -68,7 +68,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="shell shell-wide section">
+      <section className="shell shell-wide band">
         <div className="eyebrow">
           <span className="t-label">Selected work</span>
         </div>
@@ -84,12 +84,13 @@ export default function Home() {
                 <h2 className="card-name">{system.name}</h2>
                 <span className="status">
                   {system.status === "live" && (
-                    <>
-                      <span className="dot dot-live" aria-hidden="true" />
-                      Live
-                    </>
+                    <span className="dot dot-live" aria-hidden="true" />
                   )}
-                  {system.status === "packages" && "PyPI"}
+                  {system.status === "live"
+                    ? "Live"
+                    : system.status === "packages"
+                      ? "PyPI"
+                      : "Source"}
                 </span>
               </div>
               <p className="t-small">{system.whatItIs}</p>
@@ -105,7 +106,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="shell shell-wide section section-rule">
+      <section className="shell shell-wide band band-rule">
         <div className="split">
           <div>
             <div className="eyebrow">

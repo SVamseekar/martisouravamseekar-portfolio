@@ -1,38 +1,39 @@
 /* =============================================================================
    Explainers
 
-   One shared draw-in system for every system diagram. Each element carries a
-   stage class (.gx-d1 … .gx-d12) that only sets a delay; the animation itself
-   is shared, so the diagrams stay consistent and cheap to add to.
+   Each system page carries a diagram of how that system actually works, with
+   motion that carries meaning: packets travel along real routes, services
+   light up as they are called, states advance in sequence.
 
-   Nothing animates until the figure's data-play flips true, and under reduced
-   motion everything renders in its final state immediately.
+   Motion is driven by SVG SMIL and CSS keyframes that run continuously once
+   the figure is in view, so the diagram reads as a system in operation rather
+   than a picture that faded in once. Under prefers-reduced-motion every
+   element renders in its final state and nothing moves.
    ========================================================================== */
 
 .explainer {
   margin: 0;
-  padding: 0;
 }
 
 .explainer-stage {
   background: var(--ground-sunk);
   border: 1px solid var(--rule);
   border-radius: 4px;
-  padding: clamp(0.75rem, 2vw, 1.25rem);
+  padding: clamp(0.75rem, 1.6vw, 1.15rem);
   overflow-x: auto;
 }
 
 .explainer-svg {
   display: block;
   width: 100%;
-  min-width: 34rem;
+  min-width: 40rem;
   height: auto;
   color: var(--ink-faint);
 }
 
 .explainer-caption {
-  margin-top: 0.875rem;
-  max-width: 44rem;
+  margin-top: 0.75rem;
+  max-width: 46rem;
 }
 
 .sr-only {
@@ -47,399 +48,290 @@
   border: 0;
 }
 
-/* ---- Shared SVG vocabulary --------------------------------------------- */
+/* =============================================================================
+   Shared SVG vocabulary
+   ========================================================================== */
 
 .explainer-svg rect,
-.explainer-svg circle {
+.explainer-svg circle,
+.explainer-svg line,
+.explainer-svg path,
+.explainer-svg polygon {
   vector-effect: non-scaling-stroke;
 }
 
-.gx-node rect {
+.ex-box {
   fill: var(--ground-raised);
   stroke: var(--rule-strong);
   stroke-width: 1;
 }
 
-.gx-title {
-  fill: var(--ink);
-  font-family: var(--font-text);
-  font-size: 13px;
-  font-weight: 500;
-}
-
-.gx-sub {
-  fill: var(--ink-soft);
-  font-family: var(--font-text);
-  font-size: 12px;
-}
-
-.gx-label {
-  fill: var(--ink-faint);
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.12em;
-}
-
-.gx-hash {
-  fill: var(--ink-faint);
-  font-family: var(--font-mono);
-  font-size: 10px;
-}
-
-.gx-centred {
-  text-anchor: middle;
-}
-
-.gx-wire {
-  stroke: var(--rule-strong);
-  stroke-width: 1.25;
-  fill: none;
-}
-
-/* ---- Release gate ------------------------------------------------------- */
-
-.gx-gate rect {
-  fill: var(--ground-raised);
-  stroke: var(--rule-strong);
-}
-
-.gx-risk {
-  fill: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.gx-item {
-  fill: var(--ink-soft);
-  font-family: var(--font-text);
-  font-size: 11.5px;
-}
-
-.gx-tick {
-  fill: var(--live);
-  font-size: 12px;
-}
-
-.gx-cross {
-  fill: var(--blocked);
-  font-size: 12px;
-}
-
-.gx-check.gx-fail .gx-item {
-  fill: var(--blocked);
-}
-
-.gx-verdict rect {
-  fill: color-mix(in srgb, var(--blocked) 10%, var(--ground-raised));
-  stroke: var(--blocked);
-}
-
-.gx-blocked {
-  fill: var(--blocked);
-  font-family: var(--font-mono);
-  font-size: 17px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-anchor: middle;
-}
-
-.gx-seal rect {
-  fill: var(--ground-sunk);
-  stroke: var(--rule);
-  stroke-dasharray: 3 2;
-}
-
-/* ---- Charts (pay gap, equity, finding) ---------------------------------- */
-
-.wg-axis {
-  stroke: var(--rule-strong);
-  stroke-width: 1;
-}
-
-.wg-grid {
-  stroke: var(--rule);
-  stroke-width: 1;
-  stroke-dasharray: 2 3;
-}
-
-.wg-tick,
-.wg-cat {
-  fill: var(--ink-faint);
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  text-anchor: middle;
-}
-
-.wg-tick {
-  text-anchor: end;
-}
-
-.wg-bar rect {
-  fill: color-mix(in srgb, var(--signal) 22%, transparent);
-  stroke: var(--signal);
-  stroke-width: 1;
-}
-
-.wg-val {
-  fill: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  text-anchor: middle;
-}
-
-.wg-youline {
-  stroke: var(--blocked);
-  stroke-width: 1.25;
-  stroke-dasharray: 4 3;
-}
-
-.wg-youchip {
-  fill: var(--blocked);
-}
-
-.wg-youtext {
-  fill: var(--ground);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-  text-anchor: middle;
-}
-
-/* ---- Evidence graph ----------------------------------------------------- */
-
-.eg-loose rect {
-  fill: var(--ground-raised);
-  stroke: var(--rule-strong);
-  stroke-dasharray: 3 2;
-}
-
-.eg-node circle {
-  fill: var(--signal);
-  stroke: var(--ground);
-  stroke-width: 2;
-}
-
-.eg-edge {
-  stroke: var(--rule-strong);
-  stroke-width: 1.25;
-}
-
-.eg-missing {
-  stroke: var(--blocked);
-  stroke-dasharray: 3 3;
-}
-
-.eg-gap {
-  fill: var(--blocked);
-  font-family: var(--font-mono);
-  font-size: 10px;
-}
-
-.eg-finding rect {
-  fill: var(--ground-sunk);
-  stroke: var(--rule);
-}
-
-.eg-level {
-  fill: var(--signal);
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.1em;
-}
-
-/* ---- Equity ------------------------------------------------------------- */
-
-.aq-bar rect {
-  fill: color-mix(in srgb, var(--signal) 20%, transparent);
-  stroke: var(--signal);
-  stroke-width: 1;
-}
-
-.aq-wall {
-  stroke: var(--rule-strong);
-  stroke-width: 1;
-  stroke-dasharray: 4 4;
-}
-
-.aq-score {
-  fill: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 12px;
-  font-weight: 500;
-  text-anchor: end;
-}
-
-/* ---- Order flow --------------------------------------------------------- */
-
-.mv-chan rect,
-.mv-out rect {
-  fill: var(--ground-raised);
-  stroke: var(--rule-strong);
-  stroke-width: 1;
-}
-
-.mv-queue rect {
+.ex-box-accent {
   fill: var(--signal-soft);
   stroke: var(--signal);
   stroke-width: 1;
 }
 
-.mv-state {
+.ex-box-sunk {
+  fill: var(--ground-sunk);
+  stroke: var(--rule);
+  stroke-width: 1;
+}
+
+.ex-box-dashed {
+  fill: none;
+  stroke: var(--rule-strong);
+  stroke-width: 1;
+  stroke-dasharray: 3 3;
+}
+
+.ex-name {
   fill: var(--ink);
-  font-family: var(--font-mono);
+  font-family: var(--font-text);
   font-size: 12px;
   font-weight: 500;
 }
 
-.mv-wire {
+.ex-text {
+  fill: var(--ink-soft);
+  font-family: var(--font-text);
+  font-size: 11.5px;
+}
+
+.ex-label {
+  fill: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 0.12em;
+}
+
+.ex-mono {
+  fill: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+}
+
+.ex-mono-strong {
+  fill: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.ex-mid { text-anchor: middle; }
+.ex-end { text-anchor: end; }
+
+.ex-wire {
   stroke: var(--rule-strong);
   stroke-width: 1.15;
   fill: none;
 }
 
-/* ---- Finding scatter ---------------------------------------------------- */
+.ex-wire-soft {
+  stroke: var(--rule);
+  stroke-width: 1;
+  fill: none;
+}
 
-.fx-point {
+.ex-signal { fill: var(--signal); }
+.ex-live   { fill: var(--live); }
+.ex-warn   { fill: var(--blocked); }
+
+.ex-stroke-signal { stroke: var(--signal); }
+.ex-stroke-warn   { stroke: var(--blocked); }
+
+/* =============================================================================
+   Motion primitives
+
+   All keyed off .explainer[data-play="true"], so nothing animates until the
+   figure scrolls into view.
+   ========================================================================== */
+
+/* A packet travelling a route. The element carries its own SMIL animateMotion;
+   this only handles its visibility before the figure plays. */
+.ex-packet {
+  opacity: 0;
+}
+
+.explainer[data-play="true"] .ex-packet {
+  opacity: 1;
+}
+
+/* A component that lights up when it is called. */
+.ex-pulse {
+  animation: ex-pulse 3.2s ease-in-out infinite;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.explainer:not([data-play="true"]) .ex-pulse {
+  animation: none;
+}
+
+@keyframes ex-pulse {
+  0%, 62%, 100% { opacity: 0; }
+  70%, 88%      { opacity: 1; }
+}
+
+/* A route that draws itself as traffic flows along it. */
+.ex-flow {
+  stroke-dasharray: 4 4;
+  animation: ex-flow 1.1s linear infinite;
+}
+
+.explainer:not([data-play="true"]) .ex-flow {
+  animation: none;
+}
+
+@keyframes ex-flow {
+  to { stroke-dashoffset: -8; }
+}
+
+/* Sequential reveal for stepped content. */
+.ex-step {
+  opacity: 0;
+}
+
+.explainer[data-play="true"] .ex-step {
+  animation: ex-rise 0.5s var(--ease) forwards;
+}
+
+@keyframes ex-rise {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.ex-grow {
+  transform: scaleY(0);
+  transform-box: fill-box;
+  transform-origin: bottom;
+}
+
+.explainer[data-play="true"] .ex-grow {
+  animation: ex-grow 0.55s var(--ease) forwards;
+}
+
+@keyframes ex-grow {
+  to { transform: scaleY(1); }
+}
+
+.ex-pop {
+  opacity: 0;
+}
+
+.explainer[data-play="true"] .ex-pop {
+  animation: ex-pop 0.34s var(--ease) forwards;
+}
+
+@keyframes ex-pop {
+  from { opacity: 0; transform: scale(0.55); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* Stage delays, applied to any .ex-step / .ex-grow / .ex-pop element. */
+.d1  { animation-delay: 40ms; }
+.d2  { animation-delay: 130ms; }
+.d3  { animation-delay: 220ms; }
+.d4  { animation-delay: 310ms; }
+.d5  { animation-delay: 400ms; }
+.d6  { animation-delay: 490ms; }
+.d7  { animation-delay: 580ms; }
+.d8  { animation-delay: 670ms; }
+.d9  { animation-delay: 760ms; }
+.d10 { animation-delay: 850ms; }
+.d11 { animation-delay: 940ms; }
+.d12 { animation-delay: 1030ms; }
+.d13 { animation-delay: 1120ms; }
+.d14 { animation-delay: 1210ms; }
+
+/* Pulse phase offsets, so parallel components do not blink in unison. */
+.p0 { animation-delay: 0ms; }
+.p1 { animation-delay: 260ms; }
+.p2 { animation-delay: 520ms; }
+.p3 { animation-delay: 780ms; }
+.p4 { animation-delay: 1040ms; }
+.p5 { animation-delay: 1300ms; }
+.p6 { animation-delay: 1560ms; }
+.p7 { animation-delay: 1820ms; }
+
+/* =============================================================================
+   Chart marks (research scatter, benchmark bars, decile bars)
+   ========================================================================== */
+
+.ex-axis { stroke: var(--rule-strong); stroke-width: 1; }
+.ex-grid { stroke: var(--rule); stroke-width: 1; stroke-dasharray: 2 3; }
+
+.ex-bar {
+  fill: color-mix(in srgb, var(--signal) 22%, transparent);
+  stroke: var(--signal);
+  stroke-width: 1;
+}
+
+.ex-bar-warn {
+  fill: color-mix(in srgb, var(--blocked) 20%, transparent);
+  stroke: var(--blocked);
+  stroke-width: 1;
+}
+
+.ex-point {
   fill: color-mix(in srgb, var(--signal) 55%, transparent);
   stroke: var(--signal);
   stroke-width: 1;
 }
 
-.fx-fit {
+.ex-fit { stroke: var(--blocked); stroke-width: 2; }
+
+.ex-marker-line {
   stroke: var(--blocked);
-  stroke-width: 2;
+  stroke-width: 1.25;
+  stroke-dasharray: 4 3;
 }
 
-.fx-r {
-  fill: var(--ink);
+.ex-chip-warn { fill: var(--blocked); }
+
+.ex-chip-text {
+  fill: var(--ground);
   font-family: var(--font-mono);
-  font-size: 19px;
+  font-size: 10.5px;
   font-weight: 500;
+  text-anchor: middle;
 }
+
+/* Verdict emphasis (blocked release, failed check). */
+.ex-verdict {
+  fill: color-mix(in srgb, var(--blocked) 12%, var(--ground-raised));
+  stroke: var(--blocked);
+  stroke-width: 1.25;
+}
+
+.ex-verdict-text {
+  fill: var(--blocked);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-anchor: middle;
+}
+
+.ex-ok   { fill: var(--live); font-size: 11px; }
+.ex-fail { fill: var(--blocked); font-size: 11px; }
+
+.ex-text-warn { fill: var(--blocked); }
 
 /* =============================================================================
-   Draw-in
-
-   Elements start hidden, then reveal in stage order once the figure plays.
-   Lines draw themselves; boxes and text fade up; bars grow from the baseline.
+   Reduced motion — show the finished system, move nothing.
    ========================================================================== */
 
-.explainer[data-play] .gx-node,
-.explainer[data-play] .gx-check,
-.explainer[data-play] .eg-loose,
-.explainer[data-play] .eg-node,
-.explainer[data-play] .eg-finding,
-.explainer[data-play] .mv-chan,
-.explainer[data-play] .mv-queue,
-.explainer[data-play] .mv-out,
-.explainer[data-play] .mv-persist,
-.explainer[data-play] .wg-bar,
-.explainer[data-play] .wg-you,
-.explainer[data-play] .wg-prov,
-.explainer[data-play] .aq-bar,
-.explainer[data-play] .aq-countries,
-.explainer[data-play] .fx-stat,
-.explainer[data-play] .fx-point,
-.explainer[data-play] .gx-label,
-.explainer[data-play] .gx-hash {
-  opacity: 0;
-}
-
-.explainer[data-play] .gx-wire,
-.explainer[data-play] .mv-wire,
-.explainer[data-play] .eg-edge,
-.explainer[data-play] .fx-fit,
-.explainer[data-play] .aq-wall {
-  opacity: 0;
-}
-
-.explainer[data-play="true"] .gx-node,
-.explainer[data-play="true"] .gx-check,
-.explainer[data-play="true"] .eg-loose,
-.explainer[data-play="true"] .eg-node,
-.explainer[data-play="true"] .eg-finding,
-.explainer[data-play="true"] .mv-chan,
-.explainer[data-play="true"] .mv-queue,
-.explainer[data-play="true"] .mv-out,
-.explainer[data-play="true"] .mv-persist,
-.explainer[data-play="true"] .wg-you,
-.explainer[data-play="true"] .wg-prov,
-.explainer[data-play="true"] .aq-countries,
-.explainer[data-play="true"] .fx-stat,
-.explainer[data-play="true"] .gx-label,
-.explainer[data-play="true"] .gx-hash {
-  animation: ex-rise 0.44s var(--ease) forwards;
-}
-
-.explainer[data-play="true"] .fx-point {
-  animation: ex-pop 0.3s var(--ease) forwards;
-}
-
-.explainer[data-play="true"] .wg-bar,
-.explainer[data-play="true"] .aq-bar {
-  animation: ex-rise 0.4s var(--ease) forwards;
-  transform-box: fill-box;
-  transform-origin: bottom;
-}
-
-.explainer[data-play="true"] .gx-wire,
-.explainer[data-play="true"] .mv-wire,
-.explainer[data-play="true"] .eg-edge,
-.explainer[data-play="true"] .fx-fit,
-.explainer[data-play="true"] .aq-wall {
-  animation: ex-fade 0.4s var(--ease) forwards;
-}
-
-@keyframes ex-rise {
-  from {
-    opacity: 0;
-    transform: translateY(6px);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes ex-pop {
-  from {
-    opacity: 0;
-    transform: scale(0.6);
-  }
-  to {
-    opacity: 1;
-    transform: none;
-  }
-}
-
-@keyframes ex-fade {
-  to {
-    opacity: 1;
-  }
-}
-
-/* Stage delays. Only timing lives here. */
-.gx-d1,  .eg-d1,  .mv-d1,  .wg-d1,  .aq-d1,  .fx-d1  { animation-delay: 60ms; }
-.gx-d2,  .eg-d2,  .mv-d2,  .wg-d2,  .aq-d2,  .fx-d2  { animation-delay: 160ms; }
-.gx-d3,  .eg-d3,  .mv-d3,  .wg-d3,  .aq-d3,  .fx-d3  { animation-delay: 260ms; }
-.gx-d4,  .eg-d4,  .mv-d4,  .wg-d4,  .aq-d4           { animation-delay: 360ms; }
-.gx-d5,  .eg-d5,  .mv-d5,  .wg-d5,  .aq-d5           { animation-delay: 460ms; }
-.gx-d6,  .eg-d6,  .mv-d6,  .wg-d6,  .aq-d6           { animation-delay: 560ms; }
-.gx-d7,  .eg-d7,  .mv-d7,           .aq-d7           { animation-delay: 660ms; }
-.gx-d8,  .eg-d8,  .mv-d8,           .aq-d8           { animation-delay: 760ms; }
-.gx-d9,  .eg-d9,  .mv-d9,           .aq-d9           { animation-delay: 860ms; }
-.gx-d10, .eg-d10,                   .aq-d10          { animation-delay: 960ms; }
-.gx-d11,                            .aq-d11          { animation-delay: 1060ms; }
-.gx-d12,                            .aq-d12          { animation-delay: 1160ms; }
-
-/* Reduced motion: show the finished diagram, skip the choreography. */
 @media (prefers-reduced-motion: reduce) {
-  .explainer[data-play] *,
-  .explainer[data-play="true"] * {
-    opacity: 1 !important;
+  .explainer * {
     animation: none !important;
+    opacity: 1 !important;
     transform: none !important;
+  }
+
+  /* SMIL is disabled from the component side under reduced motion; hide any
+     travelling packets so a static frame does not show them mid-route. */
+  .explainer .ex-packet {
+    opacity: 0 !important;
   }
 }
