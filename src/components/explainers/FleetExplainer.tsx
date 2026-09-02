@@ -16,17 +16,20 @@ export function FleetExplainer() {
     ["Inventory", "reorder"],
     ["Churn", "prevention"],
     ["Review", "responses"],
-    ["Shift", "optimisation"],
+    ["Shift", "rostering"],
     ["Kitchen", "coaching"],
     ["Dynamic", "pricing"],
   ];
 
   const colW = 92;
-  const colGap = 6;
+  const colGap = 4;
   const left = 24;
-  const agentY = 156;
+  const agentY = 162;
   const agentH = 46;
-  const gateY = 240;
+  const gateY = 244;
+
+  // The fan-out bus runs below the section label, never through it.
+  const busY = 140;
 
   const colX = (i: number) => left + i * (colW + colGap);
   const colMid = (i: number) => colX(i) + colW / 2;
@@ -35,7 +38,7 @@ export function FleetExplainer() {
     <ExplainerFrame
       kicker="Agent fleet"
       caption="One conductor, seven specialists, and a gate nothing gets past. Every agent drafts; the manager decides."
-      description="A manager asks a question by voice or text. The conductor agent grounds policy answers in the operations manual using retrieval, and routes work to any of seven specialists: demand forecast, inventory reorder, churn prevention, review responses, shift optimisation, kitchen coaching and dynamic pricing. Every agent emits a draft proposal rather than executing. Proposals converge on an approval queue, where nothing reaches a price, a purchase order, a refund or a customer until a manager accepts it. Each run is written to a hash-chained log with its reasoning trace."
+      description="A manager asks a question by voice or text. The conductor agent grounds policy answers in the operations manual using retrieval, and routes work to any of seven specialists: demand forecast, inventory reorder, churn prevention, review responses, shift rostering, kitchen coaching and dynamic pricing. Every agent emits a draft proposal rather than executing. Proposals converge on an approval queue, where nothing reaches a price, a purchase order, a refund or a customer until a manager accepts it. Each run is written to a hash-chained log with its reasoning trace."
     >
       {({ motion }) => (
         <svg
@@ -53,7 +56,7 @@ export function FleetExplainer() {
           <Node
             x={left}
             y={56}
-            w={150}
+            w={172}
             h={46}
             label="Voice or text"
             detail="asks in plain language"
@@ -61,13 +64,13 @@ export function FleetExplainer() {
             step="s1"
           />
 
-<Route d="M 174,79 H 258" motion={motion} dur={1.3} count={2} />
+          <Route d="M 196,79 H 244" motion={motion} dur={1.3} count={2} />
 
           {/* ---- The conductor ---- */}
           <Node
-            x={258}
+            x={244}
             y={56}
-            w={180}
+            w={204}
             h={46}
             label="Conductor agent"
             detail="routes · compares · answers"
@@ -77,12 +80,13 @@ export function FleetExplainer() {
             step="s2"
           />
 
-          {/* Grounded, not improvised. */}
-<Route d="M 438,79 H 522" kind="lineage" motion={motion} />
+          {/* Grounded, not improvised: the conductor retrieves from the manual
+              on the way to an answer, so the edge carries traffic. */}
+          <Route d="M 448,79 H 486" motion={motion} dur={1.1} begin={1.8} />
           <Node
-            x={522}
+            x={486}
             y={56}
-            w={174}
+            w={210}
             h={46}
             label="Operations manual"
             detail="retrieval · grounded answers"
@@ -91,15 +95,15 @@ export function FleetExplainer() {
           />
 
           {/* ---- Fan-out ---- */}
-          <Label x={left} y={138} step="s4">
-            Seven specialists — each proposes, none executes
+          <Label x={left} y={126} step="s4">
+            Seven specialists — none executes
           </Label>
 
           {agents.map((agent, i) => {
-            const d = `M 348,102 V 126 H ${colMid(i)} V ${agentY}`;
+            const d = `M 346,102 V ${busY} H ${colMid(i)} V ${agentY}`;
             return (
               <g key={agent[0]}>
-<Route d={d} head={false} motion={motion} dur={1.5} begin={0.8 + i * 0.22} />
+                <Route d={d} head={false} motion={motion} dur={1.5} begin={0.8 + i * 0.22} />
                 <Node
                   x={colX(i)}
                   y={agentY}
@@ -125,8 +129,6 @@ export function FleetExplainer() {
             );
           })}
 
-
-
           {/* ---- The gate ---- */}
           <Node
             x={left}
@@ -142,11 +144,11 @@ export function FleetExplainer() {
           />
 
           {/* ---- Audit ---- */}
-<Route d="M 360,286 V 306" motion={motion} dur={0.9} begin={3.4} tone="live" />
+          <Route d="M 360,290 V 310" motion={motion} dur={0.9} begin={3.4} tone="live" />
 
           <Node
             x={186}
-            y={306}
+            y={310}
             w={348}
             h={34}
             label="Run log · reasoning trace · hash-chained"

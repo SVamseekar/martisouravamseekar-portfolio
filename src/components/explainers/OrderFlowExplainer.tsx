@@ -69,7 +69,6 @@ export function OrderFlowExplainer() {
 
           {/* The route the order travels, drawn once, through box centres. */}
           <Route d={journey} head={false} motion={motion} dur={9} traffic={false} />
-          <Packet path={journey} dur={9} enabled={motion} radius={5} />
 
           {/* ---- Row 1, left to right ---- */}
           {row1.map((state, i) => (
@@ -102,6 +101,10 @@ export function OrderFlowExplainer() {
               centre
             />
           ))}
+
+          {/* The token is drawn after the boxes: it passes through each state,
+              so it has to paint on top of them rather than behind. */}
+          <Packet path={journey} dur={9} enabled={motion} radius={5} />
 
           <Label x={lastRight + 10} y={mid1 - 26} step="s6" anchor="end">
             turns ↓

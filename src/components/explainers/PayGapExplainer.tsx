@@ -21,7 +21,7 @@ export function PayGapExplainer() {
   const colSource = left;
   const colModel = 250;
   const colMart = 424;
-  const colOut = 566;
+  const colOut = 542;
 
   const wSource = 148;
   const wModel = 140;
@@ -148,7 +148,7 @@ export function PayGapExplainer() {
           />
 
           {/* ---- The answer, with its provenance ---- */}
-          <Boundary x={colOut} y={62} w={130} h={128} label="Answer" step="s7" />
+          <Boundary x={colOut} y={62} w={154} h={128} label="Answer" step="s7" />
 
           <text className="dg-note-strong dg-in s7" x={colOut + 14} y={96}>
             you · 21.4%
@@ -167,9 +167,9 @@ export function PayGapExplainer() {
           </text>
 
           {/* ---- Governance ---- */}
-          <Edge d={`M ${colOut + 65},190 V 224`} kind="sync" flow />
+          <Edge d={`M ${colOut + 77},190 V 224`} kind="sync" flow />
           <Packet
-            path={`M ${colOut + 65},190 V 224`}
+            path={`M ${colOut + 77},190 V 224`}
             dur={1}
             begin={3}
             tone="live"

@@ -26,12 +26,12 @@ export function MoveqExplainer() {
 
   const colIn = 24;
   const wIn = 150;
-  const colCore = 214;
+  const colCore = 196;
   const wCore = 138;
-  const colOut = 400;
-  const wOut = 150;
-  const colCat = 578;
-  const wCat = 118;
+  const colOut = 366;
+  const wOut = 152;
+  const colCat = 536;
+  const wCat = 160;
 
   const outY = (i: number) => 74 + i * 46;
   const outMid = (i: number) => outY(i) + 19;
@@ -124,8 +124,9 @@ export function MoveqExplainer() {
 
           <Route
             d={`M ${colOut + wOut},${outMid(1)} H ${colCat}`}
-            kind="lineage"
             motion={motion}
+            dur={1.2}
+            begin={2.8}
           />
 
           {contracts.map((contract, i) => (

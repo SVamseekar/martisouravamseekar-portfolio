@@ -187,8 +187,9 @@ export function AequitasArchitecture() {
             step="s13"
           />
 
-          {/* Grounded chat reads the same warehouse. */}
-          <Route d="M 576,272 V 308" kind="lineage" motion={motion} />
+          {/* Grounded chat queries the same warehouse at runtime, so this
+              edge carries traffic like any other read path. */}
+          <Route d="M 576,272 V 308" motion={motion} dur={1.2} begin={3.6} />
           <Node
             x={456}
             y={308}

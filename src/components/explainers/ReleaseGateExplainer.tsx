@@ -87,7 +87,7 @@ export function ReleaseGateExplainer() {
             </g>
           ))}
 
-          {/* Evidence supports the decision — a lineage edge, no runtime traffic. */}
+          {/* Evidence the gate cites while it checks. */}
           <Node
             x={gateX}
             y={262}
@@ -100,10 +100,13 @@ export function ReleaseGateExplainer() {
             phase="q2"
             step="s7"
           />
+          {/* The gate retrieves this while it checks, so the edge carries
+              traffic: it is a call, not a static relationship. */}
           <Route
             d={`M ${gateX + gateW / 2},262 V ${gateY + gateH}`}
-            kind="lineage"
             motion={motion}
+            dur={1.2}
+            begin={2.2}
           />
 
           {/* ---- Verdict ---- */}
