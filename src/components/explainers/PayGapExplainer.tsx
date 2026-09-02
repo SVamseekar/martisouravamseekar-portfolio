@@ -83,7 +83,7 @@ export function PayGapExplainer() {
             w={wModel}
             h={46}
             label="Modelled"
-            detail="staging → core marts"
+            detail="staging → marts"
             kind="service"
             state="active"
             active
@@ -105,7 +105,7 @@ export function PayGapExplainer() {
             w={wModel}
             h={46}
             label="Your payroll"
-            detail="uploaded, never shared"
+            detail="never shared"
             kind="external"
             step="s5"
           />

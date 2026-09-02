@@ -15,22 +15,22 @@ export function AequitasArchitecture() {
   const stages = [
     {
       label: "Ingest",
-      detail: "GTFS · census · index",
+      detail: "GTFS · census",
       short: "feeds · boundaries",
     },
     {
       label: "Process",
-      detail: "spatial join · dedup",
+      detail: "joins · dedup",
       short: "geometry · frequency",
     },
     {
       label: "Analytics",
-      detail: "equity · access · ML",
+      detail: "equity · access",
       short: "2SFCA · clustering",
     },
     {
       label: "Validate",
-      detail: "gates · ground truth",
+      detail: "gates · truth",
       short: "103 checks · 0 fail",
     },
     {
@@ -167,7 +167,7 @@ export function AequitasArchitecture() {
             y={226}
             w={150}
             label="Read-only API"
-            detail="lookup, never compute"
+            detail="lookup, not compute"
             kind="gate"
             state="active"
             active

@@ -106,7 +106,7 @@ export function MasovaArchitecture() {
             w={wGateway}
             h={58}
             label="API gateway"
-            detail="auth · routing"
+            detail="auth · routes"
             kind="gate"
             state="active"
             active
@@ -204,9 +204,11 @@ export function MasovaArchitecture() {
           {/* ---------- Events ---------- */}
           <Boundary x={24} y={352} w={672} h={84} label="Events" step="s14" />
 
-          {/* Services publish into the exchange, down the right of the column. */}
+          {/* Services publish into the exchange. The rail leaves from the left
+              edge of the service column and drops down the margin, so it never
+              crosses the Intelligence row's own label. */}
           <Route
-            d={`M ${colService + wService / 2},${rowY(4) + rowH} V 336 H 118 V 374`}
+            d={`M ${colService},${rowMid(4)} H 138 V 374`}
             kind="async"
             motion={motion}
             dur={2.2}
@@ -227,7 +229,7 @@ export function MasovaArchitecture() {
 
           {/* The exchange fans out to both consumer groups. */}
           <Route
-            d="M 232,397 H 404"
+            d="M 232,397 H 392"
             kind="async"
             motion={motion}
             dur={1.5}
@@ -235,7 +237,7 @@ export function MasovaArchitecture() {
             tone="live"
           />
           <Route
-            d="M 536,397 H 548"
+            d="M 528,397 H 556"
             kind="async"
             motion={motion}
             dur={0.7}
@@ -243,20 +245,20 @@ export function MasovaArchitecture() {
           />
 
           <Node
-            x={404}
+            x={392}
             y={374}
-            w={132}
+            w={136}
             label="Kitchen · crew"
             detail="live updates"
             kind="client"
             step="s15"
           />
           <Node
-            x={548}
+            x={556}
             y={374}
-            w={132}
-            label="Customer · analytics"
-            detail="push · reporting"
+            w={120}
+            label="Customer"
+            detail="push · reports"
             kind="client"
             step="s16"
           />
