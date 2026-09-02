@@ -1,14 +1,11 @@
 /* =============================================================================
-   Explainers
+   Diagram grammar
 
-   Each system page carries a diagram of how that system actually works, with
-   motion that carries meaning: packets travel along real routes, services
-   light up as they are called, states advance in sequence.
+   One visual language across every architecture diagram. Layout varies with
+   the system — a pipeline looks like a pipeline, a graph like a graph — but
+   shape, line, colour and motion always mean the same thing.
 
-   Motion is driven by SVG SMIL and CSS keyframes that run continuously once
-   the figure is in view, so the diagram reads as a system in operation rather
-   than a picture that faded in once. Under prefers-reduced-motion every
-   element renders in its final state and nothing moves.
+   See src/components/explainers/system.ts for the full vocabulary.
    ========================================================================== */
 
 .explainer {
@@ -16,23 +13,22 @@
 }
 
 .explainer-stage {
-  background: var(--ground-sunk);
+  background: var(--diagram-ground);
   border: 1px solid var(--rule);
   border-radius: 4px;
-  padding: clamp(0.75rem, 1.6vw, 1.15rem);
+  padding: clamp(0.85rem, 1.6vw, 1.35rem);
   overflow-x: auto;
 }
 
 .explainer-svg {
   display: block;
   width: 100%;
-  min-width: 40rem;
+  min-width: 42rem;
   height: auto;
-  color: var(--ink-faint);
 }
 
 .explainer-caption {
-  margin-top: 0.75rem;
+  margin-top: 0.8rem;
   max-width: 46rem;
 }
 
@@ -49,302 +45,331 @@
 }
 
 /* =============================================================================
-   Shared SVG vocabulary
+   SHAPE — what kind of thing it is
    ========================================================================== */
 
-.explainer-svg rect,
-.explainer-svg circle,
-.explainer-svg line,
-.explainer-svg path,
-.explainer-svg polygon {
+.dg-node .dg-shape,
+.dg-boundary .dg-bound-shape {
   vector-effect: non-scaling-stroke;
 }
 
-.ex-box {
-  fill: var(--ground-raised);
-  stroke: var(--rule-strong);
-  stroke-width: 1;
+/* A process that runs code. */
+.dg-service .dg-shape {
+  fill: var(--node-fill);
+  stroke: var(--node-stroke);
+  stroke-width: 1.25;
 }
 
-.ex-box-accent {
+/* Something that persists state — marked by the accent bar. */
+.dg-store .dg-shape {
+  fill: var(--node-fill);
+  stroke: var(--node-stroke);
+  stroke-width: 1.25;
+}
+
+.dg-store-bar {
+  fill: var(--ink-faint);
+}
+
+/* A surface a person touches. */
+.dg-client .dg-shape {
+  fill: var(--node-fill-soft);
+  stroke: var(--node-stroke);
+  stroke-width: 1.25;
+}
+
+/* A system outside the boundary — not ours to run. */
+.dg-external .dg-shape {
+  fill: none;
+  stroke: var(--node-stroke);
+  stroke-width: 1.25;
+  stroke-dasharray: 4 3;
+}
+
+/* A decision point. Heavier border: something happens here. */
+.dg-gate .dg-shape {
+  fill: var(--node-fill);
+  stroke: var(--ink-soft);
+  stroke-width: 2;
+}
+
+/* A queue or exchange — the thing traffic passes through. */
+.dg-queue .dg-shape {
   fill: var(--signal-soft);
   stroke: var(--signal);
-  stroke-width: 1;
+  stroke-width: 1.5;
 }
 
-.ex-box-sunk {
-  fill: var(--ground-sunk);
-  stroke: var(--rule);
-  stroke-width: 1;
+.dg-dot {
+  fill: var(--signal);
+  stroke: var(--diagram-ground);
+  stroke-width: 2;
 }
 
-.ex-box-dashed {
+/* =============================================================================
+   COLOUR — what state it is in
+   ========================================================================== */
+
+.dg-active .dg-shape { stroke: var(--signal); }
+.dg-active .dg-dot   { fill: var(--signal); }
+
+.dg-verified .dg-shape { stroke: var(--live); }
+.dg-verified .dg-dot   { fill: var(--live); }
+
+.dg-warn .dg-shape {
+  stroke: var(--blocked);
+  stroke-width: 2;
+  fill: var(--warn-fill);
+}
+.dg-warn .dg-dot { fill: var(--blocked); }
+
+.dg-text-warn   { fill: var(--blocked) !important; }
+.dg-text-live   { fill: var(--live) !important; }
+.dg-text-signal { fill: var(--signal) !important; }
+
+/* =============================================================================
+   LINE — what kind of relationship
+   ========================================================================== */
+
+.dg-edge {
   fill: none;
-  stroke: var(--rule-strong);
+  vector-effect: non-scaling-stroke;
+}
+
+/* Synchronous call: the caller waits. Bold enough to read at a glance. */
+.dg-sync {
+  stroke: var(--edge-stroke);
+  stroke-width: 2;
+}
+
+/* Asynchronous event: published and forgotten. */
+.dg-async {
+  stroke: var(--edge-stroke);
+  stroke-width: 2;
+  stroke-dasharray: 7 5;
+}
+
+/* Reference or lineage: no runtime traffic. */
+.dg-lineage {
+  stroke: var(--edge-soft);
+  stroke-width: 1.5;
+  stroke-dasharray: 2 4;
+}
+
+/* A refused path. */
+.dg-rejected {
+  stroke: var(--blocked);
+  stroke-width: 2.5;
+  stroke-dasharray: 8 5;
+}
+
+.dg-head       { fill: var(--edge-stroke); }
+.dg-head-soft  { fill: var(--edge-soft); }
+.dg-head-warn  { fill: var(--blocked); }
+
+/* =============================================================================
+   BOUNDARY
+   ========================================================================== */
+
+.dg-bound-shape {
+  fill: var(--boundary-fill);
+  stroke: var(--rule);
   stroke-width: 1;
   stroke-dasharray: 3 3;
 }
 
-.ex-name {
+.dg-bound-label {
+  fill: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* =============================================================================
+   TYPOGRAPHY
+   ========================================================================== */
+
+.dg-label {
   fill: var(--ink);
   font-family: var(--font-text);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.dg-detail {
+  fill: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+}
+
+.dg-group {
+  fill: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.dg-note {
+  fill: var(--ink-soft);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+}
+
+.dg-note-strong {
+  fill: var(--ink);
+  font-family: var(--font-mono);
   font-size: 12px;
   font-weight: 500;
 }
 
-.ex-text {
-  fill: var(--ink-soft);
-  font-family: var(--font-text);
-  font-size: 11.5px;
-}
-
-.ex-label {
-  fill: var(--ink-soft);
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  letter-spacing: 0.06em;
-}
-
-.ex-mono {
-  fill: var(--ink-soft);
-  font-family: var(--font-mono);
-  font-size: 10px;
-}
-
-.ex-mono-strong {
-  fill: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.ex-mid { text-anchor: middle; }
-.ex-end { text-anchor: end; }
-
-.ex-wire {
-  stroke: var(--rule-strong);
-  stroke-width: 1.15;
-  fill: none;
-}
-
-.ex-wire-soft {
-  stroke: var(--rule);
-  stroke-width: 1;
-  fill: none;
-}
-
-.ex-signal { fill: var(--signal); }
-.ex-live   { fill: var(--live); }
-.ex-warn   { fill: var(--blocked); }
-
-.ex-stroke-signal { stroke: var(--signal); }
-.ex-stroke-warn   { stroke: var(--blocked); }
-
-/* A rejected path. Heavier than a normal wire and animated, so a blocked
-   release visibly travels back rather than sitting as faint dashes. */
-.ex-reject {
-  stroke: var(--blocked);
-  stroke-width: 2;
-  fill: none;
-  stroke-dasharray: 6 4;
-  opacity: 0.9;
-}
-
-.explainer[data-play="true"] .ex-reject {
-  animation: ex-reject-flow 0.9s linear infinite;
-}
-
-@keyframes ex-reject-flow {
-  to { stroke-dashoffset: -20; }
-}
-
-.ex-reject-label {
-  fill: var(--blocked);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  font-weight: 500;
-}
-
 /* =============================================================================
-   Motion primitives
-
-   All keyed off .explainer[data-play="true"], so nothing animates until the
-   figure scrolls into view.
+   MOTION — every animation means something
    ========================================================================== */
 
-/* A packet travelling a route. The element carries its own SMIL animateMotion;
-   this only handles its visibility before the figure plays. */
-.ex-packet {
+/* A request, event or record travelling a real route. */
+.dg-packet {
   opacity: 0;
-  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--ground) 70%, transparent));
 }
 
-.explainer[data-play="true"] .ex-packet {
+.dg-packet-signal { fill: var(--signal); }
+.dg-packet-live   { fill: var(--live); }
+.dg-packet-warn   { fill: var(--blocked); }
+
+.explainer[data-play="true"] .dg-packet {
   opacity: 1;
 }
 
-/* A component that lights up when it is called. */
-.ex-pulse {
-  animation: ex-pulse 3.2s ease-in-out infinite;
-  transform-box: fill-box;
-  transform-origin: center;
-}
-
-.explainer:not([data-play="true"]) .ex-pulse {
-  animation: none;
-}
-
-@keyframes ex-pulse {
-  0%, 62%, 100% { opacity: 0; }
-  70%, 88%      { opacity: 1; }
-}
-
-/* A route that shows traffic moving along it. Applied to any wire a packet
-   travels, so every arrow reads as active rather than only the ones a dot
-   happens to be on at that instant. */
-.ex-flow {
-  stroke-dasharray: 4 5;
-  animation: ex-flow 1.4s linear infinite;
-}
-
-.explainer:not([data-play="true"]) .ex-flow {
-  animation: none;
-}
-
-@keyframes ex-flow {
-  to { stroke-dashoffset: -8; }
-}
-
-/* Sequential reveal for stepped content. */
-.ex-step {
+/* A component executing. */
+.dg-pulse {
+  fill: none;
+  stroke: var(--signal);
+  stroke-width: 2.5;
   opacity: 0;
 }
 
-.explainer[data-play="true"] .ex-step {
-  animation: ex-rise 0.5s var(--ease) forwards;
+.explainer[data-play="true"] .dg-pulse {
+  animation: dg-pulse 3.4s ease-in-out infinite;
 }
 
-@keyframes ex-rise {
+@keyframes dg-pulse {
+  0%, 64%, 100% { opacity: 0; }
+  72%, 88%      { opacity: 0.85; }
+}
+
+/* A route carrying traffic. */
+.explainer[data-play="true"] .dg-flow {
+  animation: dg-flow 1.1s linear infinite;
+}
+
+@keyframes dg-flow {
+  to { stroke-dashoffset: -24; }
+}
+
+/* Reveal, in reading order. */
+.dg-in,
+.dg-pop {
+  opacity: 0;
+}
+
+.explainer[data-play="true"] .dg-in {
+  animation: dg-rise 0.45s var(--ease) forwards;
+}
+
+.explainer[data-play="true"] .dg-pop {
+  animation: dg-pop 0.32s var(--ease) forwards;
+}
+
+@keyframes dg-rise {
   from { opacity: 0; transform: translateY(5px); }
   to   { opacity: 1; transform: none; }
 }
 
-.ex-grow {
+@keyframes dg-pop {
+  from { opacity: 0; transform: scale(0.6); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* A measured quantity being drawn. */
+.dg-grow {
   transform: scaleY(0);
   transform-box: fill-box;
   transform-origin: bottom;
 }
 
-.explainer[data-play="true"] .ex-grow {
-  animation: ex-grow 0.55s var(--ease) forwards;
+.explainer[data-play="true"] .dg-grow {
+  animation: dg-grow 0.5s var(--ease) forwards;
 }
 
-@keyframes ex-grow {
+@keyframes dg-grow {
   to { transform: scaleY(1); }
 }
 
-.ex-pop {
-  opacity: 0;
-}
+/* Reveal order. */
+.s1  { animation-delay: 40ms; }
+.s2  { animation-delay: 110ms; }
+.s3  { animation-delay: 180ms; }
+.s4  { animation-delay: 250ms; }
+.s5  { animation-delay: 320ms; }
+.s6  { animation-delay: 390ms; }
+.s7  { animation-delay: 460ms; }
+.s8  { animation-delay: 530ms; }
+.s9  { animation-delay: 600ms; }
+.s10 { animation-delay: 670ms; }
+.s11 { animation-delay: 740ms; }
+.s12 { animation-delay: 810ms; }
+.s13 { animation-delay: 880ms; }
+.s14 { animation-delay: 950ms; }
+.s15 { animation-delay: 1020ms; }
+.s16 { animation-delay: 1090ms; }
 
-.explainer[data-play="true"] .ex-pop {
-  animation: ex-pop 0.34s var(--ease) forwards;
-}
-
-@keyframes ex-pop {
-  from { opacity: 0; transform: scale(0.55); }
-  to   { opacity: 1; transform: none; }
-}
-
-/* Stage delays, applied to any .ex-step / .ex-grow / .ex-pop element. */
-.d1  { animation-delay: 40ms; }
-.d2  { animation-delay: 130ms; }
-.d3  { animation-delay: 220ms; }
-.d4  { animation-delay: 310ms; }
-.d5  { animation-delay: 400ms; }
-.d6  { animation-delay: 490ms; }
-.d7  { animation-delay: 580ms; }
-.d8  { animation-delay: 670ms; }
-.d9  { animation-delay: 760ms; }
-.d10 { animation-delay: 850ms; }
-.d11 { animation-delay: 940ms; }
-.d12 { animation-delay: 1030ms; }
-.d13 { animation-delay: 1120ms; }
-.d14 { animation-delay: 1210ms; }
-
-/* Pulse phase offsets, so parallel components do not blink in unison. */
-.p0 { animation-delay: 0ms; }
-.p1 { animation-delay: 260ms; }
-.p2 { animation-delay: 520ms; }
-.p3 { animation-delay: 780ms; }
-.p4 { animation-delay: 1040ms; }
-.p5 { animation-delay: 1300ms; }
-.p6 { animation-delay: 1560ms; }
-.p7 { animation-delay: 1820ms; }
+/* Pulse phases, so parallel components do not blink together. */
+.q0 { animation-delay: 0ms; }
+.q1 { animation-delay: 300ms; }
+.q2 { animation-delay: 600ms; }
+.q3 { animation-delay: 900ms; }
+.q4 { animation-delay: 1200ms; }
+.q5 { animation-delay: 1500ms; }
+.q6 { animation-delay: 1800ms; }
+.q7 { animation-delay: 2100ms; }
 
 /* =============================================================================
-   Chart marks (research scatter, benchmark bars, decile bars)
+   CHART MARKS — for diagrams whose subject is a measurement
    ========================================================================== */
 
-.ex-axis { stroke: var(--rule-strong); stroke-width: 1; }
-.ex-grid { stroke: var(--rule); stroke-width: 1; stroke-dasharray: 2 3; }
+.dg-axis { stroke: var(--edge-stroke); stroke-width: 1.5; }
+.dg-grid { stroke: var(--rule); stroke-width: 1; stroke-dasharray: 2 4; }
 
-.ex-bar {
-  fill: color-mix(in srgb, var(--signal) 22%, transparent);
+.dg-bar {
+  fill: var(--bar-fill);
   stroke: var(--signal);
-  stroke-width: 1;
-}
-
-.ex-bar-warn {
-  fill: color-mix(in srgb, var(--blocked) 20%, transparent);
-  stroke: var(--blocked);
-  stroke-width: 1;
-}
-
-.ex-point {
-  fill: color-mix(in srgb, var(--signal) 55%, transparent);
-  stroke: var(--signal);
-  stroke-width: 1;
-}
-
-.ex-fit { stroke: var(--blocked); stroke-width: 2; }
-
-.ex-marker-line {
-  stroke: var(--blocked);
   stroke-width: 1.25;
-  stroke-dasharray: 4 3;
 }
 
-.ex-chip-warn { fill: var(--blocked); }
-
-.ex-chip-text {
-  fill: var(--ground);
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  font-weight: 500;
-  text-anchor: middle;
-}
-
-/* Verdict emphasis (blocked release, failed check). */
-.ex-verdict {
-  fill: color-mix(in srgb, var(--blocked) 12%, var(--ground-raised));
+.dg-bar-warn {
+  fill: var(--warn-fill);
   stroke: var(--blocked);
   stroke-width: 1.25;
 }
 
-.ex-verdict-text {
-  fill: var(--blocked);
-  font-family: var(--font-mono);
-  font-size: 15px;
-  font-weight: 500;
-  letter-spacing: 0.06em;
-  text-anchor: middle;
+.dg-point {
+  fill: var(--bar-fill);
+  stroke: var(--signal);
+  stroke-width: 1.5;
 }
 
-.ex-ok   { fill: var(--live); font-size: 11px; }
-.ex-fail { fill: var(--blocked); font-size: 11px; }
+.dg-fit {
+  stroke: var(--blocked);
+  stroke-width: 2.5;
+  fill: none;
+}
 
-.ex-text-warn { fill: var(--blocked); }
+.dg-tick {
+  fill: var(--ink-faint);
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
 
 /* =============================================================================
    Reduced motion — show the finished system, move nothing.
@@ -357,9 +382,8 @@
     transform: none !important;
   }
 
-  /* SMIL is disabled from the component side under reduced motion; hide any
-     travelling packets so a static frame does not show them mid-route. */
-  .explainer .ex-packet {
+  .explainer .dg-packet,
+  .explainer .dg-pulse {
     opacity: 0 !important;
   }
 }

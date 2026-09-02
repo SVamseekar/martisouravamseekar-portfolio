@@ -1,197 +1,280 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
-import { ArrowDefs, Caption, NodeBox, Packet } from "./parts";
+import { Boundary, Defs, Edge, Label, Node, Packet } from "./parts";
 
 /**
- * MaSoVa — the whole platform, not just the order queue.
+ * MaSoVa — the platform, laid out as a symmetric left-to-right flow.
  *
- * Six Spring Boot services behind one gateway, with their real ports and
- * controller counts, the dual-write data path, the event exchange, and the
- * five client surfaces that consume it. Requests travel the actual routes:
- * client → gateway → service → store, and events fan out to the apps.
+ * Services are named for what they do rather than for their module name, and
+ * local port numbers are omitted: they describe a developer's laptop, not the
+ * architecture. Columns are evenly spaced and vertically centred on a shared
+ * axis so the diagram reads as one machine.
  */
 export function MasovaArchitecture() {
-  // Routes packets travel. Kept as constants so the wires and the motion
-  // paths can never drift apart.
-  const toGateway = "M 150,150 H 236";
-  const gatewayToCore = "M 322,132 H 392";
-  const gatewayToCommerce = "M 322,150 H 392";
-  const gatewayToPayment = "M 322,168 H 392";
-  const coreToPg = "M 500,132 H 566";
-  const busFanout = "M 260,375 H 428";
+  // Column geometry — fixed x positions keep the three bands aligned.
+  const colClient = 24;
+  const colGateway = 214;
+  const colService = 376;
+  const colStore = 566;
+
+  const wClient = 140;
+  const wGateway = 118;
+  const wService = 150;
+  const wStore = 130;
+
+  // Five clients and five services, both centred on the same axis (y = 190).
+  const clients = [
+    { label: "Customer web", detail: "browse · order" },
+    { label: "Customer app", detail: "React Native" },
+    { label: "Crew app", detail: "driver · cashier" },
+    { label: "Kitchen display", detail: "live queue" },
+    { label: "Point of sale", detail: "in-store" },
+  ];
 
   const services = [
-    { title: "core", meta: ":8085 · 15 controllers", y: 60, phase: "p0" },
-    { title: "commerce", meta: ":8084 · 11 controllers", y: 112, phase: "p1" },
-    { title: "payment", meta: ":8089 · 4 controllers", y: 164, phase: "p2" },
-    { title: "logistics", meta: ":8086 · 6 controllers", y: 216, phase: "p3" },
+    { label: "Orders & menu", detail: "catalogue · carts" },
+    { label: "Commerce", detail: "pricing · VAT" },
+    { label: "Payments", detail: "Stripe · refunds" },
+    { label: "Delivery", detail: "tracking · OTP" },
+    { label: "Intelligence", detail: "forecasts · agents" },
   ];
+
+  const rowH = 46;
+  const rowGap = 12;
+  const pitch = rowH + rowGap;
+  const topY = 72;
+  const axis = topY + (5 * pitch - rowGap) / 2;
+
+  const rowY = (i: number) => topY + i * pitch;
+  const rowMid = (i: number) => rowY(i) + rowH / 2;
 
   return (
     <ExplainerFrame
       kicker="Architecture"
-      caption="Six services behind one gateway. Orders commit to PostgreSQL first, then fan out as events to the kitchen, crew and customer apps."
-      description="MaSoVa architecture. Five client surfaces — customer web, customer mobile, crew app, kitchen display and POS — call a Spring Cloud Gateway on port 8080. The gateway routes to six Spring Boot services: core on 8085 with 15 controllers, commerce on 8084 with 11, payment on 8089 with 4, logistics on 8086 with 6, and intelligence on 8087. Services dual-write to PostgreSQL synchronously for financial truth and MongoDB asynchronously for read models, with Redis holding auth sessions. Every order state transition publishes to a RabbitMQ topic exchange, which fans out to the kitchen display, crew app and customer notifications."
+      caption="Five surfaces, one gateway, five services. Money commits synchronously; everything else learns by event."
+      description="Five client surfaces — customer web, customer mobile app, crew app, kitchen display and point of sale — call a single API gateway that handles authentication and routing. The gateway fans out to five services: orders and menu, commerce covering pricing and VAT, payments, delivery, and intelligence. Services write to PostgreSQL synchronously for financial records, project to MongoDB asynchronously for read models, and use Redis for sessions. Every order state transition publishes to a topic exchange, which fans out to the kitchen display, crew app, customer notifications and analytics."
     >
       {({ motion }) => (
         <svg
-          viewBox="0 0 720 400"
+          viewBox="0 0 720 460"
           className="explainer-svg"
           role="img"
-          aria-label="MaSoVa platform architecture with six services and event fan-out"
+          aria-label="MaSoVa platform architecture: clients, gateway, services and stores"
         >
-          <ArrowDefs />
+          <Defs />
 
-          {/* ---- Clients ---- */}
-          <Caption x={16} y={20} delay="d1">
-            CLIENTS
-          </Caption>
-          <NodeBox x={16} y={30} w={118} h={30} title="customer web" delay="d1" />
-          <NodeBox x={16} y={66} w={118} h={30} title="customer app" sub="" delay="d2" />
-          <NodeBox x={16} y={102} w={118} h={30} title="crew app" delay="d3" />
-          <NodeBox x={16} y={138} w={118} h={30} title="kitchen display" delay="d4" />
-          <NodeBox x={16} y={174} w={118} h={30} title="POS" delay="d5" />
-
-          {/* Client traffic converging on the gateway */}
-          <path className="ex-wire" d="M 134,45 Q 190,45 190,150" />
-          <path className="ex-wire" d="M 134,81 Q 190,81 190,150" />
-          <path className="ex-wire" d="M 134,117 Q 190,117 190,150" />
-          <path className="ex-wire" d="M 134,153 H 190" />
-          <path className="ex-wire" d="M 134,189 Q 190,189 190,150" />
-          <path className="ex-wire ex-flow" d={toGateway} markerEnd="url(#ex-arrow)" />
-
-          <Packet path="M 134,45 Q 190,45 190,150 L 236,150" dur={2.6} enabled={motion} />
-          <Packet path="M 134,117 Q 190,117 190,150 L 236,150" dur={2.6} begin={1.3} enabled={motion} />
-
-          {/* ---- Gateway ---- */}
-          <NodeBox
-            x={236}
-            y={122}
-            w={86}
-            h={56}
-            title="gateway"
-            meta=":8080 · JWT"
-            variant="accent"
-            pulse
-            delay="d6"
-          />
-
-          {/* ---- Services ---- */}
-          <Caption x={392} y={48} delay="d7">
-            SERVICES · SPRING BOOT 3 · JAVA 21
-          </Caption>
-          {services.map((service, i) => (
-            <NodeBox
-              key={service.title}
-              x={392}
-              y={service.y}
-              w={108}
-              h={40}
-              title={service.title}
-              meta={service.meta}
-              pulse
-              phase={service.phase}
-              delay={`d${7 + i}`}
+          {/* ---------- Clients ---------- */}
+          <Label x={colClient} y={54} step="s1">
+            Client surfaces
+          </Label>
+          {clients.map((client, i) => (
+            <Node
+              key={client.label}
+              x={colClient}
+              y={rowY(i)}
+              w={wClient}
+              label={client.label}
+              detail={client.detail}
+              kind="client"
+              step={`s${i + 1}`}
             />
           ))}
-          <NodeBox
-            x={392}
-            y={268}
-            w={108}
-            h={40}
-            title="intelligence"
-            meta=":8087 · 8 agents"
-            pulse
-            phase="p4"
-            delay="d11"
+
+          {/* Clients converge on the gateway — fan-in. */}
+          {clients.map((_, i) => (
+            <Edge
+              key={`in-${i}`}
+              d={`M ${colClient + wClient},${rowMid(i)} H ${colGateway - 28} V ${axis} H ${colGateway}`}
+              kind="sync"
+              head={i === 2}
+              flow={i === 2}
+            />
+          ))}
+
+          <Packet
+            path={`M ${colClient + wClient},${rowMid(0)} H ${colGateway - 28} V ${axis} H ${colGateway}`}
+            dur={2.4}
+            count={2}
+            enabled={motion}
+          />
+          <Packet
+            path={`M ${colClient + wClient},${rowMid(3)} H ${colGateway - 28} V ${axis} H ${colGateway}`}
+            dur={2.4}
+            begin={0.8}
+            enabled={motion}
           />
 
-          {/* Gateway → services */}
-          <path className="ex-wire ex-flow" d={gatewayToCore} markerEnd="url(#ex-arrow)" />
-          <path className="ex-wire ex-flow" d={gatewayToCommerce} markerEnd="url(#ex-arrow)" />
-          <path className="ex-wire ex-flow" d={gatewayToPayment} markerEnd="url(#ex-arrow)" />
-          <path className="ex-wire" d="M 322,160 Q 356,236 392,236" markerEnd="url(#ex-arrow)" />
-          <path className="ex-wire-soft" d="M 322,172 Q 350,288 392,288" markerEnd="url(#ex-arrow)" />
-
-          <Packet path={gatewayToCore} dur={1.1} begin={0.6} enabled={motion} />
-          <Packet path={gatewayToCommerce} dur={1.1} begin={1.4} enabled={motion} />
-          <Packet path={gatewayToPayment} dur={1.1} begin={2.1} enabled={motion} />
-
-          {/* ---- Stores: dual write ---- */}
-          <Caption x={566} y={48} delay="d9">
-            DATA
-          </Caption>
-          <NodeBox
-            x={566}
-            y={60}
-            w={138}
-            h={40}
-            title="PostgreSQL"
-            meta="financial · sync"
-            delay="d9"
-          />
-          <NodeBox
-            x={566}
-            y={110}
-            w={138}
-            h={38}
-            title="MongoDB"
-            meta="read models · async"
-            variant="sunk"
-            delay="d10"
-          />
-          <NodeBox
-            x={566}
-            y={158}
-            w={138}
-            h={38}
-            title="Redis"
-            meta="sessions"
-            variant="sunk"
-            delay="d10"
+          {/* ---------- Gateway ---------- */}
+          <Node
+            x={colGateway}
+            y={axis - 29}
+            w={wGateway}
+            h={58}
+            label="API gateway"
+            detail="auth · routing"
+            kind="gate"
+            state="active"
+            active
+            step="s6"
+            centre
           />
 
-          <path className="ex-wire ex-flow" d={coreToPg} markerEnd="url(#ex-arrow)" />
-          <path className="ex-wire-soft" d="M 500,142 Q 534,130 566,130" markerEnd="url(#ex-arrow)" />
-          <path className="ex-wire-soft" d="M 500,152 Q 534,177 566,177" markerEnd="url(#ex-arrow)" />
-          <Packet path={coreToPg} dur={0.9} begin={0.9} tone="live" enabled={motion} />
+          {/* Gateway fans out to the services. */}
+          {services.map((_, i) => (
+            <Edge
+              key={`out-${i}`}
+              d={`M ${colGateway + wGateway},${axis} H ${colService - 28} V ${rowMid(i)} H ${colService}`}
+              kind="sync"
+              flow={i < 3}
+            />
+          ))}
 
-          {/* ---- Event bus and fan-out, on its own band ---- */}
-          <line className="ex-grid" x1={16} y1={330} x2={704} y2={330} />
-          <Caption x={16} y={352} delay="d12">
-            EVENTS · EVERY STATE TRANSITION PUBLISHES
-          </Caption>
-          <NodeBox
-            x={16}
-            y={358}
-            w={244}
-            h={34}
-            title="RabbitMQ topic exchange"
-            meta="masova.orders.exchange"
-            variant="accent"
-            pulse
-            phase="p5"
-            delay="d12"
+          <Packet
+            path={`M ${colGateway + wGateway},${axis} H ${colService - 28} V ${rowMid(0)} H ${colService}`}
+            dur={1.6}
+            begin={0.4}
+            enabled={motion}
+          />
+          <Packet
+            path={`M ${colGateway + wGateway},${axis} H ${colService - 28} V ${rowMid(2)} H ${colService}`}
+            dur={1.6}
+            begin={1.1}
+            enabled={motion}
+          />
+          <Packet
+            path={`M ${colGateway + wGateway},${axis} H ${colService - 28} V ${rowMid(4)} H ${colService}`}
+            dur={1.6}
+            begin={1.8}
+            enabled={motion}
           />
 
-          <path className="ex-wire ex-flow" d="M 260,375 H 430" markerEnd="url(#ex-arrow)" />
-          <text className="ex-mono ex-step d13" x={438} y={370}>
-            kitchen display · crew · driver
-          </text>
-          <text className="ex-mono ex-step d14" x={438} y={384}>
-            customer push · analytics
-          </text>
+          {/* ---------- Services ---------- */}
+          <Label x={colService} y={54} step="s7">
+            Services
+          </Label>
+          {services.map((service, i) => (
+            <Node
+              key={service.label}
+              x={colService}
+              y={rowY(i)}
+              w={wService}
+              label={service.label}
+              detail={service.detail}
+              kind="service"
+              active
+              phase={`q${i}`}
+              step={`s${7 + i}`}
+            />
+          ))}
 
-          <Packet path={busFanout} dur={1.4} tone="live" enabled={motion} />
-          <Packet path={busFanout} dur={1.4} begin={0.5} tone="live" enabled={motion} />
-
-          {/* Services publish into the bus */}
-          <path
-            className="ex-wire-soft"
-            d="M 446,308 Q 446,344 260,368"
-            markerEnd="url(#ex-arrow)"
+          {/* ---------- Stores ---------- */}
+          <Label x={colStore} y={54} step="s12">
+            State
+          </Label>
+          <Node
+            x={colStore}
+            y={rowY(0)}
+            w={wStore}
+            label="PostgreSQL"
+            detail="financial · sync"
+            kind="store"
+            state="verified"
+            step="s12"
           />
+          <Node
+            x={colStore}
+            y={rowY(1)}
+            w={wStore}
+            label="MongoDB"
+            detail="read models"
+            kind="store"
+            step="s13"
+          />
+          <Node
+            x={colStore}
+            y={rowY(2)}
+            w={wStore}
+            label="Redis"
+            detail="sessions"
+            kind="store"
+            step="s13"
+          />
+
+          {/* Money commits synchronously; projections follow asynchronously. */}
+          <Edge
+            d={`M ${colService + wService},${rowMid(0)} H ${colStore}`}
+            kind="sync"
+            flow
+          />
+          <Packet
+            path={`M ${colService + wService},${rowMid(0)} H ${colStore}`}
+            dur={1.2}
+            tone="live"
+            enabled={motion}
+          />
+
+          <Edge
+            d={`M ${colService + wService},${rowMid(1)} H ${colStore}`}
+            kind="async"
+          />
+          <Edge
+            d={`M ${colService + wService},${rowMid(2)} H ${colStore}`}
+            kind="async"
+          />
+
+          {/* ---------- Event band ---------- */}
+          <Boundary x={24} y={352} w={672} h={84} label="Events" step="s14" />
+
+          <Node
+            x={44}
+            y={374}
+            w={188}
+            label="Order exchange"
+            detail="11 states · topic fan-out"
+            kind="queue"
+            active
+            phase="q5"
+            step="s14"
+          />
+
+          {/* Services publish into the exchange. */}
+          <Edge
+            d={`M ${colService + wService / 2},${rowY(4) + 46} V 338 H 138 V 374`}
+            kind="async"
+            flow
+          />
+          <Packet
+            path={`M ${colService + wService / 2},${rowY(4) + 46} V 338 H 138 V 374`}
+            dur={2}
+            begin={0.6}
+            enabled={motion}
+          />
+
+          {/* The exchange fans out to every surface that cares. */}
+          <Edge d="M 232,397 H 396" kind="async" flow />
+          <Packet path="M 232,397 H 396" dur={1.5} count={2} tone="live" enabled={motion} />
+
+          <Node
+            x={404}
+            y={374}
+            w={132}
+            label="Kitchen · crew"
+            detail="live updates"
+            kind="client"
+            step="s15"
+          />
+          <Node
+            x={548}
+            y={374}
+            w={132}
+            label="Customer · analytics"
+            detail="push · reporting"
+            kind="client"
+            step="s16"
+          />
+
+          <Edge d="M 536,397 H 548" kind="async" head={false} />
         </svg>
       )}
     </ExplainerFrame>

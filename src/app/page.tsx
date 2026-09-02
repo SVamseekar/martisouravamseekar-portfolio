@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { systems } from "@/data/systems";
+import { groupedSystems } from "@/data/systems";
 import { counts } from "@/data/evidence";
 import { research } from "@/data/profile";
 import { buildHomeJsonLd } from "@/lib/seo";
@@ -71,37 +71,42 @@ export default function Home() {
       <section className="shell shell-wide band">
         <h2 className="t-section eyebrow-line">Selected work</h2>
 
-        <div className="card-grid">
-          {systems.map((system) => (
-            <Link
-              key={system.slug}
-              href={`/work/${system.slug}`}
-              className="card"
-            >
-              <div className="card-head">
-                <h2 className="card-name">{system.name}</h2>
-                <span className="status">
-                  {system.status === "live" && (
-                    <span className="dot dot-live" aria-hidden="true" />
-                  )}
-                  {system.status === "live"
-                    ? "Live"
-                    : system.status === "packages"
-                      ? "PyPI"
-                      : "Source"}
-                </span>
-              </div>
-              <p className="t-small">{system.whatItIs}</p>
-              <div className="tags">
-                {system.stack.slice(0, 4).map((tech) => (
-                  <span key={tech} className="tag">
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </Link>
-          ))}
-        </div>
+        {groupedSystems.map((group) => (
+          <div key={group.id} className="group-block">
+            <p className="t-label group-label">{group.label}</p>
+            <div className="card-grid">
+              {group.items.map((system) => (
+                <Link
+                  key={system.slug}
+                  href={`/work/${system.slug}`}
+                  className="card"
+                >
+                  <div className="card-head">
+                    <h3 className="card-name">{system.name}</h3>
+                    <span className="status">
+                      {system.status === "live" && (
+                        <span className="dot dot-live" aria-hidden="true" />
+                      )}
+                      {system.status === "live"
+                        ? "Live"
+                        : system.status === "packages"
+                          ? "PyPI"
+                          : "Source"}
+                    </span>
+                  </div>
+                  <p className="t-small">{system.whatItIs}</p>
+                  <div className="tags">
+                    {system.stack.slice(0, 4).map((tech) => (
+                      <span key={tech} className="tag">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
 
       <section className="shell shell-wide band band-rule">

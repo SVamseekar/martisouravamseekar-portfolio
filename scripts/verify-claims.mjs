@@ -16,7 +16,8 @@ import { dirname, resolve } from "node:path";
 
 const HERE = dirname(fileURLToPath(import.meta.url));
 const EVIDENCE = resolve(HERE, "../src/data/evidence.ts");
-const TIMEOUT_MS = 15_000;
+const TIMEOUT_MS = 25_000;
+const RETRIES = 2;
 
 const styles = {
   pass: "\x1b[32m",
@@ -53,7 +54,15 @@ function readEvidence() {
   return { urls, pkgs, skipped };
 }
 
-async function head(url) {
+/**
+ * Fetches a URL, retrying on timeout.
+ *
+ * DOI resolvers redirect through several hops and can be slow under load; a
+ * single slow response is not evidence that a claim has become false, and a
+ * verifier that cries wolf gets ignored. Genuine failures still fail, because
+ * every retry has to time out before the check is reported as broken.
+ */
+async function head(url, attempt = 1) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
   try {
@@ -65,7 +74,13 @@ async function head(url) {
     });
     return res.status;
   } catch (err) {
-    return err.name === "AbortError" ? "timeout" : "error";
+    const transient = err.name === "AbortError";
+    if (transient && attempt < RETRIES) {
+      clearTimeout(timer);
+      await new Promise((r) => setTimeout(r, 1500));
+      return head(url, attempt + 1);
+    }
+    return transient ? "timeout" : "error";
   } finally {
     clearTimeout(timer);
   }

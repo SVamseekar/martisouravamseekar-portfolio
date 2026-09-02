@@ -47,6 +47,18 @@
   --page-wide: 82rem;    /* explainers and indexes */
   --gutter: 1.25rem;
 
+  /* Diagram surface. Kept separate from page tokens so diagrams can be
+     tuned per theme without disturbing the reading surface. */
+  --diagram-ground: #f7f8fa;
+  --node-fill: #ffffff;
+  --node-fill-soft: #f0f2f6;
+  --node-stroke: #b4bac4;
+  --edge-stroke: #7c8492;
+  --edge-soft: #b4bac4;
+  --boundary-fill: rgba(255, 255, 255, 0.45);
+  --bar-fill: rgba(29, 78, 216, 0.16);
+  --warn-fill: rgba(168, 84, 27, 0.1);
+
   /* Motion */
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -58,22 +70,39 @@
 }
 
 [data-theme="dark"] {
-  --ground: #0e1013;
-  --ground-sunk: #131619;
-  --ground-raised: #181b1f;
-  --ink: #e8eaed;
-  --ink-soft: #a9aeb6;
-  --ink-faint: #767c85;
+  /* Ground lifted off pure black so raised surfaces have somewhere to go. */
+  --ground: #101317;
+  --ground-sunk: #161a1f;
+  --ground-raised: #1c2127;
 
-  --rule: #262a2f;
-  --rule-strong: #3a3f46;
+  /* Ink brightened across the board: the previous values were the light
+     palette dimmed, which left body copy grey and captions unreadable. */
+  --ink: #f2f4f7;
+  --ink-soft: #c3c9d2;
+  --ink-faint: #929aa6;
 
-  --signal: #7aa2f7;
-  --signal-soft: #16203a;
-  --signal-ink: #a3c0ff;
+  --rule: #2b3138;
+  --rule-strong: #454d57;
 
-  --live: #43c98a;
-  --blocked: #d99555;
+  /* Accents lifted for contrast against a dark ground. */
+  --signal: #8fb4ff;
+  --signal-soft: #1a2740;
+  --signal-ink: #b4cdff;
+
+  --live: #5fd99b;
+  --blocked: #f0a868;
+
+  /* Diagrams get their own dark treatment — nodes read as raised panels
+     rather than holes punched in the page. */
+  --diagram-ground: #14181d;
+  --node-fill: #1e242b;
+  --node-fill-soft: #252c34;
+  --node-stroke: #4d5763;
+  --edge-stroke: #8b95a3;
+  --edge-soft: #5a636e;
+  --boundary-fill: rgba(255, 255, 255, 0.02);
+  --bar-fill: rgba(143, 180, 255, 0.2);
+  --warn-fill: rgba(240, 168, 104, 0.12);
 }
 
 /* =============================================================================
@@ -442,6 +471,7 @@ svg {
   background: var(--ink);
   color: var(--ground);
   border-color: var(--ink);
+  font-weight: 500;
 }
 
 .btn-primary:hover {
@@ -681,10 +711,23 @@ svg {
   }
 }
 
+/* Grouped work blocks. */
+.group-block + .group-block {
+  margin-top: 1.75rem;
+}
+
+.group-label {
+  margin-bottom: 0.7rem;
+}
+
 /* With seven systems the final row is short; stretching the last card keeps
    the grid from ending on a hole. */
 .card-grid > :last-child:nth-child(3n - 2) {
   grid-column: span 3;
+}
+
+.card-grid > :last-child:nth-child(3n - 1) {
+  grid-column: span 2;
 }
 
 @media (max-width: 61.99rem) {
@@ -760,7 +803,7 @@ svg {
   line-height: 1.5;
   color: var(--ink-soft);
   background: var(--ground-sunk);
-  border: 1px solid var(--rule);
+  border: 1px solid var(--rule-strong);
   border-radius: 3px;
   padding: 0.25rem 0.55rem;
 }

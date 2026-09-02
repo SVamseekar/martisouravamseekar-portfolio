@@ -403,6 +403,7 @@ export const systems: readonly System[] = [
     liveUrl: "https://aequitas.souravamseekar.com",
     githubUrl: "https://github.com/SVamseekar/aequitas",
     explainer: "EquityExplainer",
+    architectureExplainer: "AequitasArchitecture",
     problem:
       "Timetables, small-area geography and a deprivation index are all published already. What is missing is a briefing that asks the same question in each region — so answers from England and Ireland can sit in the same room without being quietly incomparable.",
     story: [
@@ -593,3 +594,43 @@ export const systems: readonly System[] = [
 
 export const getSystem = (slug: string) =>
   systems.find((system) => system.slug === slug);
+
+/**
+ * Presentation order, grouped by what each thing is.
+ *
+ * Products a visitor can open come first, then the libraries they can install,
+ * then the hackathon entry — which is real work but a different kind of claim,
+ * so it does not sit beside the production systems.
+ */
+export const systemGroups = [
+  {
+    id: "products",
+    label: "Production systems",
+    slugs: ["workforceguard", "aequitas", "eu-ai-assurance", "masova"],
+  },
+  {
+    id: "libraries",
+    label: "Open-source libraries",
+    slugs: ["evgraph", "moveq"],
+  },
+  {
+    id: "prototype",
+    label: "Built for a hackathon",
+    slugs: ["masova-enterprise-fleet"],
+  },
+] as const;
+
+/** The systems in presentation order, flattened. */
+export const orderedSystems = systemGroups.flatMap((group) =>
+  group.slugs
+    .map((slug) => systems.find((system) => system.slug === slug))
+    .filter((system): system is System => system !== undefined),
+);
+
+/** A group with its systems resolved. */
+export const groupedSystems = systemGroups.map((group) => ({
+  ...group,
+  items: group.slugs
+    .map((slug) => systems.find((system) => system.slug === slug))
+    .filter((system): system is System => system !== undefined),
+}));

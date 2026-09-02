@@ -1,167 +1,147 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
-import { ArrowDefs, Caption, Packet } from "./parts";
+import { Boundary, Defs, Edge, Label, Node, Packet } from "./parts";
 
 /**
- * MaSoVa — an order moving through its real lifecycle.
+ * MaSoVa — one order walking its real lifecycle.
  *
- * The eleven states are the ones in shared-models OrderStatus. A token walks
- * the chain while the VAT and fiscal context resolve underneath, because that
- * is the part an operator in twelve tax jurisdictions actually cares about.
+ * A single token travels the whole chain as one continuous path: it enters at
+ * RECEIVED, runs the top row left to right, wraps down at the end, and
+ * continues along the bottom row to COMPLETED. One order, one journey — not
+ * two independent left-to-right passes.
  */
 export function OrderFlowExplainer() {
-  const states = [
-    "RECEIVED",
-    "PREPARING",
-    "OVEN",
-    "BAKED",
-    "READY",
-    "DISPATCHED",
-    "OUT_FOR_DELIVERY",
-    "DELIVERED",
-    "SERVED",
-    "COMPLETED",
-  ];
+  const row1 = ["RECEIVED", "PREPARING", "OVEN", "BAKED", "READY"];
+  const row2 = ["DISPATCHED", "OUT FOR DELIVERY", "DELIVERED", "SERVED", "COMPLETED"];
 
-  // Two rows so the long state names stay legible.
-  const row1 = states.slice(0, 5);
-  const row2 = states.slice(5);
-  const cellW = 128;
-  const gap = 8;
+  const cellW = 126;
+  const cellH = 38;
+  const gap = 9;
+  const left = 24;
 
-  const rowY1 = 92;
-  const rowY2 = 168;
+  const y1 = 86;
+  const y2 = 166;
+  const mid1 = y1 + cellH / 2;
 
-  const trackY1 = rowY1 + 15;
-  const trackY2 = rowY2 + 15;
+  const cellX = (i: number) => left + i * (cellW + gap);
+  const lastRight = cellX(4) + cellW;
+
+  /**
+   * The full journey as one path: across row 1, around the right-hand turn,
+   * back along row 2. The packet follows exactly this, so it always ends at
+   * COMPLETED rather than restarting mid-row.
+   */
+  const journey =
+    `M ${left + 12},${mid1} H ${lastRight - 12} ` +
+    `q 26,0 26,26 v 14 q 0,26 -26,26 ` +
+    `H ${left + 12}`;
 
   return (
     <ExplainerFrame
       kicker="Order lifecycle"
-      caption="Eleven states, each transition publishing an event. VAT and fiscal signing resolve from country, order type and item category as the order advances."
-      description="An order advances through eleven states: received, preparing, oven, baked, ready, dispatched, out for delivery, delivered, served, completed, with cancelled as a terminal branch. Each transition publishes to the order exchange. Underneath, VAT is resolved from country, order type and item category across twelve markets, and fiscal signing runs at completion for Germany, France, Italy, Belgium, Hungary and Great Britain."
+      caption="One order, eleven states. Each transition publishes an event; tax and fiscal rules resolve from the order's own context as it advances."
+      description="An order moves through eleven states. The top row runs received, preparing, oven, baked, ready. The order then wraps to the second row: dispatched, out for delivery, delivered, served, completed. Cancelled is a terminal branch available from the early states. Every transition publishes an event. VAT is resolved from country, order type and item category across twelve markets, and a fiscal signature is applied at completion in the six countries that require one."
     >
       {({ motion }) => (
         <svg
-          viewBox="0 0 720 290"
+          viewBox="0 0 720 340"
           className="explainer-svg"
           role="img"
-          aria-label="Eleven-state order lifecycle with VAT and fiscal signing"
+          aria-label="Eleven-state order lifecycle with tax resolution"
         >
-          <ArrowDefs />
+          <Defs />
 
-          <Caption x={16} y={24} delay="d1">
-            ORDER #4182 · STORE DE-02 · TAKEAWAY
-          </Caption>
+          <Label x={left} y={40} step="s1">
+            Order 4182 · store DE-02 · takeaway
+          </Label>
+
+          {/* The route the order travels, drawn once. */}
+          <Edge d={journey} kind="sync" head={false} flow />
 
           {/* ---- Row 1 ---- */}
           {row1.map((state, i) => (
-            <g key={state} className={`ex-step d${i + 1}`}>
-              <rect
-                x={16 + i * (cellW + gap)}
-                y={rowY1}
-                width={cellW}
-                height={30}
-                rx="3"
-                className={i === 1 ? "ex-box-accent" : "ex-box"}
-              />
-              <text
-                className="ex-mono-strong ex-mid"
-                x={16 + i * (cellW + gap) + cellW / 2}
-                y={rowY1 + 19}
-              >
-                {state}
-              </text>
-            </g>
+            <Node
+              key={state}
+              x={cellX(i)}
+              y={y1}
+              w={cellW}
+              h={cellH}
+              label={state}
+              kind="service"
+              state={i === 1 ? "active" : "idle"}
+              step={`s${i + 1}`}
+              centre
+            />
           ))}
-
-          {/* Track the token walks along row 1 */}
-          <path
-            className="ex-wire"
-            d={`M 16,${trackY1} H ${16 + 5 * (cellW + gap) - gap}`}
-            opacity="0"
-          />
-          <Packet
-            path={`M 24,${trackY1} H ${16 + 4 * (cellW + gap) + cellW - 8}`}
-            dur={3.4}
-            radius={4}
-            enabled={motion}
-          />
-
-          {/* Wrap from end of row 1 to start of row 2 */}
-          <path
-            className="ex-wire-soft"
-            d={`M ${16 + 4 * (cellW + gap) + cellW},${trackY1} q 22,0 22,26 v 12 q 0,26 -26,26 H 38`}
-            markerEnd="url(#ex-arrow)"
-          />
 
           {/* ---- Row 2 ---- */}
           {row2.map((state, i) => (
-            <g key={state} className={`ex-step d${i + 6}`}>
-              <rect
-                x={16 + i * (cellW + gap)}
-                y={rowY2}
-                width={cellW}
-                height={30}
-                rx="3"
-                className="ex-box"
-              />
-              <text
-                className="ex-mono-strong ex-mid"
-                x={16 + i * (cellW + gap) + cellW / 2}
-                y={rowY2 + 19}
-              >
-                {state}
-              </text>
-            </g>
+            <Node
+              key={state}
+              // Row 2 is drawn right-to-left so it reads in travel order.
+              x={cellX(4 - i)}
+              y={y2}
+              w={cellW}
+              h={cellH}
+              label={state}
+              kind="service"
+              state={i === 4 ? "verified" : "idle"}
+              step={`s${6 + i}`}
+              centre
+            />
           ))}
 
-          <Packet
-            path={`M 24,${trackY2} H ${16 + 4 * (cellW + gap) + cellW - 8}`}
-            dur={3.4}
-            begin={3.4}
-            radius={4}
-            tone="live"
-            enabled={motion}
+          {/* One order, travelling the whole chain. */}
+          <Packet path={journey} dur={9} enabled={motion} radius={5} />
+
+          {/* Direction cues, since row 2 runs right to left. */}
+          <Label x={lastRight} y={70} step="s6" anchor="end">
+            → continues
+          </Label>
+          <Label x={left} y={222} step="s11">
+            ← completes
+          </Label>
+
+          {/* Terminal branch. */}
+          <Edge
+            d={`M ${cellX(1) + cellW / 2},${y1 + cellH} V 246`}
+            kind="rejected"
+          />
+          <Node
+            x={cellX(1) - 14}
+            y={246}
+            w={cellW}
+            h={32}
+            label="CANCELLED"
+            kind="external"
+            state="warn"
+            step="s12"
+            centre
           />
 
-          {/* Terminal branch */}
-          <g className="ex-step d11">
-            <rect
-              x={16}
-              y={228}
-              width={cellW}
-              height={28}
-              rx="3"
-              className="ex-box-dashed"
-            />
-            <text className="ex-mono ex-mid ex-text-warn" x={16 + cellW / 2} y={246}>
-              CANCELLED
-            </text>
-          </g>
-          <path
-            className="ex-wire-soft ex-stroke-warn"
-            d={`M ${16 + cellW / 2},${rowY1 + 30} V 228`}
-            strokeDasharray="3 3"
-          />
+          {/* ---- Resolved per order ---- */}
+          <Boundary x={330} y={232} w={366} h={86} label="Resolved per order" step="s13" />
 
-          {/* ---- Tax context resolving underneath ---- */}
-          <g className="ex-step d12">
-            <rect x={200} y={222} width={504} height={54} rx="3" className="ex-box-sunk" />
-            <text className="ex-label" x={216} y={240}>
-              RESOLVED PER ORDER
-            </text>
-            <text className="ex-mono-strong" x={216} y={260}>
-              VAT · DE 7% takeaway food
-            </text>
-            <text className="ex-mono" x={430} y={260}>
-              12 markets · DINE_IN / TAKEAWAY / DELIVERY
-            </text>
-            <text className="ex-mono" x={216} y={272}>
-              fiscal signature at COMPLETED · DE FR IT BE HU GB
-            </text>
-          </g>
+          <text className="dg-note-strong dg-in s13" x={348} y={268}>
+            VAT
+          </text>
+          <text className="dg-note dg-in s13" x={348} y={284}>
+            country × order type × item category
+          </text>
+          <text className="dg-note dg-text-signal dg-in s13" x={678} y={268} textAnchor="end">
+            12 markets
+          </text>
+
+          <text className="dg-note-strong dg-in s14" x={348} y={306}>
+            Fiscal signature
+          </text>
+          <text className="dg-note dg-in s14" x={462} y={306}>
+            applied at completion
+          </text>
+          <text className="dg-note dg-text-signal dg-in s14" x={678} y={306} textAnchor="end">
+            6 countries
+          </text>
         </svg>
       )}
     </ExplainerFrame>

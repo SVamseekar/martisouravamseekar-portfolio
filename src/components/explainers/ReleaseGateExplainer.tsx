@@ -1,165 +1,143 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
-import { ArrowDefs, Caption, NodeBox, Packet } from "./parts";
+import { Boundary, Defs, Edge, Label, Node, Packet } from "./parts";
 
 /**
  * EU AI Assurance OS — a release meeting the gate.
  *
- * The moment worth showing is the refusal: a release arrives from CI, the gate
- * checks it against the obligations for its risk class, and stops it with the
- * reason attached. The rejected packet turning back at the gate is the whole
- * product in one movement.
+ * Composition is a decision, so the gate sits at the centre with one route in
+ * and two routes out: rejected back to the team, sealed down to the ledger.
+ * The refusal is the product, so the rejected edge carries the heaviest line
+ * in the grammar.
  */
 export function ReleaseGateExplainer() {
   const checks = [
-    { label: "technical documentation", ok: true },
-    { label: "data governance", ok: true },
-    { label: "logging & traceability", ok: true },
-    { label: "human oversight evidence", ok: false },
+    { label: "Technical documentation", ok: true },
+    { label: "Data governance", ok: true },
+    { label: "Logging & traceability", ok: true },
+    { label: "Human oversight evidence", ok: false },
   ];
+
+  const inbound = "M 168,124 H 250";
+  const verdict = "M 470,124 H 552";
+  const sealed = "M 610,178 V 236";
+  const rejected = "M 552,150 V 300 H 100 V 148";
 
   return (
     <ExplainerFrame
       kicker="Release gate"
-      caption="A release reaches the gate, is classified high risk, and is stopped on the one obligation it cannot evidence — with the decision sealed alongside it."
-      description="A deployment pipeline sends release v2.4 to the assurance gate. The gate classifies it as high risk and checks four obligations: technical documentation, data governance, and logging and traceability all pass; human oversight evidence is missing. The gate returns BLOCKED. Cited evidence is retrieved from a pgvector index, and the decision plus its evidence is sealed into an evidence pack and appended to a hash-chained ledger."
+      caption="A release is classified, checked against the obligations that class carries, and stopped on the one it cannot evidence."
+      description="A continuous integration pipeline posts release v2.4 to the assurance gate. The gate classifies it as high risk and checks four obligations: technical documentation, data governance, and logging and traceability all pass; human oversight evidence is missing. The gate returns blocked and the release travels back to the team with the reason attached. Cited evidence is retrieved from a vector index over the tenant's own documents. The decision and its evidence are sealed into an evidence pack and appended to a hash-chained ledger."
     >
       {({ motion }) => (
         <svg
-          viewBox="0 0 720 350"
+          viewBox="0 0 720 330"
           className="explainer-svg"
           role="img"
           aria-label="Release gate blocking a high-risk model deployment"
         >
-          <ArrowDefs />
-          <defs>
-            <marker
-              id="ex-arrow-warn"
-              viewBox="0 0 10 10"
-              refX="9"
-              refY="5"
-              markerWidth="5.5"
-              markerHeight="5.5"
-              orient="auto"
-            >
-              <path
-                d="M0,1 L9,5 L0,9"
-                fill="none"
-                stroke="var(--blocked)"
-                strokeWidth="1.8"
-              />
-            </marker>
-          </defs>
+          <Defs />
 
-          {/* ---- CI sends a release ---- */}
-          <Caption x={16} y={24} delay="d1">
-            CI PIPELINE
-          </Caption>
-          <NodeBox
-            x={16}
-            y={118}
-            w={116}
+          {/* ---- Inbound ---- */}
+          <Label x={24} y={54} step="s1">
+            Deploy pipeline
+          </Label>
+          <Node
+            x={24}
+            y={100}
+            w={144}
             h={48}
-            title="ship v2.4"
-            meta="POST /gate"
-            delay="d1"
+            label="Release v2.4"
+            detail="POST /gate"
+            kind="external"
+            step="s1"
           />
 
-          <path className="ex-wire ex-flow" d="M 132,142 H 202" markerEnd="url(#ex-arrow)" />
-          <Packet path="M 132,142 H 200" dur={1.4} enabled={motion} />
+          <Edge d={inbound} kind="sync" flow />
+          <Packet path={inbound} dur={1.4} count={2} enabled={motion} />
 
           {/* ---- The gate ---- */}
-          <g className="ex-step d2">
-            <rect x={210} y={54} width={224} height={182} rx="3" className="ex-box" />
-            <text className="ex-label" x={228} y={78}>
-              ASSURANCE GATE
-            </text>
-            <text className="ex-mono-strong" x={228} y={102}>
-              risk class · HIGH
-            </text>
-          </g>
+          <Boundary x={250} y={44} w={220} h={186} label="Assurance gate" step="s2" />
 
-          {/* Obligations resolve one at a time */}
+          <text className="dg-note-strong dg-in s2" x={268} y={82}>
+            Risk class · HIGH
+          </text>
+
           {checks.map((check, i) => (
-            <g key={check.label} className={`ex-step d${3 + i}`}>
+            <g key={check.label} className={`dg-in s${3 + i}`}>
               <text
-                className={check.ok ? "ex-ok" : "ex-fail"}
-                x={228}
-                y={130 + i * 24}
+                className={check.ok ? "dg-note dg-text-live" : "dg-note dg-text-warn"}
+                x={268}
+                y={110 + i * 26}
               >
                 {check.ok ? "✓" : "✕"}
               </text>
               <text
-                className={check.ok ? "ex-text" : "ex-text ex-text-warn"}
-                x={248}
-                y={130 + i * 24}
+                className={check.ok ? "dg-note" : "dg-note dg-text-warn"}
+                x={286}
+                y={110 + i * 26}
               >
                 {check.label}
               </text>
             </g>
           ))}
 
-          {/* Evidence retrieval feeding the decision */}
-          <NodeBox
-            x={210}
-            y={250}
-            w={224}
-            h={34}
-            title="cited evidence"
-            meta="pgvector HNSW · ONNX"
-            variant="sunk"
-            pulse
-            phase="p2"
-            delay="d7"
+          {/* Evidence retrieval supports the decision. */}
+          <Edge d="M 360,262 V 230" kind="lineage" />
+          <Node
+            x={250}
+            y={262}
+            w={220}
+            h={38}
+            label="Cited evidence"
+            detail="vector index · tenant documents"
+            kind="store"
+            active
+            phase="q2"
+            step="s7"
           />
-          <path className="ex-wire-soft" d="M 322,250 V 236" markerEnd="url(#ex-arrow)" />
 
           {/* ---- Verdict ---- */}
-          <path className="ex-wire ex-flow" d="M 434,142 H 494" markerEnd="url(#ex-arrow)" />
-          <Packet path="M 434,142 H 492" dur={1.2} begin={1.6} tone="warn" enabled={motion} />
+          <Edge d={verdict} kind="rejected" flow />
+          <Packet path={verdict} dur={1.3} begin={1.4} tone="warn" enabled={motion} />
 
-          <g className="ex-step d8">
-            <rect x={502} y={112} width={132} height={60} rx="3" className="ex-verdict" />
-            <text className="ex-verdict-text" x={568} y={141}>
-              BLOCKED
-            </text>
-            <text className="ex-mono ex-mid" x={568} y={159}>
-              1 obligation unmet
-            </text>
-          </g>
-
-          {/* The release is turned back */}
-          <path
-            className="ex-reject"
-            d="M 568,178 v 122 q 0,12 -12,12 H 86 q -12,0 -12,-12 V 172"
-            markerEnd="url(#ex-arrow-warn)"
+          <Node
+            x={552}
+            y={100}
+            w={144}
+            h={48}
+            label="BLOCKED"
+            detail="1 obligation unmet"
+            kind="gate"
+            state="warn"
+            step="s8"
+            centre
           />
-          <text className="ex-reject-label ex-mid ex-step d9" x={300} y={330}>
+
+          {/* Rejected: back to the team. The heaviest line on the page. */}
+          <Edge d={rejected} kind="rejected" flow />
+          <Packet path={rejected} dur={3} begin={2} tone="warn" radius={5} enabled={motion} />
+
+          <text className="dg-note-strong dg-text-warn dg-in s9" x={326} y={318}>
             ✕ shipping blocked — returned with the reason attached
           </text>
-          <Packet
-            path="M 568,178 v 122 q 0,12 -12,12 H 86 q -12,0 -12,-12 V 176"
-            dur={2.4}
-            begin={2.2}
-            radius={4.5}
-            tone="warn"
-            enabled={motion}
+
+          {/* Sealed: down to the ledger. */}
+          <Edge d={sealed} kind="sync" flow />
+          <Packet path={sealed} dur={1.1} begin={2.6} tone="live" enabled={motion} />
+
+          <Node
+            x={504}
+            y={236}
+            w={192}
+            h={44}
+            label="Evidence pack"
+            detail="sealed → hash-chained ledger"
+            kind="store"
+            state="verified"
+            step="s10"
           />
-
-          {/* ---- Sealed record ---- */}
-          <path className="ex-wire ex-flow" d="M 568,172 V 254" markerEnd="url(#ex-arrow)" />
-          <Packet path="M 568,176 V 252" dur={1} begin={3.4} tone="warn" enabled={motion} />
-
-          <g className="ex-step d10">
-            <rect x={470} y={258} width={234} height={40} rx="3" className="ex-box-sunk" />
-            <text className="ex-mono-strong ex-mid" x={587} y={276}>
-              evidence pack sealed
-            </text>
-            <text className="ex-mono ex-mid" x={587} y={290}>
-              sha256·a91f… → append-only ledger
-            </text>
-          </g>
         </svg>
       )}
     </ExplainerFrame>

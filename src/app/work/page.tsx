@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { systems } from "@/data/systems";
+import { groupedSystems } from "@/data/systems";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -25,38 +25,43 @@ export default function WorkIndex() {
       </section>
 
       <section className="shell shell-wide band">
-        <div className="rows">
-          {systems.map((system) => (
-            <article key={system.slug} className="row row-system">
-              <div>
-                <Link href={`/work/${system.slug}`} className="row-title">
-                  {system.name}
-                </Link>
-                <p className="t-mono ink-faint" style={{ marginTop: "0.35rem" }}>
-                  {system.period}
-                </p>
-              </div>
+        {groupedSystems.map((group) => (
+          <div key={group.id} className="group-block">
+            <p className="t-label group-label">{group.label}</p>
+            <div className="rows">
+              {group.items.map((system) => (
+                <article key={system.slug} className="row row-system">
+                  <div>
+                    <Link href={`/work/${system.slug}`} className="row-title">
+                      {system.name}
+                    </Link>
+                    <p className="t-mono ink-faint" style={{ marginTop: "0.35rem" }}>
+                      {system.period}
+                    </p>
+                  </div>
 
-              <div>
-                <p className="t-small ink-soft">{system.whatItIs}</p>
-                <p className="t-small ink-faint" style={{ marginTop: "0.5rem" }}>
-                  {system.forWhom}
-                </p>
-              </div>
+                  <div>
+                    <p className="t-small ink-soft">{system.whatItIs}</p>
+                    <p className="t-small ink-faint" style={{ marginTop: "0.5rem" }}>
+                      {system.forWhom}
+                    </p>
+                  </div>
 
-              <span className="status">
-                {system.status === "live" && (
-                  <span className="dot dot-live" aria-hidden="true" />
-                )}
-                {system.status === "live"
-                  ? "Live"
-                  : system.status === "packages"
-                    ? "PyPI"
-                    : "Source"}
-              </span>
-            </article>
-          ))}
-        </div>
+                  <span className="status">
+                    {system.status === "live" && (
+                      <span className="dot dot-live" aria-hidden="true" />
+                    )}
+                    {system.status === "live"
+                      ? "Live"
+                      : system.status === "packages"
+                        ? "PyPI"
+                        : "Source"}
+                  </span>
+                </article>
+              ))}
+            </div>
+          </div>
+        ))}
       </section>
     </>
   );

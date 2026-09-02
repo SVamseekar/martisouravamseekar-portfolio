@@ -6,6 +6,7 @@ import { OrderFlowExplainer } from "./OrderFlowExplainer";
 import { MasovaArchitecture } from "./MasovaArchitecture";
 import { FleetExplainer } from "./FleetExplainer";
 import { MoveqExplainer } from "./MoveqExplainer";
+import { AequitasArchitecture } from "./AequitasArchitecture";
 
 /**
  * Maps a system's explainer key to its diagram.
@@ -24,6 +25,7 @@ const EXPLAINERS = {
   MasovaArchitecture,
   FleetExplainer,
   MoveqExplainer,
+  AequitasArchitecture,
 } as const;
 
 export function SystemExplainer({ name }: { name: string }) {

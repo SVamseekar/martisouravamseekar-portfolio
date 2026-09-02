@@ -1,185 +1,340 @@
 "use client";
 
-/**
- * Shared SVG parts for the system explainers.
- *
- * These carry the motion vocabulary: a packet that travels a route, a service
- * box that lights up when called, a labelled node. Keeping them here means
- * every diagram animates consistently and each explainer file holds only what
- * is specific to its own system.
- */
-
-type PacketProps = {
-  /** Route to travel, as an SVG path `d`. */
-  path: string;
-  /** Seconds for one traversal. */
-  dur?: number;
-  /** Seconds before the first traversal. */
-  begin?: number;
-  radius?: number;
-  /** Visual role — signal for normal traffic, warn for a rejected path. */
-  tone?: "signal" | "warn" | "live";
-  /** Set false to render nothing (used to disable motion). */
-  enabled?: boolean;
-};
+import { GRID, nodeClass, edgeClass, edgeMarker } from "./system";
+import type { NodeKind, EdgeKind, State } from "./system";
 
 /**
- * A request travelling between components.
+ * Shared SVG primitives implementing the diagram grammar in ./system.ts.
  *
- * Uses SMIL animateMotion, which runs independently of the main thread and
- * needs no JS timer. Rendering is skipped entirely when motion is disabled,
- * so no packet is ever frozen mid-route.
+ * Every diagram builds from these, so shape, line weight, colour and motion
+ * mean the same thing on every page. Layout stays free.
  */
-export function Packet({
-  path,
-  dur = 2.4,
-  begin = 0,
-  radius = 3.5,
-  tone = "signal",
-  enabled = true,
-}: PacketProps) {
-  if (!enabled) return null;
 
-  const fill =
-    tone === "warn" ? "ex-warn" : tone === "live" ? "ex-live" : "ex-signal";
+/* ---------------------------------------------------------------- markers */
 
+/**
+ * Arrowhead definitions, declared once per diagram.
+ *
+ * Heads are filled and generously sized: an outline arrowhead at this scale
+ * disappears against the page.
+ */
+export function Defs() {
   return (
-    <circle className={`ex-packet ${fill}`} r={radius}>
-      <animateMotion
-        dur={`${dur}s`}
-        begin={`${begin}s`}
-        repeatCount="indefinite"
-        path={path}
-        rotate="auto"
-      />
-      <animate
-        attributeName="opacity"
-        values="0;1;1;0"
-        keyTimes="0;0.08;0.9;1"
-        dur={`${dur}s`}
-        begin={`${begin}s`}
-        repeatCount="indefinite"
-      />
-    </circle>
+    <defs>
+      <marker
+        id="dg-head"
+        viewBox="0 0 12 12"
+        refX="10"
+        refY="6"
+        markerWidth="7"
+        markerHeight="7"
+        orient="auto-start-reverse"
+      >
+        <path d="M1,1 L11,6 L1,11 Z" className="dg-head" />
+      </marker>
+
+      <marker
+        id="dg-head-soft"
+        viewBox="0 0 12 12"
+        refX="10"
+        refY="6"
+        markerWidth="6"
+        markerHeight="6"
+        orient="auto-start-reverse"
+      >
+        <path d="M1,1 L11,6 L1,11 Z" className="dg-head-soft" />
+      </marker>
+
+      <marker
+        id="dg-head-warn"
+        viewBox="0 0 12 12"
+        refX="10"
+        refY="6"
+        markerWidth="7.5"
+        markerHeight="7.5"
+        orient="auto-start-reverse"
+      >
+        <path d="M1,1 L11,6 L1,11 Z" className="dg-head-warn" />
+      </marker>
+    </defs>
   );
 }
 
-type NodeBoxProps = {
+/* ------------------------------------------------------------------ edges */
+
+type EdgeProps = {
+  /** SVG path data. */
+  d: string;
+  kind?: EdgeKind;
+  /** Draw the arrowhead. Off for edges that only imply a relationship. */
+  head?: boolean;
+  /** Show travelling traffic along the route. */
+  flow?: boolean;
+};
+
+/**
+ * A relationship between two components.
+ *
+ * `kind` sets both the stroke pattern and the arrowhead, so a dashed line
+ * always means an asynchronous event and can never be drawn with a
+ * synchronous head by accident.
+ */
+export function Edge({ d, kind = "sync", head = true, flow = false }: EdgeProps) {
+  return (
+    <path
+      className={`${edgeClass[kind]}${flow ? " dg-flow" : ""}`}
+      d={d}
+      markerEnd={head ? edgeMarker[kind] : undefined}
+    />
+  );
+}
+
+/* ---------------------------------------------------------------- packets */
+
+type PacketProps = {
+  /** Route to travel — pass the same `d` as the Edge it follows. */
+  path: string;
+  dur?: number;
+  begin?: number;
+  /** What is travelling: a request, a committed write, a rejection. */
+  tone?: "signal" | "live" | "warn";
+  radius?: number;
+  /** Set false to omit entirely (reduced motion). */
+  enabled?: boolean;
+  /** Number of evenly-spaced packets on this route. */
+  count?: number;
+};
+
+/**
+ * Traffic travelling a route.
+ *
+ * A packet always follows a real edge, and `count` spaces several along the
+ * same path so a busy route reads as busy rather than as one lonely dot.
+ */
+export function Packet({
+  path,
+  dur = 2.2,
+  begin = 0,
+  tone = "signal",
+  radius = 4.5,
+  enabled = true,
+  count = 1,
+}: PacketProps) {
+  if (!enabled) return null;
+
+  return (
+    <>
+      {Array.from({ length: count }, (_, i) => {
+        const offset = begin + (dur / count) * i;
+        return (
+          <circle key={i} className={`dg-packet dg-packet-${tone}`} r={radius}>
+            <animateMotion
+              dur={`${dur}s`}
+              begin={`${offset}s`}
+              repeatCount="indefinite"
+              path={path}
+            />
+            <animate
+              attributeName="opacity"
+              values="0;1;1;0"
+              keyTimes="0;0.06;0.88;1"
+              dur={`${dur}s`}
+              begin={`${offset}s`}
+              repeatCount="indefinite"
+            />
+          </circle>
+        );
+      })}
+    </>
+  );
+}
+
+/* ------------------------------------------------------------------ nodes */
+
+type NodeProps = {
   x: number;
   y: number;
   w: number;
-  h: number;
-  title: string;
-  sub?: string;
-  /** Mono line under the title — a port, a count, an identifier. */
-  meta?: string;
-  variant?: "plain" | "accent" | "sunk" | "dashed";
-  /** Adds a call-activity glow that pulses while the diagram plays. */
-  pulse?: boolean;
-  /** Phase class (p0–p7) so parallel components do not blink together. */
+  h?: number;
+  /** Primary name. Say what it does, not what it is called internally. */
+  label: string;
+  /** One line of supporting detail. */
+  detail?: string;
+  kind?: NodeKind;
+  state?: State;
+  /** Show an execution pulse. */
+  active?: boolean;
+  /** Pulse phase class (q0–q7) so siblings do not blink in unison. */
   phase?: string;
-  /** Reveal-order class (d1–d14). */
-  delay?: string;
+  /** Reveal order class (s1–s16). */
+  step?: string;
+  /** Centre the text instead of left-aligning it. */
+  centre?: boolean;
 };
 
-/** A component in the architecture: a service, a store, a client. */
-export function NodeBox({
+/** A component: a service, a store, a client surface, a queue, a gate. */
+export function Node({
   x,
   y,
   w,
-  h,
-  title,
-  sub,
-  meta,
-  variant = "plain",
-  pulse = false,
-  phase = "p0",
-  delay = "d1",
-}: NodeBoxProps) {
-  const boxClass =
-    variant === "accent"
-      ? "ex-box-accent"
-      : variant === "sunk"
-        ? "ex-box-sunk"
-        : variant === "dashed"
-          ? "ex-box-dashed"
-          : "ex-box";
-
-  // Vertically centre the text block within the box.
-  const lines = [title, sub, meta].filter(Boolean).length;
-  const startY = y + h / 2 - (lines - 1) * 7 + 4;
+  h = GRID.nodeH,
+  label,
+  detail,
+  kind = "service",
+  state = "idle",
+  active = false,
+  phase = "q0",
+  step = "s1",
+  centre = false,
+}: NodeProps) {
+  const tx = centre ? x + w / 2 : x + GRID.padX;
+  const anchor = centre ? "middle" : "start";
+  const baseline = detail ? y + h / 2 - 3 : y + h / 2 + 4;
 
   return (
-    <g className={`ex-step ${delay}`}>
-      <rect x={x} y={y} width={w} height={h} rx="3" className={boxClass} />
-      {pulse && (
+    <g className={`dg-node ${nodeClass[kind]} dg-${state} dg-in ${step}`}>
+      <rect x={x} y={y} width={w} height={h} rx={GRID.radius} className="dg-shape" />
+
+      {/* Stores carry a left accent bar, so persistence reads at a glance. */}
+      {kind === "store" && (
+        <rect x={x} y={y + 1} width={3} height={h - 2} className="dg-store-bar" />
+      )}
+
+      {active && (
         <rect
           x={x}
           y={y}
           width={w}
           height={h}
-          rx="3"
-          className={`ex-pulse ${phase}`}
-          fill="none"
-          stroke="var(--signal)"
-          strokeWidth="1.5"
+          rx={GRID.radius}
+          className={`dg-pulse ${phase}`}
         />
       )}
-      <text className="ex-name" x={x + 10} y={startY}>
-        {title}
+
+      <text className="dg-label" x={tx} y={baseline} textAnchor={anchor}>
+        {label}
       </text>
-      {sub && (
-        <text className="ex-text" x={x + 10} y={startY + 14}>
-          {sub}
-        </text>
-      )}
-      {meta && (
-        <text className="ex-mono" x={x + 10} y={startY + (sub ? 28 : 14)}>
-          {meta}
+      {detail && (
+        <text className="dg-detail" x={tx} y={baseline + 15} textAnchor={anchor}>
+          {detail}
         </text>
       )}
     </g>
   );
 }
 
-/** An arrowhead definition shared by every diagram. */
-export function ArrowDefs({ id = "ex-arrow" }: { id?: string }) {
+/** An entity in a graph. */
+export function GraphNode({
+  x,
+  y,
+  label,
+  state = "idle",
+  step = "s1",
+  anchor = "start",
+}: {
+  x: number;
+  y: number;
+  label: string;
+  state?: State;
+  step?: string;
+  anchor?: "start" | "end" | "middle";
+}) {
+  const dx = anchor === "end" ? -14 : anchor === "middle" ? 0 : 14;
   return (
-    <defs>
-      <marker
-        id={id}
-        viewBox="0 0 10 10"
-        refX="9"
-        refY="5"
-        markerWidth="5"
-        markerHeight="5"
-        orient="auto"
-      >
-        <path
-          d="M0,1 L9,5 L0,9"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.4"
-        />
-      </marker>
-    </defs>
+    <g className={`dg-graphnode dg-${state} dg-pop ${step}`}>
+      <circle cx={x} cy={y} r="7" className="dg-dot" />
+      <text className="dg-label" x={x + dx} y={y + 4} textAnchor={anchor}>
+        {label}
+      </text>
+    </g>
   );
 }
 
-/** A section heading inside a diagram. */
-export function Caption({
+/* ------------------------------------------------------- boundary + label */
+
+/** A labelled container marking a trust, deployment or method boundary. */
+export function Boundary({
+  x,
+  y,
+  w,
+  h,
+  label,
+  step = "s1",
+}: {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  label?: string;
+  step?: string;
+}) {
+  return (
+    <g className={`dg-boundary dg-in ${step}`}>
+      <rect x={x} y={y} width={w} height={h} rx={GRID.radius} className="dg-bound-shape" />
+      {label && (
+        <text className="dg-bound-label" x={x + 12} y={y + 16}>
+          {label}
+        </text>
+      )}
+    </g>
+  );
+}
+
+/** A group heading inside a diagram. */
+export function Label({
   x,
   y,
   children,
-  delay = "d1",
+  step = "s1",
+  tone,
+  anchor = "start",
 }: {
   x: number;
   y: number;
   children: string;
-  delay?: string;
+  step?: string;
+  tone?: "warn" | "live" | "signal";
+  anchor?: "start" | "end" | "middle";
 }) {
   return (
-    <text className={`ex-label ex-step ${delay}`} x={x} y={y}>
+    <text
+      className={`dg-group dg-in ${step}${tone ? ` dg-text-${tone}` : ""}`}
+      x={x}
+      y={y}
+      textAnchor={anchor}
+    >
+      {children}
+    </text>
+  );
+}
+
+/** A line of supporting note text inside a diagram. */
+export function Note({
+  x,
+  y,
+  children,
+  step = "s1",
+  tone,
+  anchor = "start",
+  strong = false,
+}: {
+  x: number;
+  y: number;
+  children: string;
+  step?: string;
+  tone?: "warn" | "live" | "signal";
+  anchor?: "start" | "end" | "middle";
+  strong?: boolean;
+}) {
+  return (
+    <text
+      className={`${strong ? "dg-note-strong" : "dg-note"} dg-in ${step}${
+        tone ? ` dg-text-${tone}` : ""
+      }`}
+      x={x}
+      y={y}
+      textAnchor={anchor}
+    >
       {children}
     </text>
   );

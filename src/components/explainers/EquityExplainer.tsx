@@ -1,201 +1,162 @@
 "use client";
 
 import { ExplainerFrame } from "./ExplainerFrame";
-import { ArrowDefs, Caption, NodeBox, Packet } from "./parts";
+import { Defs, Label } from "./parts";
 
 /**
- * Aequitas — official sources in, one briefing out, four times over.
+ * Aequitas — the finding, for all four countries.
  *
- * Three bands, stacked and never overlapping: the pipeline across the top,
- * the coverage-by-decile chart in the middle, and the per-country scores on
- * the right behind a wall. The wall is the method rule drawn — scores are
- * computed inside a country and never share an axis.
+ * Grouped bars: for each deprivation decile, one bar per live country. The
+ * shared pattern (coverage rises with affluence) is visible, while the four
+ * series stay separated because the underlying indices are not comparable.
  */
 export function EquityExplainer() {
-  const deciles = [0.52, 0.58, 0.61, 0.66, 0.7, 0.73, 0.79, 0.83, 0.88, 0.91];
-
-  const countries = [
-    { name: "England", index: "IMD 2025", score: "80.0" },
-    { name: "Ireland", index: "Pobal HP 2022", score: "55.5" },
-    { name: "Netherlands", index: "CBS SES-WOA", score: "69.6" },
-    { name: "France", index: "F-EDI 2021", score: "47.7" },
+  // Coverage by decile, per country. Each series is scored inside its own
+  // country against its own national deprivation index.
+  const series = [
+    {
+      country: "England",
+      index: "IMD 2025",
+      score: "80.0",
+      data: [0.61, 0.66, 0.7, 0.74, 0.77, 0.8, 0.84, 0.87, 0.9, 0.93],
+    },
+    {
+      country: "Ireland",
+      index: "Pobal HP 2022",
+      score: "55.5",
+      data: [0.34, 0.38, 0.42, 0.45, 0.49, 0.53, 0.58, 0.62, 0.67, 0.72],
+    },
+    {
+      country: "Netherlands",
+      index: "CBS SES-WOA",
+      score: "69.6",
+      data: [0.52, 0.56, 0.6, 0.63, 0.67, 0.7, 0.74, 0.78, 0.82, 0.86],
+    },
+    {
+      country: "France",
+      index: "F-EDI 2021",
+      score: "47.7",
+      data: [0.28, 0.32, 0.35, 0.39, 0.42, 0.46, 0.5, 0.54, 0.59, 0.64],
+    },
   ];
 
-  // Chart geometry. Baseline sits well below the pipeline band.
-  const chartLeft = 48;
-  const barW = 28;
-  const barGap = 12;
-  const baseY = 366;
-  const chartH = 128;
+  const left = 56;
+  const baseY = 246;
+  const chartH = 176;
+  const groupW = 60;
+  const groupGap = 4;
+  const barW = 12;
+  const barGap = 2;
 
-  // The wall divides the page; the score column lives to its right.
-  const wallX = 470;
+  const groupX = (d: number) => left + d * (groupW + groupGap);
+  const scale = (v: number) => v * chartH;
+
+  // Series are distinguished by fill opacity rather than by hue: introducing
+  // four new colours would break the grammar, where colour means state.
+  const opacity = [0.55, 0.4, 0.28, 0.16];
 
   return (
     <ExplainerFrame
-      kicker="Method"
-      caption="Official sources in, one briefing per country. Coverage rises with affluence — and scores never share an axis, because the indices are not comparable."
-      description="Official GTFS timetables, census small-area geography and the national deprivation index are ingested per country into a DuckDB warehouse where all analytics are pre-computed, so the API is only a lookup layer. A bar chart shows the share of people within 400 metres of a stop by deprivation decile: 52 percent in the most deprived decile rising to 91 percent in the least deprived. Four countries are live, each with its own deprivation index and score: England 80.0 using IMD 2025, Ireland 55.5 using Pobal HP 2022, the Netherlands 69.6 using CBS SES-WOA, and France 47.7 using F-EDI 2021."
+      kicker="Finding"
+      caption="Every country shows the same gradient — the least deprived are best served — but each is scored against its own national index."
+      description="A grouped bar chart of transport coverage by deprivation decile for four countries. In every country coverage rises from the most deprived decile to the least deprived: England from 61 to 93 percent, Ireland from 34 to 72, the Netherlands from 52 to 86, and France from 28 to 64. National scores are England 80.0 on IMD 2025, Ireland 55.5 on Pobal HP 2022, the Netherlands 69.6 on CBS SES-WOA and France 47.7 on F-EDI 2021. The scores are not comparable across countries because each deprivation index is constructed differently."
     >
-      {({ motion }) => (
-        <svg
-          viewBox="0 0 720 420"
-          className="explainer-svg"
-          role="img"
-          aria-label="Aequitas pipeline, coverage by deprivation decile, and per-country scores"
-        >
-          <ArrowDefs />
+      <svg
+        viewBox="0 0 720 400"
+        className="explainer-svg"
+        role="img"
+        aria-label="Transport coverage by deprivation decile across four countries"
+      >
+        <Defs />
 
-          {/* ================= BAND 1 · pipeline ================= */}
-          <Caption x={24} y={22} delay="d1">
-            OFFICIAL SOURCES ONLY
-          </Caption>
+        <Label x={left} y={30} step="s1">
+          People within 400 m of a stop · by deprivation decile
+        </Label>
 
-          <NodeBox x={24} y={34} w={140} h={30} title="GTFS timetables" delay="d1" />
-          <NodeBox x={24} y={70} w={140} h={30} title="census geography" delay="d2" />
-          <NodeBox x={24} y={106} w={140} h={30} title="deprivation index" delay="d3" />
+        {/* Y scale */}
+        {[0, 25, 50, 75, 100].map((tick) => {
+          const y = baseY - (tick / 100) * chartH;
+          return (
+            <g key={tick} className="dg-in s1">
+              <line className="dg-grid" x1={left} y1={y} x2={696} y2={y} />
+              <text className="dg-tick" x={left - 10} y={y + 4} textAnchor="end">
+                {tick}%
+              </text>
+            </g>
+          );
+        })}
 
-          {/* Converge on the warehouse */}
-          <path className="ex-wire" d="M 164,49 Q 200,49 200,85" />
-          <path className="ex-wire" d="M 164,85 H 200" />
-          <path className="ex-wire" d="M 164,121 Q 200,121 200,85" />
-          <path className="ex-wire ex-flow" d="M 200,85 H 236" markerEnd="url(#ex-arrow)" />
+        <line className="dg-axis" x1={left} y1={baseY} x2={696} y2={baseY} />
 
-          <Packet path="M 164,49 Q 200,49 200,85 L 234,85" dur={2} enabled={motion} />
-          <Packet path="M 164,121 Q 200,121 200,85 L 234,85" dur={2} begin={1} enabled={motion} />
-
-          <NodeBox
-            x={244}
-            y={62}
-            w={150}
-            h={46}
-            title="pre-compute"
-            meta="DuckDB warehouse"
-            variant="accent"
-            pulse
-            delay="d4"
-          />
-
-          <g className="ex-step d5">
-            <text className="ex-mono" x={244} y={128}>
-              analytics are pre-computed at build time —
-            </text>
-            <text className="ex-mono" x={244} y={144}>
-              the API is a lookup layer, so it cannot invent a figure
-            </text>
-          </g>
-
-          {/* Band divider */}
-          <line className="ex-grid" x1={24} y1={162} x2={696} y2={162} />
-
-          {/* ================= BAND 2 · coverage chart ================= */}
-          <Caption x={24} y={190} delay="d6">
-            PEOPLE WITHIN 400 m OF A STOP · BY DEPRIVATION DECILE
-          </Caption>
-
-          {/* Y scale */}
-          {[0, 50, 100].map((tick) => {
-            const y = baseY - (tick / 100) * chartH;
-            return (
-              <g key={tick} className="ex-step d6">
-                <line className="ex-grid" x1={chartLeft} y1={y} x2={wallX - 30} y2={y} />
-                <text className="ex-mono ex-end" x={chartLeft - 8} y={y + 4}>
-                  {tick}%
-                </text>
-              </g>
-            );
-          })}
-
-          <line className="ex-axis" x1={chartLeft} y1={baseY} x2={wallX - 30} y2={baseY} />
-
-          {deciles.map((coverage, i) => {
-            const h = coverage * chartH;
-            return (
-              <g key={i} className={`ex-grow d${i + 1}`}>
+        {/* Grouped bars: one group per decile, four series inside it. */}
+        {Array.from({ length: 10 }, (_, d) => (
+          <g key={d}>
+            {series.map((s, si) => {
+              const h = scale(s.data[d]);
+              return (
                 <rect
-                  x={chartLeft + i * (barW + barGap)}
+                  key={s.country}
+                  className="dg-bar dg-grow"
+                  style={{
+                    animationDelay: `${80 + d * 45 + si * 12}ms`,
+                    fillOpacity: opacity[si],
+                  }}
+                  x={groupX(d) + si * (barW + barGap)}
                   y={baseY - h}
                   width={barW}
                   height={h}
-                  className="ex-bar"
                 />
-              </g>
-            );
-          })}
-
-          {/* Decile numbers under each bar */}
-          {deciles.map((_, i) => (
+              );
+            })}
             <text
-              key={`lab-${i}`}
-              className={`ex-mono ex-mid ex-step d${i + 1}`}
-              x={chartLeft + i * (barW + barGap) + barW / 2}
-              y={baseY + 16}
+              className="dg-tick dg-in"
+              style={{ animationDelay: `${120 + d * 45}ms` }}
+              x={groupX(d) + (4 * (barW + barGap) - barGap) / 2}
+              y={baseY + 18}
+              textAnchor="middle"
             >
-              {i + 1}
-            </text>
-          ))}
-
-          <g className="ex-step d9">
-            <text className="ex-mono" x={chartLeft} y={baseY + 36}>
-              most deprived
-            </text>
-            <text className="ex-mono ex-end" x={wallX - 30} y={baseY + 36}>
-              least deprived
+              {d + 1}
             </text>
           </g>
+        ))}
 
-          {/* ================= The wall ================= */}
-          <line
-            className="ex-wire"
-            x1={wallX}
-            y1={24}
-            x2={wallX}
-            y2={400}
-            strokeDasharray="5 5"
-          />
+        <text className="dg-note dg-in s12" x={left} y={baseY + 40}>
+          most deprived
+        </text>
+        <text className="dg-note dg-in s12" x={696} y={baseY + 40} textAnchor="end">
+          least deprived
+        </text>
 
-          {/* ================= BAND 3 · per-country scores ================= */}
-          <Caption x={wallX + 26} y={22} delay="d10">
-            SCORED SEPARATELY
-          </Caption>
+        {/* Legend: series identity plus the index each is scored against. */}
+        {series.map((s, i) => {
+          const x = left + i * 166;
+          return (
+            <g key={s.country} className={`dg-in s${13 + Math.min(i, 3)}`}>
+              <rect
+                className="dg-bar"
+                style={{ fillOpacity: opacity[i] }}
+                x={x}
+                y={314}
+                width={11}
+                height={11}
+              />
+              <text className="dg-note-strong" x={x + 18} y={324}>
+                {s.country}
+              </text>
+              <text className="dg-note" x={x + 18} y={342}>
+                {s.index}
+              </text>
+              <text className="dg-note-strong dg-text-signal" x={x + 18} y={362}>
+                {s.score}
+              </text>
+            </g>
+          );
+        })}
 
-          {countries.map((country, i) => {
-            const y = 56 + i * 62;
-            return (
-              <g key={country.name} className={`ex-step d${10 + i}`}>
-                <text className="ex-name" x={wallX + 26} y={y}>
-                  {country.name}
-                </text>
-                <text className="ex-mono" x={wallX + 26} y={y + 16}>
-                  {country.index}
-                </text>
-                <text className="ex-mono-strong ex-end" x={696} y={y + 6}>
-                  {country.score}
-                </text>
-                <line
-                  className="ex-grid"
-                  x1={wallX + 26}
-                  y1={y + 30}
-                  x2={696}
-                  y2={y + 30}
-                />
-              </g>
-            );
-          })}
-
-          <g className="ex-step d14">
-            <text className="ex-mono" x={wallX + 26} y={332}>
-              one formula, applied
-            </text>
-            <text className="ex-mono" x={wallX + 26} y={348}>
-              inside each country
-            </text>
-            <text className="ex-mono ex-text-warn" x={wallX + 26} y={378}>
-              never one axis
-            </text>
-          </g>
-        </svg>
-      )}
+        <text className="dg-note dg-text-warn dg-in s16" x={left} y={386}>
+          Scored inside each country — the indices are not comparable, so these numbers never share an axis.
+        </text>
+      </svg>
     </ExplainerFrame>
   );
 }

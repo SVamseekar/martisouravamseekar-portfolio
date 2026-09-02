@@ -78,6 +78,28 @@ scripts/
   verify-claims.mjs    the claim checker behind `npm run verify`
 ```
 
+## Diagram grammar
+
+Every architecture diagram draws from one visual vocabulary, defined in
+`src/components/explainers/system.ts` and implemented by the primitives in
+`parts.tsx`. Layout is free — a pipeline looks like a pipeline, a graph like a
+graph, an agent system like a fan-out — but the language never changes:
+
+| Aspect | Meaning |
+|---|---|
+| **Shape** | rounded rect = service · left accent bar = store · light fill = client surface · dashed border = external system · heavy border = decision gate · circle = graph entity |
+| **Line** | solid = synchronous call · dashed = asynchronous event · dotted = lineage, no runtime traffic · heavy warn = a refused path |
+| **Colour** | signal = active · green = verified or committed · amber = blocked or failed · neutral = idle |
+| **Container** | a labelled boundary marks a trust, deployment or method boundary |
+| **Motion** | a packet is one request or event travelling a real route · a pulse is a component executing · a flowing dash is a route carrying traffic · a growing bar is a measured quantity |
+
+No motion is decorative. If something moves, it means something. Every diagram
+renders complete and static under `prefers-reduced-motion`.
+
+To add a diagram: build it from `parts.tsx`, register it in
+`SystemExplainer.tsx`, and point a system's `explainer` or
+`architectureExplainer` field at it.
+
 ## Design notes
 
 The palette is a cool neutral ground with a single signal colour. Colour carries
