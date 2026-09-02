@@ -872,6 +872,29 @@ svg {
   color: var(--signal);
 }
 
+/* The card is one big link, which a raised surface alone does not communicate —
+   least of all on touch, where the hover lift never happens. The name carries
+   the same arrow as the work rows, so one affordance means one thing sitewide. */
+.card-name::after {
+  content: "→";
+  color: var(--signal);
+  font-family: var(--font-text);
+  font-size: 0.8em;
+  margin-left: 0.4em;
+  display: inline-block;
+  transition: transform 0.18s var(--ease);
+}
+
+.card:hover .card-name::after {
+  transform: translateX(0.2em);
+}
+
+@media (hover: none) {
+  .card-name::after {
+    transition: none;
+  }
+}
+
 .card-head {
   display: flex;
   align-items: center;
@@ -1124,17 +1147,56 @@ svg {
   }
 }
 
+/* A project name is a destination, and has to say so before it is touched.
+   The arrow is the site's existing "go" vocabulary, made permanent here and
+   drawn in signal so the affordance survives where hover does not exist —
+   which is every touch device. Motion is the reward for a pointer; the
+   meaning is carried by marks that are visible at rest. */
 .row-system .row-title {
   font-family: var(--font-display);
   font-size: 1.125rem;
   line-height: 1.25;
   color: var(--ink);
   text-decoration: none;
-  display: inline-block;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.4em;
+  /* The underline is painted rather than text-decoration so it can wipe in
+     from the left instead of simply appearing. */
+  background-image: linear-gradient(var(--signal), var(--signal));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0 1px;
+  transition: background-size 0.28s var(--ease), color 0.2s var(--ease);
+}
+
+.row-system .row-title::after {
+  content: "→";
+  color: var(--signal);
+  font-family: var(--font-text);
+  font-size: 0.8em;
+  transition: transform 0.18s var(--ease);
 }
 
 .row-system .row-title:hover {
   color: var(--signal);
+  background-size: 100% 1px;
+}
+
+.row-system .row-title:hover::after {
+  transform: translateX(0.2em);
+}
+
+/* Touch has no hover to reveal anything, so the underline is simply present
+   and the arrow does not pretend it will move. */
+@media (hover: none) {
+  .row-system .row-title {
+    background-size: 100% 1px;
+  }
+
+  .row-system .row-title::after {
+    transition: none;
+  }
 }
 
 .row-name {
