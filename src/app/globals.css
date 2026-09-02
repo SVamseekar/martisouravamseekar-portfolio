@@ -25,6 +25,19 @@
   --rule: #e3e5e9;
   --rule-strong: #c9cdd4;
 
+  /* --- Elevation -----------------------------------------------------------
+     A single light source, fixed at the top-left, expressed as one pair of
+     shadows: a dark cast below-right and a light cast above-left. Every raised
+     or recessed surface on the site derives from these four tokens, so the
+     lighting stays physically consistent and can be retuned in one place.
+
+     Kept deliberately shallow — this is paper under soft light, not the deep
+     plastic of a typical neumorphic UI, which would swamp a reading page. */
+  --lift-dark: rgba(17, 20, 26, 0.10);
+  --lift-light: rgba(255, 255, 255, 0.92);
+  --lift-dark-soft: rgba(17, 20, 26, 0.055);
+  --lift-light-soft: rgba(255, 255, 255, 0.75);
+
   /* Signal — used only for verified/live facts and primary actions. */
   --signal: #1d4ed8;
   --signal-soft: #eaefff;
@@ -93,6 +106,14 @@
 
   --rule: #2b3138;
   --rule-strong: #454d57;
+
+  /* Same light source, restated for a dark ground: the shadow deepens and the
+     highlight becomes a faint sheen rather than white, which is what keeps
+     surfaces reading as material instead of glowing. */
+  --lift-dark: rgba(0, 0, 0, 0.46);
+  --lift-light: rgba(255, 255, 255, 0.055);
+  --lift-dark-soft: rgba(0, 0, 0, 0.30);
+  --lift-light-soft: rgba(255, 255, 255, 0.035);
 
   /* Accents lifted for contrast against a dark ground. */
   --signal: #8fb4ff;
@@ -524,7 +545,8 @@ svg {
 .panel {
   background: var(--ground-raised);
   border: 1px solid var(--rule);
-  border-radius: 4px;
+  border-radius: 8px;
+  box-shadow: var(--shadow-lift-soft);
 }
 
 /* Link that reveals its arrow on hover, used for onward navigation. */
@@ -709,13 +731,12 @@ svg {
   }
 }
 
+/* Cards are discrete objects on the page rather than tiles in a table: the
+   grid spaces them so each one's own elevation is visible, which a shared
+   1px rule with overflow:hidden would clip away. */
 .card-grid {
   display: grid;
-  gap: 1px;
-  background: var(--rule);
-  border: 1px solid var(--rule);
-  border-radius: 4px;
-  overflow: hidden;
+  gap: 1rem;
 }
 
 @media (min-width: 44rem) {
@@ -767,6 +788,11 @@ svg {
 
 .card {
   background: var(--ground-raised);
+  border: 1px solid var(--rule);
+  border-radius: 10px;
+  box-shadow: var(--shadow-lift-soft);
+  transition: box-shadow 0.24s var(--ease), transform 0.24s var(--ease),
+    background-color 0.2s var(--ease);
   padding: clamp(1.25rem, 3vw, 1.75rem);
   display: flex;
   flex-direction: column;
@@ -776,7 +802,14 @@ svg {
 }
 
 .card:hover {
-  background: var(--ground-sunk);
+  background: var(--ground-raised);
+  box-shadow: var(--shadow-lift-hover);
+  transform: translateY(-2px);
+}
+
+.card:active {
+  box-shadow: var(--shadow-lift-in);
+  transform: translateY(0);
 }
 
 .card:hover .card-name {
@@ -822,8 +855,10 @@ svg {
   line-height: 1.5;
   color: var(--ink-soft);
   background: var(--ground-sunk);
-  border: 1px solid var(--rule-strong);
-  border-radius: 3px;
+  border: 1px solid var(--rule);
+  border-radius: 5px;
+  /* Pressed into the card it sits on, the counterpart to the card's own lift. */
+  box-shadow: var(--shadow-lift-in);
   padding: 0.25rem 0.55rem;
 }
 
@@ -1138,8 +1173,9 @@ svg {
   gap: 1px;
   background: var(--rule);
   border: 1px solid var(--rule);
-  border-radius: 4px;
+  border-radius: 8px;
   overflow: hidden;
+  box-shadow: var(--shadow-lift-soft);
 }
 
 .spec-row {
@@ -1168,7 +1204,8 @@ svg {
   font-family: var(--font-mono);
   font-size: 0.625rem;
   letter-spacing: 0.03em;
-  border-radius: 4px;
+  border-radius: 5px;
+  box-shadow: var(--shadow-lift-in);
   /* --hue and --hue-dark are set per technology; --tone picks the one that
      belongs to the current ground. */
   --tone: var(--hue, var(--ink-soft));
@@ -1203,6 +1240,53 @@ svg {
 }
 
 /* =============================================================================
+   Elevation utilities
+
+   Three surface states, built from the four --lift-* tokens and nothing else:
+
+     .lift        raised off the page      (cards, panels, chips at rest)
+     .lift-soft   barely raised            (list rows, quiet containers)
+     .lift-in     recessed into the page   (wells, inputs, pressed states)
+
+   Compose rather than copy: a component wanting elevation adds one of these
+   classes, or `box-shadow: var(--shadow-lift)` where a class cannot be added.
+   Never write a raw shadow at a call site — that is how a lighting system
+   drifts out of alignment.
+
+   A recessed surface is the same geometry inverted, which is why .lift-in
+   reuses the identical tokens with `inset` rather than a second palette.
+   ========================================================================== */
+
+:root {
+  --shadow-lift:
+    3px 3px 8px var(--lift-dark),
+    -3px -3px 8px var(--lift-light);
+  --shadow-lift-soft:
+    2px 2px 5px var(--lift-dark-soft),
+    -2px -2px 5px var(--lift-light-soft);
+  --shadow-lift-in:
+    inset 2px 2px 5px var(--lift-dark-soft),
+    inset -2px -2px 5px var(--lift-light-soft);
+  --shadow-lift-hover:
+    5px 5px 14px var(--lift-dark),
+    -4px -4px 12px var(--lift-light);
+}
+
+.lift { box-shadow: var(--shadow-lift); }
+.lift-soft { box-shadow: var(--shadow-lift-soft); }
+.lift-in { box-shadow: var(--shadow-lift-in); }
+
+/* Elevation is depth, not motion: the shadows still change on hover, only the
+   translation is dropped for readers who ask for less movement. */
+@media (prefers-reduced-motion: reduce) {
+  .card,
+  .card:hover,
+  .card:active {
+    transform: none;
+  }
+}
+
+/* =============================================================================
    External references
 
    Document metadata, not social buttons. Each variant reflects what the link
@@ -1226,8 +1310,9 @@ svg {
   /* A translucent surface over a light blur: the chip picks up whatever it
      sits on instead of being a flat swatch, which is what gives it the slight
      dimensionality of a panel rather than a button. */
-  background: color-mix(in srgb, var(--ground-raised) 62%, transparent);
+  background: color-mix(in srgb, var(--ground-raised) 78%, var(--ground));
   backdrop-filter: blur(6px) saturate(1.2);
+  box-shadow: var(--shadow-lift-soft);
   transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease,
     transform 0.2s ease, box-shadow 0.2s ease;
 }
@@ -1236,11 +1321,18 @@ svg {
   color: var(--ink-strong);
   /* Illumination, not a glow: the border lifts toward the destination's own
      colour and a single hairline ring picks it up. */
-  border-color: color-mix(in srgb, var(--tone) 55%, var(--rule));
-  background: color-mix(in srgb, var(--tone) 8%, var(--ground-raised));
-  box-shadow: 0 0 0 1px color-mix(in srgb, var(--tone) 14%, transparent),
-    0 1px 10px -6px color-mix(in srgb, var(--tone) 60%, transparent);
+  border-color: color-mix(in srgb, var(--tone) 45%, var(--rule));
+  background: color-mix(in srgb, var(--tone) 7%, var(--ground-raised));
+  /* Rises further and picks up its destination's colour in the cast. */
+  box-shadow: var(--shadow-lift),
+    0 2px 12px -6px color-mix(in srgb, var(--tone) 55%, transparent);
   transform: translateY(-1px);
+}
+
+/* Pressed: the surface sinks into the page, the same geometry inverted. */
+.ref:active {
+  box-shadow: var(--shadow-lift-in);
+  transform: translateY(0);
 }
 
 .ref:focus-visible {
@@ -1285,14 +1377,16 @@ svg {
   border-radius: 999px;
   background: color-mix(in srgb, var(--tone) 13%, transparent);
   color: var(--tone);
-  /* Recessed: an inner hairline reads as a well cut into the surface. */
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 18%, transparent);
+  /* A well cut into the chip: the shared recess plus a tinted hairline. */
+  box-shadow: var(--shadow-lift-in),
+    inset 0 0 0 1px color-mix(in srgb, var(--tone) 16%, transparent);
   transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
 }
 
 .ref:hover .ref-mark {
-  background: color-mix(in srgb, var(--tone) 22%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--tone) 34%, transparent);
+  background: color-mix(in srgb, var(--tone) 20%, transparent);
+  box-shadow: var(--shadow-lift-in),
+    inset 0 0 0 1px color-mix(in srgb, var(--tone) 30%, transparent);
   transform: translateY(-1px);
 }
 
