@@ -34,9 +34,7 @@ export default function AboutPage() {
       <section className="shell shell-wide band band-rule">
         <div className="split">
           <div>
-            <div className="eyebrow">
-              <span className="t-label">Now</span>
-            </div>
+            <h2 className="t-section eyebrow-line">Now</h2>
             <h2 className="t-heading" style={{ marginBottom: "0.35rem" }}>
               {experience.role}
             </h2>
@@ -60,9 +58,7 @@ export default function AboutPage() {
       </section>
 
       <section className="shell shell-wide band band-rule">
-        <div className="eyebrow">
-          <span className="t-label">Education</span>
-        </div>
+        <h2 className="t-section eyebrow-line">Education</h2>
         <div className="rows">
           {education.map((entry) => (
             <div key={entry.degree} className="row">
@@ -81,9 +77,7 @@ export default function AboutPage() {
       </section>
 
       <section className="shell shell-wide band band-rule">
-        <div className="eyebrow">
-          <span className="t-label">Certification</span>
-        </div>
+        <h2 className="t-section eyebrow-line">Certification</h2>
         <div className="rows">
           {certifications.map((cert) => (
             <div key={cert.id} className="row">
@@ -106,9 +100,7 @@ export default function AboutPage() {
       <section className="shell shell-wide band band-rule">
         <div className="split">
           <div>
-            <div className="eyebrow">
-              <span className="t-label">Working together</span>
-            </div>
+            <h2 className="t-section eyebrow-line">Working together</h2>
             <p className="t-body measure" style={{ marginBottom: "1.5rem" }}>
               Open to engineering and research roles worldwide — remote or
               relocating — at anything from seed-stage to large organisations.

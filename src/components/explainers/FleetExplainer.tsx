@@ -56,7 +56,7 @@ export function FleetExplainer() {
             delay="d1"
           />
 
-          <path className="ex-wire" d="M 144,56 Q 210,56 210,74" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 144,56 Q 210,56 210,74" markerEnd="url(#ex-arrow)" />
           <Packet path="M 144,56 Q 210,56 210,74" dur={1.2} enabled={motion} />
 
           {/* ---- Copilot ---- */}
@@ -83,7 +83,7 @@ export function FleetExplainer() {
             variant="sunk"
             delay="d3"
           />
-          <path className="ex-wire-soft" d="M 322,101 H 358" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 322,101 H 358" markerEnd="url(#ex-arrow)" />
           <Packet path="M 322,101 H 358" dur={1} begin={1.2} enabled={motion} />
 
           {/* ---- Fan-out to the specialists ---- */}
@@ -140,7 +140,7 @@ export function FleetExplainer() {
           <Packet path="M 360,226 V 268" dur={0.9} begin={3} tone="warn" enabled={motion} />
 
           {/* ---- Audit ---- */}
-          <path className="ex-wire" d="M 360,268 V 286" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 360,268 V 286" markerEnd="url(#ex-arrow)" />
           <g className="ex-step d12">
             <rect x={196} y={290} width={328} height={30} rx="3" className="ex-box-sunk" />
             <text className="ex-mono ex-mid" x={360} y={309}>

@@ -55,7 +55,7 @@ export function MoveqExplainer() {
             delay="d1"
           />
 
-          <path className="ex-wire" d="M 148,124 H 200" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 148,124 H 200" markerEnd="url(#ex-arrow)" />
           <Packet path="M 148,124 H 198" dur={1.4} enabled={motion} />
 
           {/* ---- Core ---- */}

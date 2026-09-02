@@ -69,9 +69,7 @@ export default function Home() {
       </section>
 
       <section className="shell shell-wide band">
-        <div className="eyebrow">
-          <span className="t-label">Selected work</span>
-        </div>
+        <h2 className="t-section eyebrow-line">Selected work</h2>
 
         <div className="card-grid">
           {systems.map((system) => (
@@ -109,9 +107,7 @@ export default function Home() {
       <section className="shell shell-wide band band-rule">
         <div className="split">
           <div>
-            <div className="eyebrow">
-              <span className="t-label">Research</span>
-            </div>
+            <h2 className="t-section eyebrow-line">Research</h2>
             <h2 className="t-title" style={{ marginBottom: "1rem" }}>
               {research.title}
             </h2>

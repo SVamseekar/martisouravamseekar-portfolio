@@ -27,12 +27,30 @@ export function ReleaseGateExplainer() {
     >
       {({ motion }) => (
         <svg
-          viewBox="0 0 720 300"
+          viewBox="0 0 720 350"
           className="explainer-svg"
           role="img"
           aria-label="Release gate blocking a high-risk model deployment"
         >
           <ArrowDefs />
+          <defs>
+            <marker
+              id="ex-arrow-warn"
+              viewBox="0 0 10 10"
+              refX="9"
+              refY="5"
+              markerWidth="5.5"
+              markerHeight="5.5"
+              orient="auto"
+            >
+              <path
+                d="M0,1 L9,5 L0,9"
+                fill="none"
+                stroke="var(--blocked)"
+                strokeWidth="1.8"
+              />
+            </marker>
+          </defs>
 
           {/* ---- CI sends a release ---- */}
           <Caption x={16} y={24} delay="d1">
@@ -48,7 +66,7 @@ export function ReleaseGateExplainer() {
             delay="d1"
           />
 
-          <path className="ex-wire" d="M 132,142 H 202" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 132,142 H 202" markerEnd="url(#ex-arrow)" />
           <Packet path="M 132,142 H 200" dur={1.4} enabled={motion} />
 
           {/* ---- The gate ---- */}
@@ -98,7 +116,7 @@ export function ReleaseGateExplainer() {
           <path className="ex-wire-soft" d="M 322,250 V 236" markerEnd="url(#ex-arrow)" />
 
           {/* ---- Verdict ---- */}
-          <path className="ex-wire" d="M 434,142 H 494" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 434,142 H 494" markerEnd="url(#ex-arrow)" />
           <Packet path="M 434,142 H 492" dur={1.2} begin={1.6} tone="warn" enabled={motion} />
 
           <g className="ex-step d8">
@@ -113,25 +131,32 @@ export function ReleaseGateExplainer() {
 
           {/* The release is turned back */}
           <path
-            className="ex-wire-soft ex-stroke-warn"
-            d="M 568,172 q 0,34 -230,34 H 74 q -58,0 -58,-34 V 166"
-            strokeDasharray="3 3"
-            markerEnd="url(#ex-arrow)"
+            className="ex-reject"
+            d="M 568,178 v 122 q 0,12 -12,12 H 86 q -12,0 -12,-12 V 172"
+            markerEnd="url(#ex-arrow-warn)"
           />
-          <text className="ex-mono ex-text-warn ex-step d9" x={300} y={220}>
-            returned to the team with the reason attached
+          <text className="ex-reject-label ex-mid ex-step d9" x={300} y={330}>
+            ✕ shipping blocked — returned with the reason attached
           </text>
+          <Packet
+            path="M 568,178 v 122 q 0,12 -12,12 H 86 q -12,0 -12,-12 V 176"
+            dur={2.4}
+            begin={2.2}
+            radius={4.5}
+            tone="warn"
+            enabled={motion}
+          />
 
           {/* ---- Sealed record ---- */}
-          <path className="ex-wire" d="M 568,172 V 246" markerEnd="url(#ex-arrow)" />
-          <Packet path="M 568,176 V 244" dur={1} begin={2.6} tone="warn" enabled={motion} />
+          <path className="ex-wire ex-flow" d="M 568,172 V 254" markerEnd="url(#ex-arrow)" />
+          <Packet path="M 568,176 V 252" dur={1} begin={3.4} tone="warn" enabled={motion} />
 
           <g className="ex-step d10">
-            <rect x={470} y={250} width={234} height={40} rx="3" className="ex-box-sunk" />
-            <text className="ex-mono-strong ex-mid" x={587} y={268}>
+            <rect x={470} y={258} width={234} height={40} rx="3" className="ex-box-sunk" />
+            <text className="ex-mono-strong ex-mid" x={587} y={276}>
               evidence pack sealed
             </text>
-            <text className="ex-mono ex-mid" x={587} y={282}>
+            <text className="ex-mono ex-mid" x={587} y={290}>
               sha256·a91f… → append-only ledger
             </text>
           </g>

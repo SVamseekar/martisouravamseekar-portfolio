@@ -27,13 +27,9 @@ export default function WorkIndex() {
       <section className="shell shell-wide band">
         <div className="rows">
           {systems.map((system) => (
-            <article key={system.slug} className="row">
+            <article key={system.slug} className="row row-system">
               <div>
-                <Link
-                  href={`/work/${system.slug}`}
-                  className="t-heading"
-                  style={{ textDecoration: "none" }}
-                >
+                <Link href={`/work/${system.slug}`} className="row-title">
                   {system.name}
                 </Link>
                 <p className="t-mono ink-faint" style={{ marginTop: "0.35rem" }}>

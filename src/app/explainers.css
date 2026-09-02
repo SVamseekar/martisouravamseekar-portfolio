@@ -99,16 +99,16 @@
 }
 
 .ex-label {
-  fill: var(--ink-faint);
+  fill: var(--ink-soft);
   font-family: var(--font-mono);
-  font-size: 9px;
-  letter-spacing: 0.12em;
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
 }
 
 .ex-mono {
-  fill: var(--ink-faint);
+  fill: var(--ink-soft);
   font-family: var(--font-mono);
-  font-size: 9.5px;
+  font-size: 10px;
 }
 
 .ex-mono-strong {
@@ -140,6 +140,31 @@
 .ex-stroke-signal { stroke: var(--signal); }
 .ex-stroke-warn   { stroke: var(--blocked); }
 
+/* A rejected path. Heavier than a normal wire and animated, so a blocked
+   release visibly travels back rather than sitting as faint dashes. */
+.ex-reject {
+  stroke: var(--blocked);
+  stroke-width: 2;
+  fill: none;
+  stroke-dasharray: 6 4;
+  opacity: 0.9;
+}
+
+.explainer[data-play="true"] .ex-reject {
+  animation: ex-reject-flow 0.9s linear infinite;
+}
+
+@keyframes ex-reject-flow {
+  to { stroke-dashoffset: -20; }
+}
+
+.ex-reject-label {
+  fill: var(--blocked);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+}
+
 /* =============================================================================
    Motion primitives
 
@@ -151,6 +176,7 @@
    this only handles its visibility before the figure plays. */
 .ex-packet {
   opacity: 0;
+  filter: drop-shadow(0 0 2px color-mix(in srgb, var(--ground) 70%, transparent));
 }
 
 .explainer[data-play="true"] .ex-packet {
@@ -173,10 +199,12 @@
   70%, 88%      { opacity: 1; }
 }
 
-/* A route that draws itself as traffic flows along it. */
+/* A route that shows traffic moving along it. Applied to any wire a packet
+   travels, so every arrow reads as active rather than only the ones a dot
+   happens to be on at that instant. */
 .ex-flow {
-  stroke-dasharray: 4 4;
-  animation: ex-flow 1.1s linear infinite;
+  stroke-dasharray: 4 5;
+  animation: ex-flow 1.4s linear infinite;
 }
 
 .explainer:not([data-play="true"]) .ex-flow {

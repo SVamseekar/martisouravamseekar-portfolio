@@ -82,7 +82,7 @@ export default async function SystemPage({ params }: Params) {
       <section className="shell shell-wide band">
         <div className="split">
           <div>
-            <h2 className="t-label eyebrow-line">The problem</h2>
+            <h2 className="t-section eyebrow-line">The problem</h2>
             <p className="t-body measure">{system.problem}</p>
           </div>
           <aside>
@@ -103,7 +103,7 @@ export default async function SystemPage({ params }: Params) {
 
       {/* ---- How it works ---- */}
       <section className="shell shell-wide band band-rule">
-        <h2 className="t-label eyebrow-line">How it works</h2>
+        <h2 className="t-section eyebrow-line">How it works</h2>
         <ol className="steps">
           {system.story.map((item, index) => (
             <li key={item.step} className="step">
@@ -122,7 +122,7 @@ export default async function SystemPage({ params }: Params) {
       {/* ---- Capabilities, where the surface is broad ---- */}
       {system.capabilities && (
         <section className="shell shell-wide band band-rule">
-          <h2 className="t-label eyebrow-line">What it covers</h2>
+          <h2 className="t-section eyebrow-line">What it covers</h2>
           <div className="cap-grid">
             {system.capabilities.map((capability) => (
               <div key={capability.area} className="cap">
@@ -138,15 +138,15 @@ export default async function SystemPage({ params }: Params) {
       <section className="shell shell-wide band band-rule">
         <div className="split">
           <div>
-            <h2 className="t-label eyebrow-line">Engineering notes</h2>
+            <h2 className="t-section eyebrow-line">Engineering notes</h2>
             <ul className="notes">
               {system.build.map((note) => (
                 <li key={note}>{note}</li>
               ))}
             </ul>
           </div>
-          <aside>
-            <p className="t-label" style={{ marginBottom: "0.6rem" }}>
+          <aside className="stack-panel">
+            <p className="t-label" style={{ marginBottom: "0.7rem" }}>
               Stack
             </p>
             <div className="tags">
@@ -170,7 +170,7 @@ export default async function SystemPage({ params }: Params) {
       {/* ---- Trade-offs ---- */}
       {system.tradeoffs && (
         <section className="shell shell-wide band band-rule">
-          <h2 className="t-label eyebrow-line">Trade-offs</h2>
+          <h2 className="t-section eyebrow-line">Trade-offs</h2>
           <div className="rows">
             {system.tradeoffs.map((tradeoff) => (
               <div key={tradeoff.choice} className="row row-tradeoff">
@@ -187,7 +187,7 @@ export default async function SystemPage({ params }: Params) {
 
       {/* ---- Evidence ---- */}
       <section className="shell shell-wide band band-rule">
-        <h2 className="t-label eyebrow-line">Evidence</h2>
+        <h2 className="t-section eyebrow-line">Evidence</h2>
         <div className="figures">
           {system.figures.map((figure) => (
             <div key={figure.label}>

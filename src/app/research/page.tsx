@@ -64,9 +64,7 @@ export default function ResearchPage() {
       <section className="shell shell-wide band band-rule">
         <div className="split">
           <div>
-            <div className="eyebrow">
-              <span className="t-label">Method</span>
-            </div>
+            <h2 className="t-section eyebrow-line">Method</h2>
             <ul className="notes measure">
               <li>
                 A 27-country panel built from Eurostat Labour Force Survey, Job
@@ -115,9 +113,7 @@ export default function ResearchPage() {
 
       {/* Stating the limits plainly is what makes the claims usable. */}
       <section className="shell shell-wide band band-rule">
-        <div className="eyebrow">
-          <span className="t-label">What this does not claim</span>
-        </div>
+        <h2 className="t-section eyebrow-line">What this does not claim</h2>
         <ul className="notes measure">
           <li>
             This is a working paper. It has not been peer reviewed, and the
@@ -137,9 +133,7 @@ export default function ResearchPage() {
       <section className="shell shell-wide band band-rule">
         <div className="split">
           <div>
-            <div className="eyebrow">
-              <span className="t-label">The system behind it</span>
-            </div>
+            <h2 className="t-section eyebrow-line">The system behind it</h2>
             <p className="t-body measure" style={{ marginBottom: "1.25rem" }}>
               The panel is not a one-off script. It is the warehouse that
               serves WorkforceGuard in production, so the research figures and

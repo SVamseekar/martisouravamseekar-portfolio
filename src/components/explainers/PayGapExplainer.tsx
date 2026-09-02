@@ -60,7 +60,7 @@ export function PayGapExplainer() {
           <path className="ex-wire" d="M 128,63 Q 176,63 176,112" />
           <path className="ex-wire" d="M 128,111 H 176" />
           <path className="ex-wire" d="M 128,159 Q 176,159 176,112" />
-          <path className="ex-wire" d="M 176,112 H 216" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 176,112 H 216" markerEnd="url(#ex-arrow)" />
 
           <Packet path="M 128,63 Q 176,63 176,112 L 214,112" dur={2.2} enabled={motion} />
           <Packet path="M 128,159 Q 176,159 176,112 L 214,112" dur={2.2} begin={1.1} enabled={motion} />
@@ -107,8 +107,8 @@ export function PayGapExplainer() {
           />
 
           <path className="ex-wire" d="M 286,112 Q 296,112 296,64 H 306" markerEnd="url(#ex-arrow)" />
-          <path className="ex-wire" d="M 376,84 V 96" markerEnd="url(#ex-arrow)" />
-          <path className="ex-wire" d="M 376,136 V 148" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 376,84 V 96" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 376,136 V 148" markerEnd="url(#ex-arrow)" />
 
           <Packet path="M 376,84 V 146" dur={1.6} begin={2.2} enabled={motion} />
 
@@ -123,11 +123,11 @@ export function PayGapExplainer() {
             variant="dashed"
             delay="d8"
           />
-          <path className="ex-wire-soft" d="M 376,226 V 188" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 376,226 V 188" markerEnd="url(#ex-arrow)" />
           <Packet path="M 376,224 V 190" dur={1.3} begin={3} tone="live" enabled={motion} />
 
           {/* ---- The answer, with provenance ---- */}
-          <path className="ex-wire" d="M 446,168 H 496" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 446,168 H 496" markerEnd="url(#ex-arrow)" />
           <Packet path="M 446,168 H 494" dur={1.2} begin={3.6} enabled={motion} />
 
           <g className="ex-step d9">

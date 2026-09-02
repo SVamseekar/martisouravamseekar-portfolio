@@ -240,9 +240,20 @@ svg {
 .t-label {
   font-family: var(--font-mono);
   font-size: 0.6875rem;
-  letter-spacing: 0.13em;
+  letter-spacing: 0.09em;
   text-transform: uppercase;
   color: var(--ink-faint);
+}
+
+/* Section heading. Sentence case in the text face — legible at a glance and
+   not shouting, which the all-caps mono label was doing on every band. */
+.t-section {
+  font-family: var(--font-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: var(--ink);
+  text-transform: none;
 }
 
 .ink-strong { color: var(--ink); }
@@ -348,8 +359,8 @@ svg {
 /* A heading that carries its own rule to the right edge. */
 .eyebrow-line {
   display: flex;
-  align-items: center;
-  gap: 0.7rem;
+  align-items: baseline;
+  gap: 0.8rem;
   margin-bottom: 1.1rem;
 }
 
@@ -358,6 +369,7 @@ svg {
   flex: 1;
   height: 1px;
   background: var(--rule);
+  transform: translateY(-0.25em);
 }
 
 .meta-row {
@@ -659,7 +671,35 @@ svg {
 
 @media (min-width: 44rem) {
   .card-grid {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 62rem) {
+  .card-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* With seven systems the final row is short; stretching the last card keeps
+   the grid from ending on a hole. */
+.card-grid > :last-child:nth-child(3n - 2) {
+  grid-column: span 3;
+}
+
+@media (max-width: 61.99rem) {
+  .card-grid > :last-child:nth-child(3n - 2) {
+    grid-column: auto;
+  }
+
+  .card-grid > :last-child:nth-child(odd) {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 43.99rem) {
+  .card-grid > :last-child {
+    grid-column: auto !important;
   }
 }
 
@@ -716,11 +756,26 @@ svg {
 
 .tag {
   font-family: var(--font-mono);
-  font-size: 0.6875rem;
-  color: var(--ink-faint);
+  font-size: 0.78125rem;
+  line-height: 1.5;
+  color: var(--ink-soft);
+  background: var(--ground-sunk);
   border: 1px solid var(--rule);
-  border-radius: 2px;
-  padding: 0.15rem 0.45rem;
+  border-radius: 3px;
+  padding: 0.25rem 0.55rem;
+}
+
+/* The stack aside on a system page: a real panel, not a whisper. */
+.stack-panel {
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  background: var(--ground-raised);
+  padding: 1rem;
+}
+
+.stack-panel .tag {
+  background: transparent;
+  color: var(--ink);
 }
 
 /* =============================================================================
@@ -838,9 +893,34 @@ svg {
 
 @media (min-width: 44rem) {
   .row {
-    grid-template-columns: 12rem 1fr auto;
+    grid-template-columns: 15rem 1fr auto;
     align-items: baseline;
   }
+}
+
+/* Work index rows carry a longer title, so they get more room and a little
+   more air between entries. */
+.row-system {
+  padding-block: 1.15rem;
+}
+
+@media (min-width: 60rem) {
+  .row-system {
+    grid-template-columns: 17rem 1fr 5rem;
+  }
+}
+
+.row-system .row-title {
+  font-family: var(--font-display);
+  font-size: 1.125rem;
+  line-height: 1.25;
+  color: var(--ink);
+  text-decoration: none;
+  display: inline-block;
+}
+
+.row-system .row-title:hover {
+  color: var(--signal);
 }
 
 .row-name {

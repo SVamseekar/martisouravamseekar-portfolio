@@ -62,7 +62,7 @@ export function EvidenceGraphExplainer() {
           <path className="ex-wire ex-flow" d="M 166,102 Q 236,102 236,112" />
           <path className="ex-wire ex-flow" d="M 166,144 Q 236,144 236,112" />
           <path className="ex-wire ex-flow" d="M 166,186 Q 236,186 236,112" />
-          <path className="ex-wire" d="M 236,112 H 286" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 236,112 H 286" markerEnd="url(#ex-arrow)" />
 
           <Packet path="M 166,60 Q 236,60 236,112 L 284,112" dur={2} enabled={motion} />
           <Packet path="M 166,186 Q 236,186 236,112 L 284,112" dur={2} begin={1} enabled={motion} />

@@ -59,7 +59,7 @@ export function MasovaArchitecture() {
           <path className="ex-wire" d="M 134,117 Q 190,117 190,150" />
           <path className="ex-wire" d="M 134,153 H 190" />
           <path className="ex-wire" d="M 134,189 Q 190,189 190,150" />
-          <path className="ex-wire" d={toGateway} markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d={toGateway} markerEnd="url(#ex-arrow)" />
 
           <Packet path="M 134,45 Q 190,45 190,150 L 236,150" dur={2.6} enabled={motion} />
           <Packet path="M 134,117 Q 190,117 190,150 L 236,150" dur={2.6} begin={1.3} enabled={motion} />
@@ -108,9 +108,9 @@ export function MasovaArchitecture() {
           />
 
           {/* Gateway → services */}
-          <path className="ex-wire" d={gatewayToCore} markerEnd="url(#ex-arrow)" />
-          <path className="ex-wire" d={gatewayToCommerce} markerEnd="url(#ex-arrow)" />
-          <path className="ex-wire" d={gatewayToPayment} markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d={gatewayToCore} markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d={gatewayToCommerce} markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d={gatewayToPayment} markerEnd="url(#ex-arrow)" />
           <path className="ex-wire" d="M 322,160 Q 356,236 392,236" markerEnd="url(#ex-arrow)" />
           <path className="ex-wire-soft" d="M 322,172 Q 350,288 392,288" markerEnd="url(#ex-arrow)" />
 
@@ -152,7 +152,7 @@ export function MasovaArchitecture() {
             delay="d10"
           />
 
-          <path className="ex-wire" d={coreToPg} markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d={coreToPg} markerEnd="url(#ex-arrow)" />
           <path className="ex-wire-soft" d="M 500,142 Q 534,130 566,130" markerEnd="url(#ex-arrow)" />
           <path className="ex-wire-soft" d="M 500,152 Q 534,177 566,177" markerEnd="url(#ex-arrow)" />
           <Packet path={coreToPg} dur={0.9} begin={0.9} tone="live" enabled={motion} />
@@ -175,7 +175,7 @@ export function MasovaArchitecture() {
             delay="d12"
           />
 
-          <path className="ex-wire" d="M 260,375 H 430" markerEnd="url(#ex-arrow)" />
+          <path className="ex-wire ex-flow" d="M 260,375 H 430" markerEnd="url(#ex-arrow)" />
           <text className="ex-mono ex-step d13" x={438} y={370}>
             kitchen display · crew · driver
           </text>
