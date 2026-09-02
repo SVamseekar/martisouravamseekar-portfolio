@@ -83,6 +83,101 @@ export function LiveMark({ className }: MarkProps) {
 }
 
 /* ---------------------------------------------------------------------------
+   Institution marks.
+
+   These are the institutions' own logos, in their own colours, served from
+   /public/icons rather than traced here — a university crest is a real mark
+   with a defined form, and an approximation of one is just wrong. They are
+   the exception to the monochrome rule the rest of this file follows: a
+   credential is only worth showing if it is the actual mark.
+
+   Greenwich ships as a PNG (no vector supplied), so it carries explicit
+   width/height and is served at 2x the rendered size to stay sharp.
+   ------------------------------------------------------------------------ */
+
+/* alt is empty by design: the institution's name is already the text this mark
+   sits beside, so a description here would be read out twice.
+
+   `plate` marks a logo whose own colours are too dark to sit on a dark ground.
+   Greenwich's compass rose is navy on white, so on the dark theme it gets a
+   white plate rather than being recoloured — a real mark keeps its colours. */
+const institution: Record<string, { src: string; plate?: boolean }> = {
+  gitam: { src: "/icons/gitam-emblem.svg" },
+  greenwich: { src: "/icons/greenwich-emblem.png", plate: true },
+  microsoft: { src: "/icons/microsoft.svg" },
+};
+
+export function InstitutionMark({ name, className }: { name: string; className?: string }) {
+  const mark = institution[name];
+  if (!mark) return null;
+  return (
+    /* A 16px icon: next/image would add a loader round-trip and layout
+       machinery for no measurable gain at this size. */
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={mark.src}
+      alt=""
+      width={16}
+      height={16}
+      className={[className, mark.plate && "row-mark-plate"].filter(Boolean).join(" ")}
+      loading="lazy"
+      decoding="async"
+    />
+  );
+}
+
+/* ---------------------------------------------------------------------------
+   Region marks.
+
+   Real flags in their own colours, served from /public/icons/flags. Like the
+   institution logos, these are marks with a defined form — a flag redrawn in
+   one ink is not that flag — so they are the second exception to this file's
+   monochrome rule.
+
+   Drawn at a 3:2 ratio and given a hairline border, because several of these
+   flags carry white to their own edge (the US stripes, the Indian bands) and
+   would otherwise bleed into a light ground with no boundary.
+   ------------------------------------------------------------------------ */
+
+const region: Record<string, string> = {
+  eu: "/icons/flags/eu.svg",
+  uk: "/icons/flags/uk.svg",
+  us: "/icons/flags/us.svg",
+  au: "/icons/flags/au.svg",
+  nz: "/icons/flags/nz.svg",
+  in: "/icons/flags/in.svg",
+};
+
+export function RegionMark({ name, className }: { name: string; className?: string }) {
+  const src = region[name];
+  if (!src) return null;
+  return (
+    /* An 18px flag; same reasoning as the institution marks above. */
+    // eslint-disable-next-line @next/next/no-img-element
+    <img
+      src={src}
+      alt=""
+      width={18}
+      height={12}
+      className={[className, "flag"].filter(Boolean).join(" ")}
+      loading="lazy"
+      decoding="async"
+    />
+  );
+}
+
+/** Several flags for a row that names several countries. */
+export function RegionMarks({ names, className }: { names: readonly string[]; className?: string }) {
+  return (
+    <span className={["flag-group", className].filter(Boolean).join(" ")}>
+      {names.map((n) => (
+        <RegionMark key={n} name={n} />
+      ))}
+    </span>
+  );
+}
+
+/* ---------------------------------------------------------------------------
    Technology marks.
 
    Simplified silhouettes of each technology's own mark, traced to the same

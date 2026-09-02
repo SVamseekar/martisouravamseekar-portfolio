@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { groupedSystems } from "@/data/systems";
+import { workGroups } from "@/data/systems";
 import { pageMetadata } from "@/lib/seo";
 
 export const metadata: Metadata = pageMetadata({
@@ -15,17 +15,19 @@ export default function WorkIndex() {
     <>
       <section className="shell shell-wide page-head">
         <h1 className="t-title" style={{ marginBottom: "1rem" }}>
-          Seven systems
+          Five systems
         </h1>
         <p className="t-lead measure-wide">
           Each one exists because a decision had to be defensible to someone
           else — a regulator, an auditor, a transport authority. Open any of
-          them for the system story, the architecture and the trade-offs.
+          them for the system story, the architecture and the trade-offs. The
+          published Python packages are on{" "}
+          <Link href="/open-source">Open source</Link>.
         </p>
       </section>
 
       <section className="shell shell-wide band">
-        {groupedSystems.map((group) => (
+        {workGroups.map((group) => (
           <div key={group.id} className="group-block">
             <p className="t-label group-label">{group.label}</p>
             <div className="rows">

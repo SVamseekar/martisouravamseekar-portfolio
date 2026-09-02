@@ -12,27 +12,52 @@ export const metadata: Metadata = pageMetadata({
   path: "/open-source",
 });
 
+/**
+ * The two stacks, written for the people who would actually install them:
+ * governance and ML engineers for Evgraph, transport researchers and analysts
+ * for Moveq. Each says who it is for, what it produces, and where the tool
+ * stops — both are libraries that report what the evidence or the data shows
+ * and leave the judgment with the reader.
+ */
 const STACKS = [
   {
     id: "evgraph",
     name: "Evgraph",
+    audience: "For AI governance reviewers and ML engineers",
     blurb:
-      "Turns Model Cards, approvals and registry metadata into one evidence graph, then runs deterministic rules over it and reports findings with citations.",
+      "AI governance work is spread across files that do not talk to each other: a Model Card here, an approval ticket there, a registry entry somewhere else. Evgraph reads those artifacts through adapters, builds one immutable Evidence Graph of typed facts, then runs deterministic rules over it.",
+    detail:
+      "Findings are explainable rather than pass/fail: each cites the nodes it was drawn from and carries a certainty level — structural, consistency, heuristic, interpretive — that is only ever lowered as reasoning gets less certain, never raised. It reports what the evidence shows; it does not certify regulatory compliance.",
+    facts: [
+      "Adapters for Model Card + approval + deployment JSON, dataset manifests, and the MLflow registry",
+      "Reports as JSON, Markdown, SARIF or OSCAL Assessment Results",
+      "A CI promotion gate that is report-only by default; --gate exits non-zero on unmet expectations",
+      "Third-party rule packs register on the evgraph.rules entry point, with no change to core",
+    ],
     install: "pip install evgraph evgraph-cli",
     usage: "evgraph scan model_card.json approval.json deployment.json --format sarif",
     repo: "https://github.com/SVamseekar/evgraph",
-    detail: "/work/evgraph",
+    docs: "/work/evgraph",
   },
   {
     id: "moveq",
-    name: "moveq",
+    name: "Moveq",
+    audience: "For transport researchers, analysts and transport authorities",
     blurb:
-      "Standard inequality measures over service and demographic data — Gini, Palma, concentration index — with a registry that keeps cross-country methods honest.",
+      "Turns raw service and demographic data — trips per area, population counts, deprivation ranks — into the standard inequality measures: population-weighted Gini, the Palma ratio, and the Wagstaff concentration index, plus a configurable composite accessibility score.",
+    detail:
+      "The core is pure NumPy with no required I/O or GIS dependencies, so it drops into an existing analysis without pulling a stack behind it. For cross-country work, the catalogue registry makes every methodological choice explicit: each measure is declared same, replaced by a national equivalent, or omitted — so omissions are recorded rather than silent.",
+    facts: [
+      "Gini, Palma ratio and Wagstaff concentration index, all population-weighted",
+      "Composite scoring that handles missing terms gracefully rather than dropping the row",
+      "A same / replace / omit registry for extending a method to a new country",
+      "CSV-in, numbers-out CLI for quick checks and CI; optional pandas helpers via the frames extra",
+    ],
     install: "pip install moveq moveq-cli",
     usage: "moveq gini areas.csv --population pop --value trips",
     repo: "https://github.com/SVamseekar/moveq",
     site: "https://moveq.souravamseekar.com",
-    detail: "/work/moveq",
+    docs: "/work/moveq",
   },
 ] as const;
 
@@ -44,9 +69,11 @@ export default function OpenSourcePage() {
           Open source
         </h1>
         <p className="t-lead measure-wide">
-          Two library stacks, eight packages, installable from PyPI. Both are
-          libraries rather than hosted products: they compute what the data
-          shows and leave the judgment to you.
+          Two library stacks, eight packages, installable from PyPI — one for
+          the people who have to evidence an AI system, one for the people who
+          have to measure who a transport network leaves out. Both are
+          libraries rather than hosted products, with no framework lock-in:
+          they compute what the data shows and leave the judgment to you.
         </p>
       </header>
 
@@ -57,12 +84,26 @@ export default function OpenSourcePage() {
           <section key={stack.id} className="shell shell-wide band band-rule">
             <div className="split">
               <div>
-                <h2 className="t-heading" style={{ marginBottom: "0.6rem" }}>
+                <h2 className="t-heading" style={{ marginBottom: "0.3rem" }}>
                   {stack.name}
                 </h2>
-                <p className="t-body measure" style={{ marginBottom: "1rem" }}>
+                <p className="t-label" style={{ marginBottom: "0.8rem" }}>
+                  {stack.audience}
+                </p>
+                <p className="t-body measure" style={{ marginBottom: "0.9rem" }}>
                   {stack.blurb}
                 </p>
+                <p className="t-small ink-soft measure" style={{ marginBottom: "1rem" }}>
+                  {stack.detail}
+                </p>
+
+                <ul className="notes measure" style={{ marginBottom: "1.25rem" }}>
+                  {stack.facts.map((fact) => (
+                    <li key={fact} className="t-small">
+                      {fact}
+                    </li>
+                  ))}
+                </ul>
 
                 <CopyLine label="Install" command={stack.install} />
                 <CopyLine label="Use" command={stack.usage} />
@@ -73,7 +114,7 @@ export default function OpenSourcePage() {
                   Links
                 </p>
                 <div className="ref-stack">
-                  <Link href={stack.detail} className="go">
+                  <Link href={stack.docs} className="go">
                     How it works
                   </Link>
                   <RefLink

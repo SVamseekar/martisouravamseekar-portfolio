@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { profile, experience, education, certifications } from "@/data/profile";
 import { pageMetadata } from "@/lib/seo";
 import { RefLink } from "@/components/RefLink";
+import { InstitutionMark, RegionMark, RegionMarks } from "@/components/marks";
 
 export const metadata: Metadata = pageMetadata({
   title: "About",
@@ -68,7 +69,10 @@ export default function AboutPage() {
                 <p className="t-mono ink-faint">{entry.period}</p>
               </div>
               <div>
-                <p className="t-small">{entry.school}</p>
+                <p className="t-small row-mark">
+                  <InstitutionMark name={entry.logo} className="row-mark-glyph" />
+                  {entry.school}
+                </p>
                 <p className="t-small ink-faint">{entry.note}</p>
               </div>
               <span className="t-mono ink-faint">{entry.result}</span>
@@ -84,7 +88,10 @@ export default function AboutPage() {
             <div key={cert.id} className="row">
               <p className="t-small ink-strong">{cert.exam}</p>
               <div>
-                <p className="t-small">{cert.name}</p>
+                <p className="t-small row-mark">
+                  <InstitutionMark name={cert.issuerLogo} className="row-mark-glyph" />
+                  {cert.name}
+                </p>
                 <p className="t-mono ink-faint">
                   {cert.issuer} · {cert.date}
                 </p>
@@ -110,65 +117,64 @@ export default function AboutPage() {
 
             <div className="rows">
               <div className="row">
-                <p className="t-label">European Union</p>
+                <p className="t-label row-mark">
+                  <RegionMark name="eu" className="row-mark-glyph" />
+                  European Union
+                </p>
                 <p className="t-small">
                   EU Blue Card eligible; open to relocation.
                 </p>
               </div>
               <div className="row">
-                <p className="t-label">United Kingdom</p>
+                <p className="t-label row-mark">
+                  <RegionMark name="uk" className="row-mark-glyph" />
+                  United Kingdom
+                </p>
                 <p className="t-small">
                   M.Sc. from the University of Greenwich.
                 </p>
               </div>
               <div className="row">
-                <p className="t-label">US · Australia · NZ · India</p>
+                <p className="t-label row-mark">
+                  <RegionMarks names={["us", "au", "nz", "in"]} className="row-mark-glyph" />
+                  US · AU · NZ · IN
+                </p>
                 <p className="t-small">
                   Open to sponsorship or remote arrangements.
                 </p>
               </div>
+              {/* Universities are one employer of researchers in Europe, not
+                  the only one: the non-university institutes, the EU's own
+                  science service and the central banks all run the kind of
+                  applied econometric and governance research this work sits
+                  in, and several hire outside the academic job market. */}
               <div className="row">
-                <p className="t-label">Universities</p>
+                <p className="t-label">Research posts</p>
                 <p className="t-small">
-                  Open to PhD positions in AI governance, applied econometrics,
-                  or transport equity.
+                  Open to PhD and research positions in AI governance, applied
+                  econometrics, or transport equity — at universities, at the
+                  non-university institutes (Max Planck, Fraunhofer, Helmholtz,
+                  Leibniz, CNRS, TNO), at the European Commission&rsquo;s Joint
+                  Research Centre, and in central-bank research such as the ECB.
                 </p>
               </div>
             </div>
           </div>
 
+          {/* Only the CV. Email, GitHub, LinkedIn and ORCID are in the footer
+              on every page, so repeating them here was a second contact block
+              competing with the eligibility rows it sits beside. */}
           <aside>
             <p className="t-label" style={{ marginBottom: "0.75rem" }}>
-              Contact
+              CV
             </p>
             <div className="ref-stack" style={{ marginTop: "0.25rem" }}>
-              <RefLink
-                href={`mailto:${profile.email}`}
-                variant="contact"
-                label={profile.email}
-                external={false}
-              />
               <RefLink
                 href={profile.cvPath}
                 variant="package"
                 label="CV"
                 meta="pdf"
                 external={false}
-              />
-              <RefLink
-                href={profile.github}
-                variant="source"
-                label={profile.github.replace("https://github.com/", "")}
-              />
-              <RefLink
-                href={profile.linkedin}
-                variant="contact"
-                label={profile.linkedin.replace("https://www.linkedin.com/in/", "linkedin/")}
-              />
-              <RefLink
-                href={profile.orcid}
-                variant="record"
-                label={profile.orcid.replace("https://orcid.org/", "ORCID ")}
               />
             </div>
           </aside>

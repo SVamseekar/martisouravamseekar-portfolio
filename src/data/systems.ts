@@ -585,7 +585,7 @@ export const systems: readonly System[] = [
 
   {
     slug: "moveq",
-    name: "moveq",
+    name: "Moveq",
     whatItIs:
       "Python libraries that turn service and demographic data into standard inequality measures — and keep cross-country methods honest.",
     forWhom:
@@ -695,3 +695,14 @@ export const groupedSystems = systemGroups.map((group) => ({
     .map((slug) => systems.find((system) => system.slug === slug))
     .filter((system): system is System => system !== undefined),
 }));
+
+/**
+ * The work index, which is the systems only.
+ *
+ * The libraries have their own page, where they are described as packages —
+ * install lines, the four-package split, what each one computes. Listing them
+ * here too made /work a second copy of the home index rather than its own
+ * page, and sent a reader looking for a library to the weaker of the two
+ * descriptions.
+ */
+export const workGroups = groupedSystems.filter((group) => group.id !== "libraries");

@@ -17,6 +17,20 @@
   --ground: #fbfbfc;
   --ground-sunk: #f4f5f7;
   --ground-raised: #ffffff;
+
+  /* --- Ink tiers ------------------------------------------------------------
+     Three tiers, defined by ROLE, not by lightness:
+
+       --ink        primary reading text and headings
+       --ink-soft   supporting prose — ledes, descriptions, body copy
+       --ink-faint  metadata only — labels, timestamps, units
+
+     The tiers are contrast steps away from the ground, so their direction
+     inverts per theme: on light they step down toward black, on dark they
+     step UP toward white. Both themes must keep --ink-soft firmly in
+     reading-text territory, because it carries most body copy on the site.
+     Defining these as "the light values, dimmed" is what made the dark theme
+     read grey on every page without a raised surface to lift it. */
   --ink: #14161a;
   --ink-soft: #4a4f57;
   --ink-faint: #7b818b;
@@ -93,56 +107,67 @@
 }
 
 [data-theme="dark"] {
-  /* Ground lifted off pure black so raised surfaces have somewhere to go. */
-  --ground: #101317;
-  --ground-sunk: #161a1f;
-  --ground-raised: #1c2127;
+  /* Ground lifted off pure black so raised surfaces have somewhere to go.
+     The page itself drops slightly and raised surfaces climb, widening the
+     gap between them: at ~12 points apart the cards read as flat patches of
+     the same colour rather than panels sitting on a page. */
+  --ground: #0d1014;
+  --ground-sunk: #14181d;
+  --ground-raised: #222932;
 
-  /* Ink brightened across the board: the previous values were the light
-     palette dimmed, which left body copy grey and captions unreadable. */
-  --ink: #f2f4f7;
-  --ink-soft: #c3c9d2;
-  --ink-faint: #929aa6;
+  /* Ink tiers, stepping UP from the ground (see the role definitions above).
 
-  --rule: #2b3138;
-  --rule-strong: #454d57;
+     --ink is plain white. The cool slate cast belongs to the ground and the
+     structure, not to the type: carrying it into the ink is what made the
+     brightest text on the page read as a light grey rather than as white.
+     --ink-soft carries most body copy sitewide and sits just under it;
+     --ink-faint is the only tier allowed to recede, and holds metadata
+     only. Measured on --ground: 19.6:1, 17.5:1 and 11.4:1. */
+  --ink: #ffffff;
+  --ink-soft: #f0f3f7;
+  --ink-faint: #c2cad6;
+
+  --rule: #333b45;
+  --rule-strong: #525c68;
 
   /* Same light source, restated for a dark ground: the shadow deepens and the
      highlight becomes a faint sheen rather than white, which is what keeps
      surfaces reading as material instead of glowing. */
-  --lift-dark: rgba(0, 0, 0, 0.46);
-  --lift-light: rgba(255, 255, 255, 0.055);
-  --lift-dark-soft: rgba(0, 0, 0, 0.30);
-  --lift-light-soft: rgba(255, 255, 255, 0.035);
+  --lift-dark: rgba(0, 0, 0, 0.55);
+  --lift-light: rgba(255, 255, 255, 0.10);
+  --lift-dark-soft: rgba(0, 0, 0, 0.38);
+  --lift-light-soft: rgba(255, 255, 255, 0.065);
 
   /* Accents lifted for contrast against a dark ground. */
-  --signal: #8fb4ff;
-  --signal-soft: #1a2740;
-  --signal-ink: #b4cdff;
+  /* Saturation raised rather than lightness: the previous blue was pale
+     enough to read as another grey, which left the page achromatic. */
+  --signal: #7ea8ff;
+  --signal-soft: #1c2c4c;
+  --signal-ink: #a8c6ff;
 
-  --live: #5fd99b;
-  --blocked: #f0a868;
+  --live: #47e39c;
+  --blocked: #ffb673;
 
   /* Diagrams get their own dark treatment — nodes read as raised panels
      rather than holes punched in the page. */
-  --diagram-ground: #14181d;
-  --node-fill: #1e242b;
-  --node-fill-soft: #252c34;
-  --node-stroke: #4d5763;
-  --edge-stroke: #8b95a3;
-  --edge-soft: #5a636e;
-  --boundary-fill: rgba(255, 255, 255, 0.02);
-  --bar-fill: rgba(143, 180, 255, 0.2);
-  --warn-fill: rgba(240, 168, 104, 0.12);
+  --diagram-ground: #11151a;
+  --node-fill: #232a33;
+  --node-fill-soft: #2b333d;
+  --node-stroke: #5b6673;
+  --edge-stroke: #9aa4b2;
+  --edge-soft: #666f7c;
+  --boundary-fill: rgba(255, 255, 255, 0.03);
+  --bar-fill: rgba(126, 168, 255, 0.26);
+  --warn-fill: rgba(255, 182, 115, 0.14);
 
-  --series-0: #8fb4ff;
-  --series-1: #5fd99b;
-  --series-2: #f0a868;
-  --series-3: #b3a4f0;
-  --series-0-fill: rgba(143, 180, 255, 0.26);
-  --series-1-fill: rgba(95, 217, 155, 0.26);
-  --series-2-fill: rgba(240, 168, 104, 0.26);
-  --series-3-fill: rgba(179, 164, 240, 0.26);
+  --series-0: #7ea8ff;
+  --series-1: #47e39c;
+  --series-2: #ffb673;
+  --series-3: #b9a6ff;
+  --series-0-fill: rgba(126, 168, 255, 0.30);
+  --series-1-fill: rgba(71, 227, 156, 0.30);
+  --series-2-fill: rgba(255, 182, 115, 0.30);
+  --series-3-fill: rgba(185, 166, 255, 0.30);
 }
 
 /* =============================================================================
@@ -682,18 +707,27 @@ svg {
 }
 
 /* Proof strip — the countable, checkable claims. */
+/* The 1px gaps are dividers, drawn by letting the grid's own background show
+   through. Every cell therefore has a rule on its leading edge and needs to
+   be inset off it — including the first, whose divider is the block border.
+   The row is pulled back by that same inset so the first value still lines
+   up with the page margin: the cells are padded uniformly, and the optical
+   left edge is preserved rather than the geometric one. */
 .proof {
+  --proof-inset: 1rem;
+
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr));
   gap: 1px;
   background: var(--rule);
   border-block: 1px solid var(--rule);
+  margin-inline-start: calc(var(--proof-inset) * -1);
 }
 
 .proof-cell {
   background: var(--ground);
-  padding: 0.9rem 0;
-  padding-inline-end: 1rem;
+  padding-block: 0.9rem;
+  padding-inline: var(--proof-inset);
 }
 
 .proof-value {
@@ -749,6 +783,18 @@ svg {
   .card-grid {
     grid-template-columns: repeat(3, 1fr);
   }
+
+  /* A short group divides the full width rather than leaving the unused
+     columns as dead space: two cards are two equal halves, one card is the
+     whole row. Every group therefore spans the same measure as the rows
+     above it, and peers within a group are always equal to each other. */
+  .card-grid:has(> :nth-child(2):last-child) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .card-grid:has(> :only-child) {
+    grid-template-columns: 1fr;
+  }
 }
 
 /* Grouped work blocks. */
@@ -760,13 +806,19 @@ svg {
   margin-bottom: 0.7rem;
 }
 
-/* With seven systems the final row is short; stretching the last card keeps
-   the grid from ending on a hole. */
-.card-grid > :last-child:nth-child(3n - 2) {
+/* An orphan trailing a full row (card 4 of 4, card 7 of 7) stretches to fill,
+   so the grid never ends on a hole. Guarded by :nth-child(n + 4), because the
+   stretch is only correct once a full row has actually been laid: without the
+   guard a two-card group matches :nth-child(3n - 1) on its second card and
+   splits 1:2 — two peers rendered at different sizes for no reason.
+
+   Groups shorter than a full row are handled by the column count above, not
+   here; a card is only ever stretched when it genuinely trails a full row. */
+.card-grid > :last-child:nth-child(3n - 2):nth-child(n + 4) {
   grid-column: span 3;
 }
 
-.card-grid > :last-child:nth-child(3n - 1) {
+.card-grid > :last-child:nth-child(3n - 1):nth-child(n + 4) {
   grid-column: span 2;
 }
 
@@ -775,7 +827,11 @@ svg {
     grid-column: auto;
   }
 
-  .card-grid > :last-child:nth-child(odd) {
+  /* At two columns a lone card has no narrower template to fall back to, so
+     it is stretched here rather than by column count. An orphan after a full
+     row stretches for the same reason it does at three columns. */
+  .card-grid > :last-child:nth-child(odd):nth-child(n + 3),
+  .card-grid > :only-child {
     grid-column: span 2;
   }
 }
@@ -983,15 +1039,70 @@ svg {
    Lists (packages, timeline, links)
    ========================================================================== */
 
-.rows {
+/* One rule per boundary, and only between rows.
+
+   A list draws a line *between* its items, not around itself: the section's
+   own .band-rule already closes the block above, and the band below opens
+   with its own. A top border here landed one pixel from the first row's
+   bottom border, and the last row's border doubled the next band's — three
+   lines where the reader needed one. */
+.row + .row {
   border-top: 1px solid var(--rule);
 }
 
 .row {
-  border-bottom: 1px solid var(--rule);
   padding-block: 0.9rem;
   display: grid;
   gap: 0.3rem 1.5rem;
+}
+
+/* A line of text carrying its own mark. The glyph takes the line's colour and
+   sits on the text baseline rather than centred on the line box, so it aligns
+   with the first line of a label that wraps. */
+.row-mark {
+  display: flex;
+  align-items: baseline;
+  gap: 0.45rem;
+}
+
+/* Takes the line's colour when it is a drawn glyph; ignored by the institution
+   marks, which are real logos in their own colours and must not be recoloured. */
+.row-mark-glyph {
+  flex: none;
+  transform: translateY(0.15em);
+  color: var(--ink-faint);
+  object-fit: contain;
+}
+
+/* Flags keep their own colours, so they need an edge of their own: several
+   carry white to the border (the US stripes, the Indian bands) and would
+   otherwise dissolve into a light ground. */
+.flag {
+  border-radius: 2px;
+  border: 1px solid var(--rule-strong);
+  object-fit: cover;
+}
+
+/* A row that names several countries carries several flags. The label is
+   allowed to wrap under them rather than being forced onto one line, which
+   would spill into the next column. */
+.flag-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  flex: none;
+}
+
+/* A real logo drawn in a dark brand colour — Greenwich's navy compass rose is
+   the case — vanishes against a dark ground. It keeps its own colours and gets
+   a light plate to sit on instead, which is how the mark is meant to be used;
+   recolouring it would be the one thing a real logo must not do. The plate is
+   only needed where the ground is dark, so the light theme leaves it alone. */
+[data-theme="dark"] .row-mark-plate {
+  background: #fff;
+  border-radius: 3px;
+  padding: 1px;
+  box-sizing: content-box;
 }
 
 @media (min-width: 44rem) {
@@ -1220,13 +1331,12 @@ svg {
   --tone: var(--hue-dark, var(--ink-soft));
 }
 
-/* The layer still reads, as a hairline on the row's leading edge. */
-/* The layer reads as a coloured edge. Set as a border rather than an inset
-   shadow so it composes with the row's elevation instead of replacing it. */
-.spec-row[data-kind="language"]  { border-left: 3px solid var(--series-0); }
-.spec-row[data-kind="framework"] { border-left: 3px solid var(--series-1); }
-.spec-row[data-kind="data"]      { border-left: 3px solid var(--series-2); }
-.spec-row[data-kind="infra"]     { border-left: 3px solid var(--series-3); }
+/* No per-kind edge colour. The layer a technology belongs to is not worth a
+   colour here: the rows are already grouped and labelled, so a stripe adds a
+   second, competing signal that the reader has no key for. It also spent the
+   chart series palette — --series-0..3 mean "one data series" everywhere else
+   on the site, and reusing them as decoration erodes that meaning. The row's
+   own elevation carries the grouping; the glyph carries the identity. */
 
 .spec-name {
   font-size: 0.8125rem;

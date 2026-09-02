@@ -41,10 +41,12 @@ const mono = JetBrains_Mono({
 
 export const metadata: Metadata = buildMetadata();
 
+// The browser chrome cannot read CSS variables, so --ground is restated here.
+// These two values must track --ground in globals.css for each theme.
 export const viewport: Viewport = {
   themeColor: [
     { media: "(prefers-color-scheme: light)", color: "#fbfbfc" },
-    { media: "(prefers-color-scheme: dark)", color: "#0e1013" },
+    { media: "(prefers-color-scheme: dark)", color: "#0d1014" },
   ],
 };
 

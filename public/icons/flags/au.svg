@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 16" width="24" height="16">
+  <rect width="24" height="16" fill="#012169"/>
+  <g transform="scale(0.5)">
+    <clipPath id="au-c"><path d="M0 0h24v16H0z"/></clipPath>
+    <g clip-path="url(#au-c)">
+      <path stroke="#fff" stroke-width="3.2" d="m0 0 24 16M24 0 0 16"/>
+      <path stroke="#C8102E" stroke-width="2.1" d="m0 0 24 16M24 0 0 16"/>
+      <path stroke="#fff" stroke-width="5.3" d="M12 0v16M0 8h24"/>
+      <path stroke="#C8102E" stroke-width="3.2" d="M12 0v16M0 8h24"/>
+    </g>
+  </g>
+  <g fill="#fff">
+    <circle cx="6" cy="12.4" r="1.5"/>
+    <circle cx="18" cy="3.4" r="0.75"/><circle cx="20.4" cy="6.6" r="0.75"/>
+    <circle cx="17.6" cy="9.6" r="0.75"/><circle cx="15.2" cy="6.2" r="0.6"/>
+    <circle cx="19.2" cy="12.4" r="0.75"/>
+  </g>
+</svg>
