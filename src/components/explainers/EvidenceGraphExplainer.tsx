@@ -7,8 +7,8 @@ import { Boundary, Defs, GraphNode, Label, Node, Route } from "./parts";
  * Evgraph — a graph system, drawn as a graph.
  *
  * Loose artifacts on the left, a connected graph on the right, and a rule
- * traversing it. The missing edge uses the rejected line because that is what
- * the scan is looking for: an expectation the evidence does not meet.
+ * traversing it. A missing approval is drawn as an inconclusive gap, not a
+ * green or red stamp. The scan does not invent the timestamp.
  */
 export function EvidenceGraphExplainer() {
   const artifacts = [
@@ -32,7 +32,7 @@ export function EvidenceGraphExplainer() {
     <ExplainerFrame
       kicker="Scan"
       caption="Loose artifacts become one graph. A missing approval stays inconclusive. Assurance OS pins this same 0.1.2 scan in the evidence pack."
-      description="Four adapters read a model card, an approval record, a deployment record and an MLflow registry entry, and assemble them into a single evidence graph. Rules traverse the graph: the model card links to its approval, and the MLflow run links to the deployment. The deployment has no linked approval, so a rule emits a finding at structural certainty citing deployment.json. Certainty runs from structural through consistency and heuristic to interpretive, and is only ever lowered as reasoning becomes less certain, never raised."
+      description="Loose artifacts — a model card, an approval record, a deployment record, and an MLflow registry entry — become one evidence graph. Rules walk the edges that exist. Where the approval timestamp is missing, the finding stays inconclusive. The scan does not invent the field, and it does not paint that gap green or red. EU AI Assurance OS pins this same evgraph-cli 0.1.2 scan in the evidence pack."
     >
       {({ motion }) => (
         <svg
@@ -112,17 +112,16 @@ export function EvidenceGraphExplainer() {
             begin={2.8}
           />
 
-          {/* The edge the rule expects and cannot find. */}
+          {/* Missing approval timestamp: inconclusive, not a pass or fail stamp. */}
           <Route
             d={`M ${appr.x},${appr.y} L ${depl.x},${depl.y}`}
-            kind="rejected"
             head={false}
             motion={motion}
             dur={1.6}
             begin={3.4}
           />
-          <text className="dg-note dg-text-warn dg-in s9" x={600} y={202}>
-            no link
+          <text className="dg-note dg-in s9" x={568} y={202}>
+            inconclusive
           </text>
 
           <GraphNode x={card.x} y={card.y} label="model card" step="s6" anchor="middle" />
@@ -139,14 +138,14 @@ export function EvidenceGraphExplainer() {
 
           {/* ---- Finding ---- */}
           <Boundary x={262} y={256} w={434} h={62} label="Finding" step="s10" />
-          <text className="dg-note-strong dg-text-signal dg-in s10" x={280} y={292}>
-            STRUCTURAL
+          <text className="dg-note-strong dg-in s10" x={280} y={292}>
+            INCONCLUSIVE
           </text>
-          <text className="dg-note-strong dg-in s10" x={372} y={292}>
-            deployment has no linked approval
+          <text className="dg-note-strong dg-in s10" x={400} y={292}>
+            approval timestamp missing
           </text>
           <text className="dg-note dg-in s11" x={280} y={310}>
-            cited · deployment.json → approval
+            cited · deployment.json · field not invented
           </text>
 
           {/* ---- Certainty ladder ---- */}

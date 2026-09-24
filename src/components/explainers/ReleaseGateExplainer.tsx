@@ -4,164 +4,124 @@ import { ExplainerFrame } from "./ExplainerFrame";
 import { Boundary, Defs, Label, Node, Route } from "./parts";
 
 /**
- * EU AI Assurance OS — a release meeting the gate.
+ * EU AI Assurance OS — one release, one decision.
  *
- * The gate sits centre with one route in and two out: rejected back to the
- * team, sealed down to the ledger. Routes are laid out in their own lanes so
- * the rejection never crosses a box it has nothing to do with.
+ * The route is the product: system, pinned corpus, queued proposal, then
+ * evidence, eval, contract, and the pinned Evgraph 0.1.2 scan. Those meet
+ * at one shared gap. The gap feeds PASS, REVIEW, or BLOCKED. Motion follows
+ * that order.
  */
 export function ReleaseGateExplainer() {
-  const checks = [
-    { label: "Technical documentation", ok: true },
-    { label: "Data governance", ok: true },
-    { label: "Logging & traceability", ok: true },
-    { label: "Human oversight evidence", ok: false },
+  const inputs = [
+    { label: "System", detail: "owner · purpose", x: 16 },
+    { label: "Pinned corpus", detail: "risk class", x: 188 },
+    { label: "Queued proposal", detail: "person accepts", x: 360 },
   ];
 
-  const gateX = 250;
-  const gateW = 224;
-  const gateY = 60;
-  const gateH = 176;
-  const axis = gateY + 64;
+  const checks = [
+    { label: "Evidence", detail: "cited", x: 16 },
+    { label: "Eval", detail: "score", x: 188 },
+    { label: "Contract", detail: "open BREACH", x: 360 },
+    { label: "Evgraph 0.1.2", detail: "pinned scan", x: 532 },
+  ];
+
+  const decisions = [
+    { label: "PASS", detail: "INFORMATIONAL", x: 16, state: "verified" as const },
+    { label: "REVIEW", detail: "WARNING · APPROVAL_REQUIRED", x: 252, state: "active" as const },
+    { label: "BLOCKED", detail: "BLOCKING", x: 488, state: "warn" as const },
+  ];
 
   return (
     <ExplainerFrame
       kicker="Release gate"
-      caption="A release is classified against a pinned corpus, scanned with Evgraph 0.1.2, and stopped when the pack and the scan share a gap."
-      description="A deploy pipeline posts release v2.4 to the assurance gate. The gate classifies it as high risk and checks four obligations: technical documentation, data governance, and logging and traceability pass; human oversight evidence is missing. The gate returns blocked, and the release travels back to the team with the reason attached. Cited evidence is retrieved from a vector index over the tenant's own documents. The decision and its evidence are sealed into an evidence pack and appended to a hash-chained ledger."
+      caption="A system is classified against a pinned corpus. Mapping proposals wait for a person. The pack and an Evgraph 0.1.2 scan share one gap, then the gate returns PASS, REVIEW, or BLOCKED."
+      description="The system enters with its owner and purpose. Risk is classified against a pinned legal corpus. Control mappings stay in a queue until a person accepts them. Cited evidence, the eval score, an open contract breach, and a pinned Evgraph 0.1.2 scan then meet at one shared gap. In-force controls apply INFORMATIONAL, WARNING, APPROVAL_REQUIRED, or BLOCKING. The gate returns PASS, REVIEW, or BLOCKED. It does not certify the system."
     >
       {({ motion }) => (
         <svg
-          viewBox="0 0 720 360"
+          viewBox="0 0 720 400"
           className="explainer-svg"
           role="img"
-          aria-label="Release gate blocking a high-risk model deployment"
+          aria-label="Release flow from system and pinned corpus through a queued proposal, evidence, eval, contract, and Evgraph 0.1.2 scan to a shared gap and PASS, REVIEW, or BLOCKED"
         >
           <Defs />
 
-          {/* ---- Inbound ---- */}
-          <Label x={24} y={44} step="s1">
-            Deploy pipeline
+          <Label x={16} y={28} step="s1">
+            Classify, then queue
           </Label>
-          <Node
-            x={24}
-            y={axis - 24}
-            w={150}
-            h={48}
-            label="Release v2.4"
-            detail="POST /gate"
-            kind="external"
-            step="s1"
-          />
+          {inputs.map((item, i) => (
+            <Node
+              key={item.label}
+              x={item.x}
+              y={40}
+              w={156}
+              h={44}
+              label={item.label}
+              detail={item.detail}
+              kind={i === 0 ? "external" : "service"}
+              step={`s${i + 1}`}
+            />
+          ))}
+          <Route d="M 172,62 H 188" motion={motion} dur={1.1} />
+          <Route d="M 344,62 H 360" motion={motion} dur={1.1} begin={0.4} />
 
-          <Route
-            d={`M 174,${axis} H ${gateX}`}
-            motion={motion}
-            dur={1.3}
-            count={2}
-          />
+          <Route d="M 438,84 V 118 H 360" motion={motion} dur={1.2} begin={0.8} />
 
-          {/* ---- The gate ---- */}
-          <Boundary x={gateX} y={gateY} w={gateW} h={gateH} label="Assurance gate" step="s2" />
+          <Label x={16} y={128} step="s4">
+            What the gate reads
+          </Label>
+          {checks.map((item, i) => (
+            <Node
+              key={item.label}
+              x={item.x}
+              y={140}
+              w={156}
+              h={44}
+              label={item.label}
+              detail={item.detail}
+              kind="store"
+              step={`s${i + 4}`}
+            />
+          ))}
+          <Route d="M 94,184 V 214 H 360" motion={motion} dur={1.2} begin={1.2} />
+          <Route d="M 266,184 V 214 H 360" motion={motion} dur={1.2} begin={1.4} />
+          <Route d="M 438,184 V 214 H 360" motion={motion} dur={1.2} begin={1.6} />
+          <Route d="M 610,184 V 214 H 360" motion={motion} dur={1.2} begin={1.8} />
 
-          <text className="dg-note-strong dg-in s2" x={gateX + 18} y={gateY + 38}>
-            Risk class · HIGH
+          <Boundary x={248} y={214} w={224} h={52} label="Shared gap" step="s8" />
+          <text className="dg-note dg-in s8" x={360} y={246} textAnchor="middle">
+            pack = live 0.1.2 scan
           </text>
 
-          {checks.map((check, i) => (
-            <g key={check.label} className={`dg-in s${3 + i}`}>
-              <text
-                className={check.ok ? "dg-note dg-text-live" : "dg-note dg-text-warn"}
-                x={gateX + 18}
-                y={gateY + 66 + i * 25}
-              >
-                {check.ok ? "✓" : "✕"}
-              </text>
-              <text
-                className={check.ok ? "dg-note" : "dg-note dg-text-warn"}
-                x={gateX + 36}
-                y={gateY + 66 + i * 25}
-              >
-                {check.label}
-              </text>
+          <Route d="M 360,266 V 292" motion={motion} dur={0.9} begin={2.4} />
+
+          <Label x={16} y={300} step="s9">
+            Control mode, then decision
+          </Label>
+          {decisions.map((item, i) => (
+            <g key={item.label}>
+              <Route
+                d={`M 360,292 H ${item.x + 78} V 318`}
+                motion={motion}
+                dur={1.1}
+                begin={2.6 + i * 0.2}
+                kind={item.label === "BLOCKED" ? "rejected" : undefined}
+                tone={item.label === "PASS" ? "live" : undefined}
+              />
+              <Node
+                x={item.x}
+                y={318}
+                w={200}
+                h={48}
+                label={item.label}
+                detail={item.detail}
+                kind="gate"
+                state={item.state}
+                step={`s${9 + i}`}
+                centre
+              />
             </g>
           ))}
-
-          {/* Evidence the gate cites while it checks. */}
-          <Node
-            x={gateX}
-            y={262}
-            w={gateW}
-            h={40}
-            label="Cited evidence"
-            detail="vector index · tenant docs"
-            kind="store"
-            active
-            phase="q2"
-            step="s7"
-          />
-          {/* The gate retrieves this while it checks, so the edge carries
-              traffic: it is a call, not a static relationship. */}
-          <Route
-            d={`M ${gateX + gateW / 2},262 V ${gateY + gateH}`}
-            motion={motion}
-            dur={1.2}
-            begin={2.2}
-          />
-
-          {/* ---- Verdict ---- */}
-          <Route
-            d={`M ${gateX + gateW},${axis} H 528`}
-            kind="rejected"
-            motion={motion}
-            dur={1.2}
-            begin={1.2}
-          />
-
-          <Node
-            x={528}
-            y={axis - 26}
-            w={168}
-            h={52}
-            label="BLOCKED"
-            detail="1 obligation unmet"
-            kind="gate"
-            state="warn"
-            step="s8"
-            centre
-          />
-
-          {/* Rejected: back to the team, in a clear lane below the gate. */}
-          <Route
-            d={`M 612,${axis + 26} V 330 H 99 V ${axis + 24}`}
-            kind="rejected"
-            motion={motion}
-            dur={3}
-            begin={2}
-          />
-          <text className="dg-note-strong dg-text-warn dg-in s9" x={360} y={348} textAnchor="middle">
-            ✕ shipping blocked — returned with the reason attached
-          </text>
-
-          {/* Sealed: down its own lane, clear of the evidence box. */}
-          <Route
-            d={`M 640,${axis + 26} V 262`}
-            motion={motion}
-            dur={1.1}
-            begin={2.6}
-            tone="live"
-          />
-          <Node
-            x={528}
-            y={262}
-            w={168}
-            h={40}
-            label="Evidence pack"
-            detail="sealed → ledger"
-            kind="store"
-            state="verified"
-            step="s10"
-          />
         </svg>
       )}
     </ExplainerFrame>
