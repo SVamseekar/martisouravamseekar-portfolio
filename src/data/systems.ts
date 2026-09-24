@@ -151,17 +151,17 @@ export const systems: readonly System[] = [
       {
         step: "Register the system",
         detail:
-          "The AI system is described once and classified with guidance into a risk class, so the obligations that follow are explicit rather than assumed.",
+          "The AI system is described once. Risk is classified against a pinned legal corpus, so the obligations that follow are explicit rather than assumed.",
       },
       {
         step: "The gate runs in CI",
         detail:
-          "A release calls the gate like any other pipeline check. Evaluations run on a durable queue and report back over signed callbacks.",
+          "Control mappings are proposals. A person accepts them. They are not auto-applied. In-force controls then use INFORMATIONAL, WARNING, APPROVAL_REQUIRED, or BLOCKING.",
       },
       {
         step: "Get a verdict with citations",
         detail:
-          "The gate returns pass, review or blocked — and cites the specific evidence behind the decision, so a blocked release comes with the reason attached.",
+          "The gate returns PASS, REVIEW, or BLOCKED. The evidence pack and a live evgraph-cli 0.1.2 scan report the same current gap. A missing approval timestamp stays inconclusive.",
       },
       {
         step: "Seal the record",
@@ -178,7 +178,7 @@ export const systems: readonly System[] = [
     capabilities: [
       {
         area: "Registry and classification",
-        detail: "Guided risk classes — minimal, limited, high, prohibited — with a control catalog and per-system status tracking.",
+        detail: "Risk classes — minimal, limited, high, prohibited — classified against a pinned legal corpus. Control mappings stay proposals until a person accepts them.",
       },
       {
         area: "Evidence retrieval",
@@ -186,7 +186,7 @@ export const systems: readonly System[] = [
       },
       {
         area: "Release gating",
-        detail: "PASS / REVIEW / BLOCKED contract callable from CI, with a durable worker queue and signed result callbacks.",
+        detail: "PASS / REVIEW / BLOCKED. In-force modes are INFORMATIONAL, WARNING, APPROVAL_REQUIRED, and BLOCKING. The pack and evgraph-cli 0.1.2 share the current gap.",
       },
       {
         area: "Workflows and oversight",
@@ -203,9 +203,9 @@ export const systems: readonly System[] = [
     ],
     tradeoffs: [
       {
-        choice: "Assisted classification over automated judgement",
-        instead: "inferring the risk class from a description",
-        why: "Getting a risk class wrong has legal consequences. The product guides the decision and records who made it, rather than claiming an authority it does not have.",
+        choice: "A person accepts each mapping",
+        instead: "auto-applying a control from the corpus",
+        why: "Risk is classified against a pinned legal corpus, and the mapping stays a proposal until someone accepts it. The product does not certify, CE-mark, or issue a legal verdict.",
       },
       {
         choice: "Java-native embeddings via DJL + ONNX",
@@ -218,19 +218,19 @@ export const systems: readonly System[] = [
         why: "An audit table an administrator can edit proves nothing. Chaining makes tampering detectable and gives verify endpoints something to check.",
       },
     ],
-    stack: ["Java 17", "Spring Boot 3.3", "PostgreSQL", "pgvector", "Next.js", "Docker"],
+    stack: ["Java 17", "Spring Boot 4.1.1", "Tika 4.0.0", "PostgreSQL", "pgvector", "Next.js"],
     stackRoles: {
       "Java 17": "gate and ledger",
-      "Spring Boot 3.3": "multi-tenant API",
+      "Spring Boot 4.1.1": "multi-tenant API",
+      "Tika 4.0.0": "document extraction",
       PostgreSQL: "registry and audit",
       pgvector: "cited evidence search",
       "Next.js": "dashboard",
-      Docker: "reproducible deploys",
     },
     figures: [
-      { value: "64", label: "REST endpoints" },
-      { value: "190", label: "automated tests" },
-      { value: "V16", label: "schema migrations" },
+      { value: "V20", label: "Flyway migrations, plus postgres V4" },
+      { value: "0.1.2", label: "pinned evgraph-cli" },
+      { value: "4", label: "control modes" },
       { value: "3", label: "sector packs" },
     ],
   },
@@ -536,7 +536,7 @@ export const systems: readonly System[] = [
       {
         step: "Rules read the graph, not the files",
         detail:
-          "Deterministic rules traverse it and return findings with citations back into the graph — you always see why, not just a green or red badge.",
+          "Deterministic rules traverse it and return cited findings. A missing approval timestamp stays inconclusive. The scan does not invent the field, and it does not paint that gap green or red.",
       },
       {
         step: "Findings never overclaim",
@@ -545,7 +545,7 @@ export const systems: readonly System[] = [
       },
     ],
     build: [
-      "Four packages versioned together — evgraph-core, evgraph-rules, evgraph and evgraph-cli — installable from PyPI on Python 3.10+.",
+      "Four packages versioned together at 0.1.2 — evgraph-core, evgraph-rules, evgraph, and evgraph-cli. The evgraph package does not install the evgraph command. EU AI Assurance OS pins evgraph-cli==0.1.2.",
       "Rules are pure over the graph: they emit findings without mutating it, so a scan is reproducible and explainable.",
       "Reporters emit JSON, Markdown, SARIF and OSCAL, so results land in code scanning or a compliance toolchain unchanged.",
       "Third-party rule packs register through entry points; promotion scans are report-only by default so CI collects evidence without blocking a build.",

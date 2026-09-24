@@ -25,9 +25,9 @@ const STACKS = [
     name: "Evgraph",
     audience: "For AI governance reviewers and ML engineers",
     blurb:
-      "AI governance work is spread across files that do not talk to each other: a Model Card here, an approval ticket there, a registry entry somewhere else. Evgraph reads those artifacts through adapters, builds one immutable Evidence Graph of typed facts, then runs deterministic rules over it.",
+      "Loose artifacts become one Evidence Graph: a Model Card, an approval, a deployment. A missing approval timestamp stays inconclusive. The scan does not invent the field. EU AI Assurance OS pins evgraph-cli 0.1.2 so the evidence pack and the scan share that gap.",
     detail:
-      "Findings are explainable rather than pass/fail: each cites the nodes it was drawn from and carries a certainty level — structural, consistency, heuristic, interpretive — that is only ever lowered as reasoning gets less certain, never raised. It reports what the evidence shows; it does not certify regulatory compliance.",
+      "The evgraph package does not install the evgraph command. evgraph-cli does. Findings cite the nodes they came from. A missing timestamp is not a green or red stamp, and the library does not certify regulatory compliance.",
     facts: [
       "Adapters for Model Card + approval + deployment JSON, dataset manifests, and the MLflow registry",
       "Reports as JSON, Markdown, SARIF or OSCAL Assessment Results",
