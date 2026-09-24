@@ -136,7 +136,7 @@ export const systems: readonly System[] = [
     slug: "eu-ai-assurance",
     name: "EU AI Assurance OS",
     whatItIs:
-      "A release gate for teams shipping AI into the EU: it decides whether a model is allowed out, and proves why.",
+      "A fail-closed release gate for AI shipped into the EU: a pinned legal corpus, a human proposal queue, and an Evgraph 0.1.2 scan that must match the evidence pack.",
     forWhom:
       "For engineering and governance teams who must show an AI system met its obligations before deployment.",
     period: "2026 – Present",
@@ -170,7 +170,7 @@ export const systems: readonly System[] = [
       },
     ],
     build: [
-      "Spring Boot 3.3 API with Flyway V1–V16 and multi-tenant JPA behind JWT and API-key auth — 64 REST endpoints and 190 automated tests.",
+      "Spring Boot 4.1.1 API, Java 17, Tika 4.0.0, and Flyway through V20. Multi-tenant JPA behind JWT and API-key auth.",
       "Cited-evidence retrieval runs on DJL + ONNX Runtime with pgvector HNSW, so answers point back at source documents.",
       "Eval results return over HMAC-SHA-256 signed callbacks; the queue is durable, so a gate decision survives a worker restart.",
       "Append-only audit ledger is hash-chained with verify endpoints, and evidence packs export as JSON with a PDF rendering.",
@@ -513,7 +513,7 @@ export const systems: readonly System[] = [
     slug: "evgraph",
     name: "Evgraph",
     whatItIs:
-      "Stops governance reviewers stitching Model Cards, approvals and registry entries together by hand.",
+      "Turns Model Cards, approvals, and deployments into one Evidence Graph. EU AI Assurance OS pins evgraph-cli 0.1.2 so the evidence pack and the scan share the same gap.",
     forWhom:
       "For ML and governance engineers who need repeatable evidence checks in CI, not a hosted platform.",
     period: "2026 – Present",

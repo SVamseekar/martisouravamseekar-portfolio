@@ -31,7 +31,7 @@ export function EvidenceGraphExplainer() {
   return (
     <ExplainerFrame
       kicker="Scan"
-      caption="Loose artifacts become one graph. Rules walk it and report what they find — including the link that should exist and does not."
+      caption="Loose artifacts become one graph. A missing approval stays inconclusive. Assurance OS pins this same 0.1.2 scan in the evidence pack."
       description="Four adapters read a model card, an approval record, a deployment record and an MLflow registry entry, and assemble them into a single evidence graph. Rules traverse the graph: the model card links to its approval, and the MLflow run links to the deployment. The deployment has no linked approval, so a rule emits a finding at structural certainty citing deployment.json. Certainty runs from structural through consistency and heuristic to interpretive, and is only ever lowered as reasoning becomes less certain, never raised."
     >
       {({ motion }) => (

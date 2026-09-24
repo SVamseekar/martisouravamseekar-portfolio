@@ -27,7 +27,7 @@ export function ReleaseGateExplainer() {
   return (
     <ExplainerFrame
       kicker="Release gate"
-      caption="A release is classified, checked against the obligations that class carries, and stopped on the one it cannot evidence."
+      caption="A release is classified against a pinned corpus, scanned with Evgraph 0.1.2, and stopped when the pack and the scan share a gap."
       description="A deploy pipeline posts release v2.4 to the assurance gate. The gate classifies it as high risk and checks four obligations: technical documentation, data governance, and logging and traceability pass; human oversight evidence is missing. The gate returns blocked, and the release travels back to the team with the reason attached. Cited evidence is retrieved from a vector index over the tenant's own documents. The decision and its evidence are sealed into an evidence pack and appended to a hash-chained ledger."
     >
       {({ motion }) => (
